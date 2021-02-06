@@ -4,12 +4,7 @@ import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
 import * as Font from "expo-font";
 import { NavigationContainer } from "@react-navigation/native";
-import { StyleSheet, SafeAreaView } from "react-native";
-
-// import OpenScreen from './screens/OpenScreen';
-// import SignInScreen from './screens/SignInScreen';
-// import SignUpScreen from './screens/SignUpScreen';
-// import TestScreen from './screens/testScreen';
+import { StyleSheet } from "react-native";
 
 import AuthNavigator from "./navigation/AuthNavigator";
 
@@ -37,12 +32,6 @@ export default function App() {
   }
 
   return (
-    // <SafeAreaView style={styles.container}>
-    //   {/* <OpenScreen /> */}
-    //   {/* <SignInScreen /> */}
-    //   <SignUpScreen />
-    // </SafeAreaView>
-
     <NavigationContainer>
       <AuthNavigator />
       <StatusBar style="auto" />

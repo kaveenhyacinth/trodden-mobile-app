@@ -4,7 +4,6 @@ import { View, Text, StyleSheet, Pressable } from "react-native";
 import Colors from "../theme/Colors";
 import Typography from "../theme/Typography";
 import ScreenView from "../components/ScreenView";
-import TitleText from "../components/TitleText";
 import BodyText from "../components/BodyText";
 import InputBox from "../components/InputBox";
 import BigButton from "../components/BigButton";

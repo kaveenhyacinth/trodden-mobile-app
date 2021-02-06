@@ -2,9 +2,6 @@ import React from "react";
 import { View, Text, TextInput, StyleSheet } from "react-native";
 
 import Colors from "../theme/Colors";
-import Typography from "../theme/Typography";
-import ScreenView from "../components/ScreenView";
-import BigButton from "../components/BigButton";
 
 const InputBox = (props) => {
   return (

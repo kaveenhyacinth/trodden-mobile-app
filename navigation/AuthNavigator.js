@@ -1,13 +1,10 @@
 import React from "react";
-import { Platform } from "react-native";
-import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 
 import OpenScreen from "../screens/OpenScreen";
 import SignInScreen from "../screens/SignInScreen";
 import SignUpScreen from "../screens/SignUpScreen";
 import Colors from "../theme/Colors";
-import Typography from "../theme/Typography";
 
 const Stack = createStackNavigator();
 
