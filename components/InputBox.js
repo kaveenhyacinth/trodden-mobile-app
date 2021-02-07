@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 50,
-    borderColor: Colors.text,
+    borderColor: Colors.outline,
     borderWidth: 1,
     paddingHorizontal: 10,
   },

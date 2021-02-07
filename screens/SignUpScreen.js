@@ -7,11 +7,12 @@ import ScreenView from "../components/ScreenView";
 import BodyText from "../components/BodyText";
 import InputBox from "../components/InputBox";
 import BigButton from "../components/BigButton";
+import FormContainer from "../components/FormContainer";
 
 const SignUpScreen = (props) => {
   return (
     <ScreenView style={styles.screen}>
-      <View style={styles.formContainer}>
+      <FormContainer>
         <InputBox placeholder="First Name" style={styles.input} message="" />
         <InputBox placeholder="Last Name" style={styles.input} message="" />
         <InputBox placeholder="UserName" style={styles.input} message="" />
@@ -22,7 +23,15 @@ const SignUpScreen = (props) => {
           secureTextEntry
           message=""
         />
-        <BigButton style={styles.button}>Sign Up</BigButton>
+        <BigButton
+          style={styles.button}
+          onPress={() => {
+            props.navigation.replace("details");
+            console.log(props.navigation);
+          }}
+        >
+          Sign Up
+        </BigButton>
         <Pressable
           onPress={() => {
             props.navigation.navigate("signIn");
@@ -33,7 +42,7 @@ const SignUpScreen = (props) => {
             <Text style={styles.link}>Sign In</Text>
           </BodyText>
         </Pressable>
-      </View>
+      </FormContainer>
     </ScreenView>
   );
 };
@@ -41,14 +50,6 @@ const SignUpScreen = (props) => {
 const styles = StyleSheet.create({
   screen: {
     justifyContent: "space-between",
-  },
-  formContainer: {
-    flex: 1,
-    width: "90%",
-    minWidth: 300,
-    maxWidth: "90%",
-    alignItems: "stretch",
-    marginTop: 26,
   },
   button: {
     width: "100%",

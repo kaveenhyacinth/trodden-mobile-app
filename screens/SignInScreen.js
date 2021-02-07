@@ -7,11 +7,12 @@ import ScreenView from "../components/ScreenView";
 import BodyText from "../components/BodyText";
 import InputBox from "../components/InputBox";
 import BigButton from "../components/BigButton";
+import FormContainer from "../components/FormContainer";
 
 const SignInScreen = (props) => {
   return (
     <ScreenView style={styles.screen}>
-      <View style={styles.formContainer}>
+      <FormContainer>
         <InputBox placeholder="Email" style={styles.input} message="" />
         <InputBox
           placeholder="Password"
@@ -30,7 +31,7 @@ const SignInScreen = (props) => {
             <Text style={styles.link}>Sign Up</Text>
           </BodyText>
         </Pressable>
-      </View>
+      </FormContainer>
     </ScreenView>
   );
 };
@@ -38,13 +39,6 @@ const SignInScreen = (props) => {
 const styles = StyleSheet.create({
   screen: {
     justifyContent: "space-between",
-  },
-  formContainer: {
-    width: "90%",
-    minWidth: 300,
-    maxWidth: "90%",
-    alignItems: "stretch",
-    marginTop: 26,
   },
   button: {
     width: "100%",
