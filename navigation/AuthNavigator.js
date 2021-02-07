@@ -4,6 +4,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import OpenScreen from "../screens/OpenScreen";
 import SignInScreen from "../screens/SignInScreen";
 import SignUpScreen from "../screens/SignUpScreen";
+import DetailsScreen from "../screens/DetailsScreen";
 import Colors from "../theme/Colors";
 
 const Stack = createStackNavigator();
@@ -12,11 +13,14 @@ const defaultStackNavOptions = {
   headerStyle: {
     backgroundColor: Colors.accent,
   },
+  headerTitleStyle: {
+    fontFamily: "comfortaa-bold",
+  },
 };
 
 const AuthNavigator = (props) => {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator screenOptions={{ ...defaultStackNavOptions }}>
       <Stack.Screen
         name="OpenScreen"
         component={OpenScreen}
@@ -29,7 +33,6 @@ const AuthNavigator = (props) => {
         name="signUp"
         component={SignUpScreen}
         options={{
-          ...defaultStackNavOptions,
           title: "Sign Up",
         }}
       />
@@ -37,8 +40,14 @@ const AuthNavigator = (props) => {
         name="signIn"
         component={SignInScreen}
         options={{
-          ...defaultStackNavOptions,
           title: "Sign In",
+        }}
+      />
+      <Stack.Screen
+        name="details"
+        component={DetailsScreen}
+        options={{
+          title: "About You",
         }}
       />
     </Stack.Navigator>
