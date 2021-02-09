@@ -1,7 +1,6 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 
-import Colors from "../theme/Colors";
 import AuthNavigator from "./AuthNavigator";
 import PostAuthNavigator from "./PostAuthNavigator";
 

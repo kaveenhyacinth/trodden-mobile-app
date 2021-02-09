@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet, FlatList, Alert } from "react-native";
 
-import Colors from "../theme/Colors";
-import Typography from "../theme/Typography";
 import BodyText from "../components/BodyText";
 import InterestGridTile from "../components/InterestGridTile";
 import BigButton from "../components/BigButton";

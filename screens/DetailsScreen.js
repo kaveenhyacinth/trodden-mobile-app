@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 
-import Colors from "../theme/Colors";
-import Typography from "../theme/Typography";
 import ScreenView from "../components/ScreenView";
 import BigButton from "../components/BigButton";
 import ImageUploader from "../components/ImageUploader";
@@ -105,7 +103,7 @@ const styles = StyleSheet.create({
   inputArea: {
     height: 200,
     textAlignVertical: "top",
-    paddingVertical: 10
+    paddingVertical: 10,
   },
   imageUploader: {
     marginBottom: 20,

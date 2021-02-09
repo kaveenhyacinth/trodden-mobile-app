@@ -46,7 +46,6 @@ const SignUpScreen = (props) => {
   return (
     <ScreenView style={styles.screen}>
       <FormContainer>
-        {/* First Name input*/}
         <InputBox
           placeholder="First Name"
           style={styles.input}
