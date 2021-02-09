@@ -1,7 +1,6 @@
-import React from "react";
-import { View, Text, StyleSheet, Pressable } from "react-native";
+import React, { useState, useEffect } from "react";
+import { Text, StyleSheet, Pressable } from "react-native";
 
-import PostAuthNavigator from '../navigation/PostAuthNavigator'
 import Colors from "../theme/Colors";
 import Typography from "../theme/Typography";
 import ScreenView from "../components/ScreenView";
@@ -11,24 +10,85 @@ import BigButton from "../components/BigButton";
 import FormContainer from "../components/FormContainer";
 
 const SignUpScreen = (props) => {
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    username: "",
+    email: "",
+    password: "",
+  });
+
+  useEffect(() => console.log(formData), [formData]);
+
+  const inputHandler = (inputText, field) => {
+    switch (field) {
+      case "firstName":
+        setFormData({ ...formData, firstName: inputText });
+        break;
+      case "lastName":
+        setFormData({ ...formData, lastName: inputText });
+        break;
+      case "username":
+        setFormData({ ...formData, username: inputText.toLowerCase() });
+        break;
+      case "email":
+        setFormData({ ...formData, email: inputText });
+        break;
+      case "password":
+        setFormData({ ...formData, password: inputText });
+        break;
+
+      default:
+        break;
+    }
+  };
+
   return (
     <ScreenView style={styles.screen}>
       <FormContainer>
-        <InputBox placeholder="First Name" style={styles.input} message="" />
-        <InputBox placeholder="Last Name" style={styles.input} message="" />
-        <InputBox placeholder="UserName" style={styles.input} message="" />
-        <InputBox placeholder="Email" style={styles.input} message="" />
+        {/* First Name input*/}
+        <InputBox
+          placeholder="First Name"
+          style={styles.input}
+          message=""
+          onChangeText={(inputText) => inputHandler(inputText, "firstName")}
+          value={formData.firstName}
+        />
+        <InputBox
+          placeholder="Last Name"
+          style={styles.input}
+          message=""
+          onChangeText={(inputText) => inputHandler(inputText, "lastName")}
+          value={formData.lastName}
+        />
+        <InputBox
+          placeholder="UserName"
+          style={styles.input}
+          message=""
+          onChangeText={(inputText) => inputHandler(inputText, "username")}
+          value={formData.username}
+        />
+        <InputBox
+          placeholder="Email"
+          style={styles.input}
+          keyboardType="email-address"
+          message=""
+          onChangeText={(inputText) => inputHandler(inputText, "email")}
+          value={formData.email}
+        />
         <InputBox
           placeholder="Password"
           style={styles.input}
           secureTextEntry
           message=""
+          onChangeText={(inputText) => inputHandler(inputText, "password")}
+          value={formData.password}
         />
         <BigButton
           style={styles.button}
           onPress={() => {
-            props.navigation.replace("postAuth");
-            console.log(props.navigation);
+            props.navigation.navigate("postAuth");
+            console.log(formData);
           }}
         >
           Sign Up
