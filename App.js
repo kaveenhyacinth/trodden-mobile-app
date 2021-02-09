@@ -5,7 +5,7 @@ import React, { useState } from "react";
 import * as Font from "expo-font";
 import { NavigationContainer } from "@react-navigation/native";
 
-import AuthNavigator from "./navigation/AuthNavigator";
+import MainNavigator from "./navigation/MainNavigator";
 
 const fetchFonts = () => {
   return Font.loadAsync({
@@ -32,7 +32,7 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      <AuthNavigator />
+      <MainNavigator />
       <StatusBar style="auto" />
     </NavigationContainer>
   );

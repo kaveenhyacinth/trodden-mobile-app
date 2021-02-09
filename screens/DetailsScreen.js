@@ -13,14 +13,23 @@ const DetailsScreen = (props) => {
   return (
     <ScreenView>
       <FormContainer>
-        <ImageUploader style={styles.imageUploader}/>
+        <ImageUploader style={styles.imageUploader} />
         <InputBox style={styles.inputArea} placeholder="Bio" message="" />
         <InputBox
           style={styles.input}
           placeholder="Currently work as ..."
           message=""
         />
-        <BigButton style={styles.button} onPress={() => {{props.navigation.navigate("signUp")}}}>Next</BigButton>
+        <BigButton
+          style={styles.button}
+          onPress={() => {
+            {
+              props.navigation.navigate("selectInterests");
+            }
+          }}
+        >
+          Next
+        </BigButton>
       </FormContainer>
     </ScreenView>
   );
@@ -31,7 +40,7 @@ const styles = StyleSheet.create({
     height: 200,
   },
   imageUploader: {
-    marginBottom: 20
+    marginBottom: 20,
   },
   button: {
     width: "100%",

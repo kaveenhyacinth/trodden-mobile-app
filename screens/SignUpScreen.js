@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet, Pressable } from "react-native";
 
+import PostAuthNavigator from '../navigation/PostAuthNavigator'
 import Colors from "../theme/Colors";
 import Typography from "../theme/Typography";
 import ScreenView from "../components/ScreenView";
@@ -26,7 +27,7 @@ const SignUpScreen = (props) => {
         <BigButton
           style={styles.button}
           onPress={() => {
-            props.navigation.replace("details");
+            props.navigation.replace("postAuth");
             console.log(props.navigation);
           }}
         >
