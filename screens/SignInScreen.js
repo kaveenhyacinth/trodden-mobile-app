@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Text, StyleSheet, Pressable, Alert } from "react-native";
 
-import Http from '../api/kit';
+import { saveKey, loadToken } from "../services/deviceStorage";
+import Http from "../api/kit";
 import Colors from "../theme/Colors";
 import Typography from "../theme/Typography";
 import ScreenView from "../components/ScreenView";
@@ -33,20 +34,22 @@ const SignInScreen = (props) => {
   };
 
   const requestSignin = () => {
-    Http
-      .post("/api/auth/signin", {
-        email: formData.email,
-        password: formData.password
+    Http.post("/api/auth/signin", {
+      email: formData.email,
+      password: formData.password,
+    })
+      .then((res) => {
+        saveKey("id_token", res.data.token);
+        console.log("Token", loadToken("id_token"));
       })
-      .then((res) => 
-      // TODO: => navigation (._.)
-        Alert.alert("SignIn", res.data.msg, [
-          {
-            text: "Okay",
-          },
-        ])
-      )
       .catch((err) => console.error(err));
+
+    // TODO: => navigation (._.)
+    // Alert.alert("SignIn", res.data.msg, [
+    //   {
+    //     text: "Okay",
+    //   },
+    // ])
   };
 
   return (
