@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Text, StyleSheet, Pressable } from "react-native";
+import { Text, StyleSheet, Pressable, Alert } from "react-native";
 
+import Http from '../api/kit';
 import Colors from "../theme/Colors";
 import Typography from "../theme/Typography";
 import ScreenView from "../components/ScreenView";
@@ -10,25 +11,42 @@ import BigButton from "../components/BigButton";
 import FormContainer from "../components/FormContainer";
 
 const SignInScreen = (props) => {
-  const [credentials, setCredentials] = useState({
+  const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
 
-  useEffect(() => console.log(credentials), [credentials]);
+  useEffect(() => console.log(formData), [formData]);
 
   const inputHandler = (inputText, field) => {
     switch (field) {
       case "email":
-        setCredentials({ ...credentials, email: inputText });
+        setFormData({ ...formData, email: inputText });
         break;
       case "password":
-        setCredentials({ ...credentials, password: inputText });
+        setFormData({ ...formData, password: inputText });
         break;
 
       default:
         break;
     }
+  };
+
+  const requestSignin = () => {
+    Http
+      .post("/api/auth/signin", {
+        email: formData.email,
+        password: formData.password
+      })
+      .then((res) => 
+      // TODO: => navigation (._.)
+        Alert.alert("SignIn", res.data.msg, [
+          {
+            text: "Okay",
+          },
+        ])
+      )
+      .catch((err) => console.error(err));
   };
 
   return (
@@ -39,7 +57,7 @@ const SignInScreen = (props) => {
           style={styles.input}
           message=""
           onChangeText={(inputText) => inputHandler(inputText, "email")}
-          value={credentials.email}
+          value={formData.email}
           keyboardType="email-address"
         />
         <InputBox
@@ -48,9 +66,11 @@ const SignInScreen = (props) => {
           secureTextEntry
           message=""
           onChangeText={(inputText) => inputHandler(inputText, "password")}
-          value={credentials.password}
+          value={formData.password}
         />
-        <BigButton style={styles.button}>Sign In</BigButton>
+        <BigButton style={styles.button} onPress={requestSignin}>
+          Sign In
+        </BigButton>
         <Pressable
           onPress={() => {
             props.navigation.navigate("signUp");

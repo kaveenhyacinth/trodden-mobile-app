@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Text, StyleSheet, Pressable } from "react-native";
+import { Text, StyleSheet, Pressable, Alert } from "react-native";
 
+import Http from "../api/kit";
 import Colors from "../theme/Colors";
 import Typography from "../theme/Typography";
 import ScreenView from "../components/ScreenView";
@@ -43,6 +44,25 @@ const SignUpScreen = (props) => {
     }
   };
 
+  const requestSignup = () => {
+    Http.post("/api/auth/signup", {
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      username: formData.username,
+      email: formData.email,
+      password: formData.password,
+    })
+      .then((res) =>
+        Alert.alert("Success!", res.data.msg, [
+          {
+            onPress: () => props.navigation.navigate("postAuth"),
+          },
+          { cancelable: false },
+        ])
+      )
+      .catch((err) => console.error(err));
+  };
+
   return (
     <ScreenView style={styles.screen}>
       <FormContainer>
@@ -83,13 +103,7 @@ const SignUpScreen = (props) => {
           onChangeText={(inputText) => inputHandler(inputText, "password")}
           value={formData.password}
         />
-        <BigButton
-          style={styles.button}
-          onPress={() => {
-            props.navigation.navigate("postAuth");
-            console.log(formData);
-          }}
-        >
+        <BigButton style={styles.button} onPress={requestSignup}>
           Sign Up
         </BigButton>
         <Pressable
