@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Text, StyleSheet, Pressable, Alert } from "react-native";
-// import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 
-import { saveKey, loadToken } from "../services/deviceStorage";
+import { saveKey } from "../services/deviceStorage";
+import storeToken from "../store/actions/storeToken";
 import Http from "../api/kit";
 import Colors from "../theme/Colors";
 import Typography from "../theme/Typography";
@@ -18,12 +19,12 @@ const SignInScreen = (props) => {
     password: "",
   });
 
+  const theStateToken = useSelector((state) => state.storeToken.idToken);
+  const dispatch = useDispatch();
+
   useEffect(() => {
-    // const stateToken = () => {
-    //   let theStateToken = useSelector((state) => state.storeToken.idToken);
-    //   console.log(theStateToken);
-    // };
-  }, []);
+    console.log(theStateToken);
+  }, [theStateToken]);
 
   const inputHandler = (inputText, field) => {
     switch (field) {
@@ -39,6 +40,10 @@ const SignInScreen = (props) => {
     }
   };
 
+  const updateTokenHandler = (token) => {
+    dispatch(storeToken(token));
+  };
+
   const requestSignin = () => {
     Http.post("/api/auth/signin", {
       email: formData.email,
@@ -46,7 +51,8 @@ const SignInScreen = (props) => {
     })
       .then((res) => {
         saveKey("id_token", res.data.token);
-        console.log("Token", loadToken("id_token"));
+        updateTokenHandler(res.data.token);
+        // console.log("Token", loadToken("id_token"));
       })
       .catch((err) => console.error(err));
 
