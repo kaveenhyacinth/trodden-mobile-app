@@ -4,8 +4,17 @@ import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
 import * as Font from "expo-font";
 import { NavigationContainer } from "@react-navigation/native";
+// import { useScreens } from "react-native-screens";
+import { createStore } from "redux";
+import { Provider } from "react-redux";
 
+import rootReducer from "./store/reducers";
 import MainNavigator from "./navigation/MainNavigator";
+
+// useScreens();
+
+// Redux globalized store
+const store = createStore(rootReducer);
 
 const fetchFonts = () => {
   return Font.loadAsync({
@@ -31,9 +40,11 @@ export default function App() {
   }
 
   return (
-    <NavigationContainer>
-      <MainNavigator />
-      <StatusBar style="auto" />
-    </NavigationContainer>
+    <Provider store={store}>
+      <NavigationContainer>
+        <MainNavigator />
+        <StatusBar style="auto" />
+      </NavigationContainer>
+    </Provider>
   );
 }

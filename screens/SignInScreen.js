@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Text, StyleSheet, Pressable, Alert } from "react-native";
+// import { useSelector } from "react-redux";
 
 import { saveKey, loadToken } from "../services/deviceStorage";
 import Http from "../api/kit";
@@ -17,7 +18,12 @@ const SignInScreen = (props) => {
     password: "",
   });
 
-  useEffect(() => console.log(formData), [formData]);
+  useEffect(() => {
+    // const stateToken = () => {
+    //   let theStateToken = useSelector((state) => state.storeToken.idToken);
+    //   console.log(theStateToken);
+    // };
+  }, []);
 
   const inputHandler = (inputText, field) => {
     switch (field) {
