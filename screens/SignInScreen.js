@@ -3,7 +3,7 @@ import { Text, StyleSheet, Pressable, Alert } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 
 import { saveKey } from "../services/deviceStorage";
-import storeToken from "../store/actions/storeToken";
+import { storeToken } from "../store/actions/storeToken";
 import Http from "../api/kit";
 import Colors from "../theme/Colors";
 import Typography from "../theme/Typography";
@@ -23,7 +23,7 @@ const SignInScreen = (props) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log(theStateToken);
+    console.log("Updated Token @UseEffect: " + theStateToken);
   }, [theStateToken]);
 
   const inputHandler = (inputText, field) => {
