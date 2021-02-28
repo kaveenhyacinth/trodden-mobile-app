@@ -103,7 +103,8 @@ const SignUpScreen = (props) => {
           onChangeText={(inputText) => inputHandler(inputText, "password")}
           value={formData.password}
         />
-        <BigButton style={styles.button} onPress={requestSignup}>
+        {/* <BigButton style={styles.button} onPress={requestSignup}> */}
+        <BigButton style={styles.button} onPress={() => props.navigation.navigate("postAuth")}>
           Sign Up
         </BigButton>
         <Pressable

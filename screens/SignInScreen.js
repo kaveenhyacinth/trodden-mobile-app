@@ -18,13 +18,18 @@ const SignInScreen = (props) => {
     email: "",
     password: "",
   });
+  // catch error messages
+  const [inputErrorMessage, setInputErrorMessage] = useState({
+    email: "",
+    password: "",
+  });
 
-  const theStateToken = useSelector((state) => state.storeToken.idToken);
+  const localSignToken = useSelector((state) => state.storeToken.signToken);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log("Updated Token @UseEffect: " + theStateToken);
-  }, [theStateToken]);
+    console.log("Updated Token @UseEffect: " + localSignToken);
+  }, [localSignToken]);
 
   const inputHandler = (inputText, field) => {
     switch (field) {
@@ -44,24 +49,55 @@ const SignInScreen = (props) => {
     dispatch(storeToken(token));
   };
 
-  const requestSignin = () => {
-    Http.post("/api/auth/signin", {
-      email: formData.email,
-      password: formData.password,
-    })
-      .then((res) => {
-        saveKey("id_token", res.data.token);
-        updateTokenHandler(res.data.token);
-        // console.log("Token", loadToken("id_token"));
-      })
-      .catch((err) => console.error(err));
+  const handleError = (error) => {
+    const errorData = error.response.data;
+    const isValidationError = Array.isArray(errorData.result);
+    if (isValidationError) {
+      return errorData.result.map((err) => {
+        // setting email error msg
+        if (err.param === "email")
+          setInputErrorMessage((prevState) => ({
+            ...prevState,
+            email: err.msg,
+          }));
+        // setting password error msg
+        if (err.param === "password")
+          setInputErrorMessage((prevState) => ({
+            ...prevState,
+            password: err.msg,
+          }));
+      });
+    }
+    // if not a validation error
+    return Alert.alert(
+      "Oh My Trod!",
+      errorData.result,
+      [
+        {
+          text: "Okay",
+          style: "destructive",
+        },
+      ],
+      { cancelable: false }
+    );
+  };
 
-    // TODO: => navigation (._.)
-    // Alert.alert("SignIn", res.data.msg, [
-    //   {
-    //     text: "Okay",
-    //   },
-    // ])
+  const requestSignin = async () => {
+    try {
+      // getting sign-in response
+      const response = await Http.post("/api/auth/signin", {
+        email: formData.email,
+        password: formData.password,
+      });
+      if (!response) throw new Error("Something went wrong on our side");
+      // saving refresh token in securestore
+      saveKey("refToken", response.data.result.refToken);
+      //updating global state with new sign token
+      updateTokenHandler(response.data.result.signToken);
+      // TODO: => navigation (._.)
+    } catch (error) {
+      handleError(error);
+    }
   };
 
   return (
@@ -70,7 +106,7 @@ const SignInScreen = (props) => {
         <InputBox
           placeholder="Email"
           style={styles.input}
-          message=""
+          message={inputErrorMessage.email}
           onChangeText={(inputText) => inputHandler(inputText, "email")}
           value={formData.email}
           keyboardType="email-address"
@@ -79,7 +115,7 @@ const SignInScreen = (props) => {
           placeholder="Password"
           style={styles.input}
           secureTextEntry
-          message=""
+          message={inputErrorMessage.password}
           onChangeText={(inputText) => inputHandler(inputText, "password")}
           value={formData.password}
         />
