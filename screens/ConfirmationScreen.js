@@ -1,5 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Text, View, StyleSheet, Pressable, Alert } from "react-native";
+import { saveKey } from "../services/deviceStorage";
+import { useDispatch } from "react-redux";
+import { storeUser } from "../store/actions/storeUser";
+import { storeToken } from "../store/actions/storeToken";
 import Http from "../api/kit";
 import Colors from "../theme/Colors";
 import Typography from "../theme/Typography";
@@ -102,6 +106,56 @@ const ConfirmationScreen = (props) => {
   const isMatchOtp = (otpEntered, otpGenerated) =>
     otpGenerated === otpEntered ? true : false;
 
+  const dispatch = useDispatch();
+  const updateUserStoreHandler = (userData) => {
+    dispatch(storeUser(userData));
+  };
+  const updateTokenStoreHandler = (signToken, refToken) => {
+    dispatch(storeToken(signToken, refToken));
+  };
+
+  const handleError = (error) => {
+    if (!error.response) {
+      return Alert.alert(
+        "Something Went Wrong!",
+        "Don't worry, that was us! Please try again later",
+        [
+          {
+            text: "Okay",
+            style: "destructive",
+          },
+        ],
+        { cancelable: false }
+      );
+    }
+
+    if (error.response.status == 400)
+      return Alert.alert(
+        "Something Went Wrong!",
+        error.response.data.msg,
+        [
+          {
+            text: "Okay",
+            style: "destructive",
+          },
+        ],
+        { cancelable: false }
+      );
+
+    if (error.response.status == 500)
+      return Alert.alert(
+        "Something Went Wrong!",
+        error.response.data.msg,
+        [
+          {
+            text: "Okay",
+            style: "destructive",
+          },
+        ],
+        { cancelable: false }
+      );
+  };
+
   /**
    * Confirm OTP and send activate account request
    * @param {Object} otpInput InputBox array data
@@ -110,6 +164,7 @@ const ConfirmationScreen = (props) => {
    */
   const confirmationHandler = async (otpInput, otpOriginal, signupToken) => {
     const otpEntered = `${otpInput.e1}${otpInput.e2}${otpInput.e3}${otpInput.e4}${otpInput.e5}${otpInput.e6}`;
+
     if (!isMatchOtp(otpEntered, otpOriginal)) {
       return Alert.alert(
         "Varification Failed",
@@ -124,39 +179,29 @@ const ConfirmationScreen = (props) => {
         { cancelable: false }
       );
     }
+
     try {
       setLoading(true);
+
+      // POST activation request
       const response = await Http.post("/api/auth/activate", {
-        signupToken
+        signupToken,
       });
-      console.log("Activated Account:", response.data.result.id);
-      // TODO: Navigate to details
+
+      const signToken = response.data.result.signToken;
+      const refToken = response.data.result.refToken;
+
+      // Update redux stores
+      updateUserStoreHandler(response.data.result);
+      updateTokenStoreHandler(signToken, refToken);
+
+      // Save refresh token in secure store
+      saveKey("refToken", refToken);
+
+      // Navigate to Interest selection
+      props.navigation.replace("selectInterests");
     } catch (error) {
-      console.log("Error Activate:", error.response.status);
-      if (error.response.status == 400)
-        return Alert.alert(
-          "Something Went Wrong!",
-          error.response.data.msg,
-          [
-            {
-              text: "Okay",
-              style: "destructive",
-            },
-          ],
-          { cancelable: false }
-        );
-      if (error.response.status == 500)
-        return Alert.alert(
-          "Something Went Wrong!",
-          error.response.data.msg,
-          [
-            {
-              text: "Okay",
-              style: "destructive",
-            },
-          ],
-          { cancelable: false }
-        );
+      handleError(error);
     } finally {
       setLoading(false);
     }

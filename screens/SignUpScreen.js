@@ -116,9 +116,12 @@ const SignUpScreen = (props) => {
         password: formData.password,
       });
       if (!response) throw new Error("Please try again later");
-      props.navigation.navigate("confirmOTP", {
-        otp: response.data.result.otp,
-        signupToken: response.data.result.signupToken,
+      props.navigation.replace("postAuth", {
+        screen: "confirmOTP",
+        params: {
+          otp: response.data.result.otp,
+          signupToken: response.data.result.signupToken,
+        },
       });
     } catch (error) {
       console.log("Signup Errors:", error.response.data);

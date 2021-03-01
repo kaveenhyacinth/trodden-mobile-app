@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet, FlatList, Alert } from "react-native";
-
+import { useSelector } from "react-redux";
+import Colors from "../theme/Colors"
 import BodyText from "../components/BodyText";
 import InterestGridTile from "../components/InterestGridTile";
 import BigButton from "../components/BigButton";
@@ -9,8 +10,11 @@ import { INTERESTS } from "../data/dummy_data";
 const InterestScreen = (props) => {
   const [selectedInterests, setSelectedInterests] = useState([]);
 
+  const userData = useSelector((state) => state.userStore);
+
   useEffect(() => {
     console.log("selected Ids", selectedInterests);
+    console.log("User Data:", userData);
   }, [selectedInterests]);
 
   const interestSelectionHandler = (id) => {
@@ -29,6 +33,7 @@ const InterestScreen = (props) => {
     return (
       <InterestGridTile
         title={itemData.item.name}
+        imageUrl={itemData.item.path}
         onSelect={() => interestSelectionHandler(itemData.item.id)}
       />
     );
@@ -57,6 +62,7 @@ const InterestScreen = (props) => {
   return (
     <View>
       <FlatList
+        style={styles.list}
         data={INTERESTS}
         renderItem={renderInterests}
         keyExtractor={(item) => item.id}
@@ -83,6 +89,9 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+  list: {
+    backgroundColor: Colors.accent
   },
   button: {
     alignItems: "center",

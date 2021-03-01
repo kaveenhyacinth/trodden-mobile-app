@@ -26,7 +26,9 @@ const OpenScreen = (props) => {
         <BigButtonLight
           style={styles.button}
           onPress={() => {
-            props.navigation.navigate("signIn");
+            props.navigation.navigate("postAuth", {
+              screen: "selectInterests",
+            });
           }}
         >
           Sign in

@@ -26,7 +26,7 @@ const SignInScreen = (props) => {
     password: "",
   });
 
-  const localSignToken = useSelector((state) => state.storeToken.signToken);
+  const localSignToken = useSelector((state) => state.tokenStore.signToken);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -47,8 +47,8 @@ const SignInScreen = (props) => {
     }
   };
 
-  const updateTokenHandler = (token) => {
-    dispatch(storeToken(token));
+  const updateTokenHandler = (signToken, refToken) => {
+    dispatch(storeToken(signToken, refToken));
   };
 
   const handleError = (error) => {
@@ -93,10 +93,16 @@ const SignInScreen = (props) => {
         password: formData.password,
       });
       if (!response) throw new Error("Something went wrong on our side");
+
+      const signToken = response.data.result.signToken;
+      const refToken = response.data.result.refToken;
+
       // saving refresh token in securestore
-      saveKey("refToken", response.data.result.refToken);
+      saveKey("refToken", refToken);
+
       //updating global state with new sign token
-      updateTokenHandler(response.data.result.signToken);
+      updateTokenHandler(signToken, refToken);
+
       // TODO: => navigation (._.)
     } catch (error) {
       handleError(error);

@@ -1,5 +1,6 @@
-export const STORE_TOKEN = "STORE_TOKEN";
+import { STORE_TOKEN } from "../actionTypes";
 
-export const storeToken = (signToken) => {
-  return { type: STORE_TOKEN, payload: { signToken } };
-};
+export const storeToken = (signToken, refToken) => ({
+  type: STORE_TOKEN,
+  payload: { signToken, refToken },
+});
