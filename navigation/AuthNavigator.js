@@ -4,6 +4,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import OpenScreen from "../screens/OpenScreen";
 import SignInScreen from "../screens/SignInScreen";
 import SignUpScreen from "../screens/SignUpScreen";
+import ConfirmationScreen from "../screens/ConfirmationScreen";
 import Colors from "../theme/Colors";
 
 const Stack = createStackNavigator();
@@ -40,6 +41,13 @@ const AuthNavigator = (props) => {
         component={SignInScreen}
         options={{
           title: "Sign In",
+        }}
+      />
+      <Stack.Screen 
+        name="confirmOTP"
+        component={ConfirmationScreen}
+        options= {{
+          title: "Confirm Signup"
         }}
       />
     </Stack.Navigator>

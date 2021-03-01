@@ -11,9 +11,11 @@ import ScreenView from "../components/ScreenView";
 import BodyText from "../components/BodyText";
 import InputBox from "../components/InputBox";
 import BigButton from "../components/BigButton";
+import LoadingButton from "../components/LoadingButton";
 import FormContainer from "../components/FormContainer";
 
 const SignInScreen = (props) => {
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -84,6 +86,7 @@ const SignInScreen = (props) => {
 
   const requestSignin = async () => {
     try {
+      setLoading(true);
       // getting sign-in response
       const response = await Http.post("/api/auth/signin", {
         email: formData.email,
@@ -97,6 +100,8 @@ const SignInScreen = (props) => {
       // TODO: => navigation (._.)
     } catch (error) {
       handleError(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -119,9 +124,14 @@ const SignInScreen = (props) => {
           onChangeText={(inputText) => inputHandler(inputText, "password")}
           value={formData.password}
         />
-        <BigButton style={styles.button} onPress={requestSignin}>
-          Sign In
-        </BigButton>
+        {loading ? (
+          <LoadingButton />
+        ) : (
+          <BigButton style={styles.button} onPress={requestSignin}>
+            Sign In
+          </BigButton>
+        )}
+
         <Pressable
           onPress={() => {
             props.navigation.navigate("signUp");

@@ -3,19 +3,20 @@ import { View, Text, TextInput, StyleSheet } from "react-native";
 
 import Colors from "../theme/Colors";
 
-const InputBox = (props) => {
+const InputBox = React.forwardRef((props, ref) => {
   return (
-    <View style={styles.inputContainer}>
+    <View style={{ ...styles.inputContainer, ...props.containerStyle }}>
       <TextInput
+        ref={ref}
+        blurOnSubmit
         {...props}
         style={{ ...styles.input, ...props.style }}
-        blurOnSubmit
         autoCorrect={false}
       />
       <Text style={styles.message}>{props.message}</Text>
     </View>
   );
-};
+});
 
 const styles = StyleSheet.create({
   inputContainer: {

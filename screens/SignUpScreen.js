@@ -8,10 +8,20 @@ import ScreenView from "../components/ScreenView";
 import BodyText from "../components/BodyText";
 import InputBox from "../components/InputBox";
 import BigButton from "../components/BigButton";
+import LoadingButton from "../components/LoadingButton";
 import FormContainer from "../components/FormContainer";
 
 const SignUpScreen = (props) => {
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    username: "",
+    email: "",
+    password: "",
+  });
+  // catch error messages
+  const [inputErrorMessage, setInputErrorMessage] = useState({
     firstName: "",
     lastName: "",
     username: "",
@@ -33,7 +43,7 @@ const SignUpScreen = (props) => {
         setFormData({ ...formData, username: inputText.toLowerCase() });
         break;
       case "email":
-        setFormData({ ...formData, email: inputText });
+        setFormData({ ...formData, email: inputText.toLowerCase() });
         break;
       case "password":
         setFormData({ ...formData, password: inputText });
@@ -44,23 +54,90 @@ const SignUpScreen = (props) => {
     }
   };
 
-  const requestSignup = () => {
-    Http.post("/api/auth/signup", {
-      firstName: formData.firstName,
-      lastName: formData.lastName,
-      username: formData.username,
-      email: formData.email,
-      password: formData.password,
-    })
-      .then((res) =>
-        Alert.alert("Success!", res.data.msg, [
-          {
-            onPress: () => props.navigation.navigate("postAuth"),
-          },
-          { cancelable: false },
-        ])
-      )
-      .catch((err) => console.error(err));
+  const handleError = (error) => {
+    const errorData = error.response.data;
+    const isValidationError = Array.isArray(errorData.result);
+    if (isValidationError) {
+      return errorData.result.map((err) => {
+        // setting firstname error msg
+        if (err.param === "firstName")
+          setInputErrorMessage((prevState) => ({
+            ...prevState,
+            firstName: err.msg,
+          }));
+        // setting last error msg
+        if (err.param === "lastName")
+          setInputErrorMessage((prevState) => ({
+            ...prevState,
+            lastName: err.msg,
+          }));
+        // setting username error msg
+        if (err.param === "username")
+          setInputErrorMessage((prevState) => ({
+            ...prevState,
+            username: err.msg,
+          }));
+        // setting email error msg
+        if (err.param === "email")
+          setInputErrorMessage((prevState) => ({
+            ...prevState,
+            email: err.msg,
+          }));
+        // setting password error msg
+        if (err.param === "password")
+          setInputErrorMessage((prevState) => ({
+            ...prevState,
+            password: err.msg,
+          }));
+      });
+    }
+    // if not a validation error
+    return Alert.alert(
+      "Oh My Trod!",
+      errorData.msg,
+      [
+        {
+          text: "Okay",
+          style: "destructive",
+        },
+      ],
+      { cancelable: false }
+    );
+  };
+
+  const requestSignup = async () => {
+    try {
+      setLoading(true);
+      const response = await Http.post("/api/auth/signup", {
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        username: formData.username,
+        email: formData.email,
+        password: formData.password,
+      });
+      if (!response) throw new Error("Please try again later");
+      props.navigation.navigate("confirmOTP", {
+        otp: response.data.result.otp,
+        signupToken: response.data.result.signupToken,
+      });
+    } catch (error) {
+      console.log("Signup Errors:", error.response.data);
+      if (!error.response)
+        return Alert.alert(
+          "Something went wrong",
+          "Sorry, it's our fault! Please try again later...",
+          [
+            {
+              text: "Okay",
+              style: "destructive",
+            },
+          ],
+          { cancelable: false }
+        );
+      handleError(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -69,21 +146,21 @@ const SignUpScreen = (props) => {
         <InputBox
           placeholder="First Name"
           style={styles.input}
-          message=""
+          message={inputErrorMessage.firstName}
           onChangeText={(inputText) => inputHandler(inputText, "firstName")}
           value={formData.firstName}
         />
         <InputBox
           placeholder="Last Name"
           style={styles.input}
-          message=""
+          message={inputErrorMessage.lastName}
           onChangeText={(inputText) => inputHandler(inputText, "lastName")}
           value={formData.lastName}
         />
         <InputBox
           placeholder="UserName"
           style={styles.input}
-          message=""
+          message={inputErrorMessage.username}
           onChangeText={(inputText) => inputHandler(inputText, "username")}
           value={formData.username}
         />
@@ -91,7 +168,7 @@ const SignUpScreen = (props) => {
           placeholder="Email"
           style={styles.input}
           keyboardType="email-address"
-          message=""
+          message={inputErrorMessage.email}
           onChangeText={(inputText) => inputHandler(inputText, "email")}
           value={formData.email}
         />
@@ -99,14 +176,18 @@ const SignUpScreen = (props) => {
           placeholder="Password"
           style={styles.input}
           secureTextEntry
-          message=""
+          message={inputErrorMessage.password}
           onChangeText={(inputText) => inputHandler(inputText, "password")}
           value={formData.password}
         />
-        {/* <BigButton style={styles.button} onPress={requestSignup}> */}
-        <BigButton style={styles.button} onPress={() => props.navigation.navigate("postAuth")}>
-          Sign Up
-        </BigButton>
+        {loading ? (
+          <LoadingButton />
+        ) : (
+          <BigButton style={styles.button} onPress={requestSignup}>
+            Sign Up
+          </BigButton>
+        )}
+
         <Pressable
           onPress={() => {
             props.navigation.navigate("signIn");
