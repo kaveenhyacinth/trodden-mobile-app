@@ -1,6 +1,5 @@
 import React from "react";
 import { View, Text, Image, StyleSheet, Dimensions } from "react-native";
-
 import Colors from "../theme/Colors";
 import Typography from "../theme/Typography";
 import ScreenView from "../components/ScreenView";
@@ -33,7 +32,7 @@ const OpenScreen = (props) => {
           style={styles.button}
           onPress={() => {
             props.navigation.navigate("postAuth", {
-              screen: "selectInterests",
+              screen: "signupInfoOne",
             });
           }}
         >

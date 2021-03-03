@@ -2,7 +2,8 @@ import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 
 import Colors from "../theme/Colors";
-import ConfirmationScreen from "../screens/ConfirmationScreen";
+import SignupConfirmationScreen from "../screens/SignUpConfirmationScreen";
+import SignupInfoOneScreen from "../screens/SignUpInfoOneScreen";
 import DetailsScreen from "../screens/DetailsScreen";
 import InterestScreen from "../screens/InterestsScreen";
 
@@ -22,9 +23,16 @@ const PostAuthNavigator = (props) => {
     <Stack.Navigator screenOptions={{ ...defaultStackNavOptions }}>
       <Stack.Screen
         name="confirmOTP"
-        component={ConfirmationScreen}
+        component={SignupConfirmationScreen}
         options={{
           title: "Confirm Signup",
+        }}
+      />
+      <Stack.Screen
+        name="signupInfoOne"
+        component={SignupInfoOneScreen}
+        options={{
+          title: "Tell Us More",
         }}
       />
       {/* <Stack.Screen

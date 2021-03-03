@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Text, StyleSheet, Pressable, Alert } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
-
 import { saveKey } from "../services/deviceStorage";
 import { storeToken } from "../store/actions/storeToken";
 import Http from "../api/kit";
