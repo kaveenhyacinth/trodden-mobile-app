@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet, FlatList, Alert, Dimensions } from "react-native";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { getInterests } from "../store/actions/getInterests";
+import Http from "../api/kit";
 import Colors from "../theme/Colors";
 import Typography from "../theme/Typography";
 import BodyText from "../components/BodyText";
@@ -12,11 +14,33 @@ const InterestScreen = (props) => {
   const [selectedInterests, setSelectedInterests] = useState([]);
 
   const userData = useSelector((state) => state.userStore);
+  const interetsStore = useSelector((state) => state.interestsStore);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log("selected Ids", selectedInterests);
-    console.log("User Data:", userData);
-  }, [selectedInterests]);
+    loadInterests();
+    console.log("userData", userData);
+    console.log("Interests", interetsStore);
+  }, []);
+
+  const loadInterests = async () => {
+    try {
+      await getInterests()(dispatch);
+    } catch (error) {
+      Alert.alert(
+        "Oh My trod!",
+        "Something went wrong. Please try again later",
+        [
+          {
+            text: "I Will",
+            style: "destructive",
+          },
+        ],
+        { cancelable: false }
+      );
+      console.log("Error Happen", error);
+    }
+  };
 
   const interestSelectionHandler = (id) => {
     const prevSelectedInterest = selectedInterests.find(
@@ -59,6 +83,8 @@ const InterestScreen = (props) => {
 
     // TODO: add navigation
   };
+
+  // TODO: handleOnDone
 
   return (
     <View style={styles.screen}>

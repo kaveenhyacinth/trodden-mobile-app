@@ -46,7 +46,7 @@ const PostAuthNavigator = (props) => {
         name="selectInterests"
         component={InterestScreen}
         options={{
-          title: "Interests",
+          title: "Travel Interests",
         }}
       />
     </Stack.Navigator>

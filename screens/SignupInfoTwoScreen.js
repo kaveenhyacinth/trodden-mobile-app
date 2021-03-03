@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet } from "react-native";
+import { useSelector, useDispatch } from "react-redux";
+import { storeUser } from "../store/actions/storeUser";
 import * as ImagePicker from "expo-image-picker";
-import Http from "../api/kit";
 import Colors from "../theme/Colors";
 import Typography from "../theme/Typography";
 import ScreenView from "../components/ScreenView";
 import BigButton from "../components/BigButton";
+import LoadingButton from "../components/LoadingButton";
 import BodyText from "../components/BodyText";
 import ImageUploader from "../components/ImageUploader";
 import InputBox from "../components/InputBox";
@@ -13,15 +15,18 @@ import FormContainer from "../components/FormContainer";
 
 const SignupInfoTwoScreen = (props) => {
   const [loading, setLoading] = useState(false);
+  const [imageFile, setImageFile] = useState({});
   const [formData, setFormData] = useState({
     bio: "",
     occupation: "",
   });
-  const [imageFile, setImageFile] = useState({});
 
-  useEffect(() => console.log(imageFile), [imageFile]);
+  const dispatch = useDispatch();
+  const userStore = useSelector((state) => state.userStore);
 
-  const requestPermission = async () => {
+  useEffect(() => console.log("User Store:", userStore), [userStore]);
+
+  const handleRequestPermission = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
       Alert.alert(
@@ -40,8 +45,8 @@ const SignupInfoTwoScreen = (props) => {
     return true;
   };
 
-  const selectImageHandler = async () => {
-    const hasPermission = await requestPermission();
+  const handleSelectImage = async () => {
+    const hasPermission = await handleRequestPermission();
     if (!hasPermission) {
       return;
     }
@@ -58,7 +63,7 @@ const SignupInfoTwoScreen = (props) => {
     }
   };
 
-  const inputHandler = (inputText, field) => {
+  const handleInput = (inputText, field) => {
     switch (field) {
       case "bio":
         setFormData({ ...formData, bio: inputText });
@@ -71,34 +76,54 @@ const SignupInfoTwoScreen = (props) => {
     }
   };
 
-  // TODO: Move to interests sacreen
-  const uploadImage = async () => {
+  const handleUserStoreUpdate = (userData) => {
+    dispatch(storeUser(userData));
+  };
+
+  const handleOnPressNext = async () => {
     try {
       setLoading(true);
 
+      // Get file type
       const fileType = imageFile.uri.split(".").pop();
 
-      const body = new FormData();
-      body.append("image", {
-        uri: imageFile.uri,
-        name: `image.${fileType}`,
-        type: `image/${fileType}`,
-      });
+      // Prepare image data
+      const userData = {
+        bio: formData.bio,
+        occupation: formData.occupation,
+        ImageDataUri: imageFile.uri,
+        ImageDataName: `image.${fileType}`,
+        ImageDataType: `image/${fileType}`,
+      };
 
-      const response = await Http.post("/image/add", body, {
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      console.log("Image file path", response.data.result);
+      // Update store
+      handleUserStoreUpdate(userData);
 
+      // navigate to interests
+      props.navigation.navigate("selectInterests");
 
+      // Upload image
+      // const body = new FormData();
+      // body.append("image", {
+      //   uri: imageFile.uri,
+      //   name: `image.${fileType}`,
+      //   type: `image/${fileType}`,
+      // });
 
+      // const response = await Http.post("/image/add", body, {
+      //   headers: {
+      //     Accept: "application/json",
+      //     "Content-Type": "multipart/form-data",
+      //   },
+      // });
+      // console.log("Image file path", response.data.result);
+
+      // // Check response success
+      // if (!response) throw new Error("Something wend wrong");
     } catch (error) {
       console.warn(error);
     } finally {
-      console.log("Done!");
+      setLoading(false);
     }
   };
 
@@ -107,33 +132,29 @@ const SignupInfoTwoScreen = (props) => {
       <FormContainer>
         <ImageUploader
           style={styles.imageUploader}
-          onUpload={selectImageHandler}
-          image={formData.imgUrl}
+          onUpload={handleSelectImage}
+          image={imageFile.uri}
         />
         <InputBox
           multiline={true}
           style={styles.inputArea}
           placeholder="Bio"
           message=""
-          onChangeText={(inputText) => inputHandler(inputText, "bio")}
+          onChangeText={(inputText) => handleInput(inputText, "bio")}
         />
         <InputBox
           style={styles.input}
           placeholder="Currently work as ..."
           message=""
-          onChangeText={(inputText) => inputHandler(inputText, "occupation")}
+          onChangeText={(inputText) => handleInput(inputText, "occupation")}
         />
-        <BigButton
-          style={styles.button}
-          // onPress={() => {
-          //   {
-          //     props.navigation.navigate("selectInterests");
-          //   }
-          // }}
-          onPress={uploadImage}
-        >
-          Next
-        </BigButton>
+        {loading ? (
+          <LoadingButton />
+        ) : (
+          <BigButton style={styles.button} onPress={handleOnPressNext}>
+            Next
+          </BigButton>
+        )}
       </FormContainer>
       <View style={{ flexDirection: "row" }}>
         <BodyText style={styles.active}>-</BodyText>

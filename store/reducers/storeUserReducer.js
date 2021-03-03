@@ -11,6 +11,13 @@ const initialState = {
   region: "",
   birthday: "",
   gender: "",
+  bio: "",
+  occupation: "",
+  profileImage: "",
+  interests: [],
+  ImageDataUri: "",
+  ImageDataName: "",
+  ImageDataType: "",
 };
 
 const storeUserReducer = (state = initialState, action) => {
