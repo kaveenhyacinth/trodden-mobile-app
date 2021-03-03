@@ -4,7 +4,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import Colors from "../theme/Colors";
 import SignupConfirmationScreen from "../screens/SignUpConfirmationScreen";
 import SignupInfoOneScreen from "../screens/SignUpInfoOneScreen";
-import DetailsScreen from "../screens/DetailsScreen";
+import SignupInfoTwoScreeen from "../screens/SignupInfoTwoScreen";
 import InterestScreen from "../screens/InterestsScreen";
 
 const Stack = createStackNavigator();
@@ -32,16 +32,16 @@ const PostAuthNavigator = (props) => {
         name="signupInfoOne"
         component={SignupInfoOneScreen}
         options={{
-          title: "Tell Us More",
+          title: "About You",
         }}
       />
-      {/* <Stack.Screen
-        name="aboutYou"
-        component={DetailsScreen}
+      <Stack.Screen
+        name="signupInfoTwo"
+        component={SignupInfoTwoScreeen}
         options={{
           title: "About You",
         }}
-      /> */}
+      />
       <Stack.Screen
         name="selectInterests"
         component={InterestScreen}

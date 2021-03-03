@@ -32,7 +32,7 @@ const OpenScreen = (props) => {
           style={styles.button}
           onPress={() => {
             props.navigation.navigate("postAuth", {
-              screen: "signupInfoOne",
+              screen: "signupInfoTwo",
             });
           }}
         >

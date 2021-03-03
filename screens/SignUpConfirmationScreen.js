@@ -199,7 +199,7 @@ const ConfirmationScreen = (props) => {
       saveKey("refToken", refToken);
 
       // Navigate to Interest selection
-      props.navigation.replace("selectInterests");
+      props.navigation.replace("signupInfoOne");
     } catch (error) {
       handleError(error);
     } finally {
@@ -299,7 +299,6 @@ const ConfirmationScreen = (props) => {
             Confirm
           </BigButton>
         )}
-
         <Pressable onPress={() => {}}>
           <BodyText style={styles.bodyText}>
             If you don’t recieve the OTP

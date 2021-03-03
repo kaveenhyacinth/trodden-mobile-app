@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
-import { View, Text, StyleSheet, Pressable } from "react-native";
-import { useDispatch } from "react-redux";
+import { View, StyleSheet, Alert } from "react-native";
+import { useSelector, useDispatch } from "react-redux";
 import { storeUser } from "../store/actions/storeUser";
-import DatePickerModel from "react-native-modal-datetime-picker";
 import { Picker } from "@react-native-picker/picker";
+import DatePickerModel from "react-native-modal-datetime-picker";
 import Colors from "../theme/Colors";
 import Typography from "../theme/Typography";
 import ScreenView from "../components/ScreenView";
@@ -25,12 +25,15 @@ const SignupInfoOneScreen = (props) => {
   const [birthdateInput, setBirthdateInput] = useState();
   const [birthdateOutput, setBirthdateOutput] = useState();
   const [isDatePickerVisible, setiIsDatePickerVisible] = useState(false);
-  const [genderInput, setGenderInput] = useState("");
+  const [genderInput, setGenderInput] = useState();
   //#endregion
 
+  const store = useSelector((state) => state.userStore);
+
   useEffect(() => {
-    console.log("CountryCode:", countrycodeInput);
-  }, []);
+    console.log("User Store:", store);
+  }, [store]);
+
   const datePickInput = useRef();
 
   //#region Input Handles
@@ -73,29 +76,67 @@ const SignupInfoOneScreen = (props) => {
   };
   //#endregion
 
+  //#region Update Handles
   const dispatch = useDispatch();
   const updateUserStore = (userData) => {
     dispatch(storeUser(userData));
   };
+  //#endregion
 
+  // #region Submit Handles
   const handleOnSubmitNext = (
-    countrycodeInput,
+    countryCodeInput,
     contactInput,
     regionInput,
     countryInput,
     birthdateInput,
     genderInput
   ) => {
-    const userData = {
-      contact: `${countrycodeInput}${contactInput}`,
-      country: countryInput,
-      region: regionInput,
-      birthday: birthdateInput,
-      gender: genderInput,
-    };
-    updateUserStore(userData);
-    console.log("User Data", userData);
+    try {
+      setLoading(true);
+      const isValid =
+        countryCodeInput &&
+        contactInput &&
+        regionInput &&
+        countryInput &&
+        birthdateInput &&
+        genderInput;
+      console.log("Validity:", isValid);
+      if (!isValid) throw new Error("Don't leave your information empty!");
+
+      console.log("Age", new Date().getFullYear() - birthdateInput.getFullYear());
+      const age = new Date().getFullYear() - birthdateInput.getFullYear();
+
+      if(age < 18) throw new Error("You should be at least 18 years old");
+
+      const userData = {
+        contact: `${countrycodeInput}${contactInput}`,
+        country: countryInput,
+        region: regionInput,
+        birthday: birthdateInput,
+        gender: genderInput,
+      };
+
+      updateUserStore(userData);
+
+      props.navigation.navigate("signupInfoTwo");
+    } catch (error) {
+      Alert.alert(
+        "Oh My Trod!",
+        error.message,
+        [
+          {
+            text: "Sure",
+            style: "destructive",
+          },
+        ],
+        { cancelable: false }
+      );
+    } finally {
+      setLoading(false);
+    }
   };
+  //#endregion
 
   return (
     <ScreenView style={styles.screen}>
@@ -131,32 +172,39 @@ const SignupInfoOneScreen = (props) => {
         <View style={styles.genderPicker}>
           <Picker
             selectedValue={genderInput}
-            onValueChange={(itemValue, itemIndex) =>
-              handleGenderInput(itemValue, itemIndex)
-            }
+            onValueChange={(itemValue, itemIndex) => setGenderInput(itemValue)}
           >
+            <Picker.Item label="--Select--" value={undefined} />
             <Picker.Item label="Male" value="male" />
             <Picker.Item label="Female" value="female" />
             <Picker.Item label="Other" value="other" />
           </Picker>
         </View>
-        <BigButton
-          style={styles.button}
-          onPress={() =>
-            handleOnSubmitNext(
-              countrycodeInput,
-              contactInput,
-              regionInput,
-              countryInput,
-              birthdateInput,
-              genderInput
-            )
-          }
-        >
-          Next
-        </BigButton>
+        {loading ? (
+          <LoadingButton />
+        ) : (
+          <BigButton
+            style={styles.button}
+            onPress={() =>
+              handleOnSubmitNext(
+                countrycodeInput,
+                contactInput,
+                regionInput,
+                countryInput,
+                birthdateInput,
+                genderInput
+              )
+            }
+          >
+            Next
+          </BigButton>
+        )}
       </FormContainer>
-      <BodyText style={styles.next}>1/3</BodyText>
+      <View style={{ flexDirection: "row" }}>
+        <BodyText style={styles.active}>-</BodyText>
+        <BodyText style={styles.next}>-</BodyText>
+        <BodyText style={styles.next}>-</BodyText>
+      </View>
     </ScreenView>
   );
 };
@@ -185,9 +233,21 @@ const styles = StyleSheet.create({
     marginTop: 5,
     marginBottom: 20,
   },
+  active: {
+    ...Typography.bodyText,
+    alignItems: "flex-end",
+    backgroundColor: Colors.primary,
+    height: 3,
+    width: 20,
+    marginHorizontal: 3,
+  },
   next: {
     ...Typography.bodyText,
     alignItems: "flex-end",
+    backgroundColor: Colors.outline,
+    height: 3,
+    width: 20,
+    marginHorizontal: 3,
   },
 });
 

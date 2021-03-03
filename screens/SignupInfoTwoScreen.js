@@ -1,21 +1,25 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet } from "react-native";
+import { View, StyleSheet } from "react-native";
 import * as ImagePicker from "expo-image-picker";
-
+import Http from "../api/kit";
+import Colors from "../theme/Colors";
+import Typography from "../theme/Typography";
 import ScreenView from "../components/ScreenView";
 import BigButton from "../components/BigButton";
+import BodyText from "../components/BodyText";
 import ImageUploader from "../components/ImageUploader";
 import InputBox from "../components/InputBox";
 import FormContainer from "../components/FormContainer";
 
-const DetailsScreen = (props) => {
+const SignupInfoTwoScreen = (props) => {
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    imgUrl: null,
     bio: "",
     occupation: "",
   });
+  const [imageFile, setImageFile] = useState({});
 
-  useEffect(() => console.log(formData), [formData]);
+  useEffect(() => console.log(imageFile), [imageFile]);
 
   const requestPermission = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -23,7 +27,13 @@ const DetailsScreen = (props) => {
       Alert.alert(
         "Insufficient Permissions",
         "You need to grant camera roll permission to proceed",
-        [{ text: "Okay" }]
+        [
+          {
+            text: "Re-enter",
+            style: "destructive",
+          },
+        ],
+        { cancelable: false }
       );
       return false;
     }
@@ -35,6 +45,7 @@ const DetailsScreen = (props) => {
     if (!hasPermission) {
       return;
     }
+
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
@@ -42,10 +53,8 @@ const DetailsScreen = (props) => {
       quality: 1,
     });
 
-    console.log(result);
-
     if (!result.cancelled) {
-      setFormData({ ...formData, imgUrl: result.uri });
+      setImageFile((prevState) => ({ ...prevState, ...result }));
     }
   };
 
@@ -57,9 +66,39 @@ const DetailsScreen = (props) => {
       case "occupation":
         setFormData({ ...formData, occupation: inputText });
         break;
-
       default:
         break;
+    }
+  };
+
+  // TODO: Move to interests sacreen
+  const uploadImage = async () => {
+    try {
+      setLoading(true);
+
+      const fileType = imageFile.uri.split(".").pop();
+
+      const body = new FormData();
+      body.append("image", {
+        uri: imageFile.uri,
+        name: `image.${fileType}`,
+        type: `image/${fileType}`,
+      });
+
+      const response = await Http.post("/image/add", body, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      console.log("Image file path", response.data.result);
+
+
+
+    } catch (error) {
+      console.warn(error);
+    } finally {
+      console.log("Done!");
     }
   };
 
@@ -86,15 +125,21 @@ const DetailsScreen = (props) => {
         />
         <BigButton
           style={styles.button}
-          onPress={() => {
-            {
-              props.navigation.navigate("selectInterests");
-            }
-          }}
+          // onPress={() => {
+          //   {
+          //     props.navigation.navigate("selectInterests");
+          //   }
+          // }}
+          onPress={uploadImage}
         >
           Next
         </BigButton>
       </FormContainer>
+      <View style={{ flexDirection: "row" }}>
+        <BodyText style={styles.active}>-</BodyText>
+        <BodyText style={styles.active}>-</BodyText>
+        <BodyText style={styles.next}>-</BodyText>
+      </View>
     </ScreenView>
   );
 };
@@ -114,6 +159,22 @@ const styles = StyleSheet.create({
     marginTop: 5,
     marginBottom: 20,
   },
+  active: {
+    ...Typography.bodyText,
+    alignItems: "flex-end",
+    backgroundColor: Colors.primary,
+    height: 3,
+    width: 20,
+    marginHorizontal: 3,
+  },
+  next: {
+    ...Typography.bodyText,
+    alignItems: "flex-end",
+    backgroundColor: Colors.outline,
+    height: 3,
+    width: 20,
+    marginHorizontal: 3,
+  },
 });
 
-export default DetailsScreen;
+export default SignupInfoTwoScreen;
