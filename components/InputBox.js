@@ -26,6 +26,7 @@ const styles = StyleSheet.create({
   input: {
     height: 50,
     borderColor: Colors.outline,
+    borderRadius: 5,
     borderWidth: 1,
     paddingHorizontal: 10,
   },
