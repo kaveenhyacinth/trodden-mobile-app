@@ -12,7 +12,7 @@ const CountryPicker = (props) => {
       renderFlagButton={(props) => (
         <InputBox
           onFocus={props.onOpen}
-          placeholder="--select country--"
+          placeholder="In which country do you live?"
           value={value}
         />
       )}

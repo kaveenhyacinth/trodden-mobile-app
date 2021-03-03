@@ -6,6 +6,11 @@ const initialState = {
   lastName: "",
   username: "",
   email: "",
+  contact: "",
+  country: "",
+  region: "",
+  birthday: "",
+  gender: "",
 };
 
 const storeUserReducer = (state = initialState, action) => {
@@ -13,11 +18,7 @@ const storeUserReducer = (state = initialState, action) => {
     case STORE_USER:
       return {
         ...state,
-        id: action.payload.id,
-        firstName: action.payload.firstName,
-        lastName: action.payload.lastName,
-        username: action.payload.username,
-        email: action.payload.email,
+        ...action.payload,
       };
     default:
       return state;

@@ -26,7 +26,7 @@ const CallingCodePicker = (props) => {
       <InputBox
         style={styles.inputBoxNumber}
         containerStyle={styles.inputNumber}
-        placeholder="Contact number"
+        placeholder="Enter you contact number here"
         value={props.inputValue}
         onChangeText={props.onChangeText}
         keyboardType="number-pad"
