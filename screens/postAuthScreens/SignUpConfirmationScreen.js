@@ -1,18 +1,18 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Text, View, StyleSheet, Pressable, Alert } from "react-native";
-import { saveKey } from "../services/deviceStorage";
+import { Save } from "../../services/deviceStorage";
 import { useDispatch } from "react-redux";
-import { storeUser } from "../store/actions/storeUser";
-import { storeToken } from "../store/actions/storeToken";
-import Http from "../api/kit";
-import Colors from "../theme/Colors";
-import Typography from "../theme/Typography";
-import ScreenView from "../components/ScreenView";
-import BodyText from "../components/BodyText";
-import InputBox from "../components/InputBox";
-import BigButton from "../components/BigButton";
-import LoadingButton from "../components/LoadingButton";
-import FormContainer from "../components/FormContainer";
+import { storeUser } from "../../store/actions/storeUser";
+import { storeToken } from "../../store/actions/storeToken";
+import Http from "../../api/kit";
+import Colors from "../../theme/Colors";
+import Typography from "../../theme/Typography";
+import ScreenView from "../../components/ScreenView";
+import BodyText from "../../components/BodyText";
+import InputBox from "../../components/InputBox";
+import BigButton from "../../components/BigButton";
+import LoadingButton from "../../components/LoadingButton";
+import FormContainer from "../../components/FormContainer";
 
 const ConfirmationScreen = (props) => {
   // Store loading state
@@ -196,7 +196,7 @@ const ConfirmationScreen = (props) => {
       updateTokenStoreHandler(signToken, refToken);
 
       // Save refresh token in secure store
-      saveKey("refToken", refToken);
+      Save("refToken", refToken);
 
       // Navigate to Interest selection
       props.navigation.replace("signupInfoOne");

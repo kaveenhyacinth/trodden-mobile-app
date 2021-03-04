@@ -2,10 +2,10 @@ import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 
 import Colors from "../theme/Colors";
-import SignupConfirmationScreen from "../screens/SignUpConfirmationScreen";
-import SignupInfoOneScreen from "../screens/SignUpInfoOneScreen";
-import SignupInfoTwoScreeen from "../screens/SignupInfoTwoScreen";
-import InterestScreen from "../screens/InterestsScreen";
+import SignupConfirmationScreen from "../screens/postAuthScreens/SignUpConfirmationScreen";
+import SignupInfoOneScreen from "../screens/postAuthScreens/SignUpInfoOneScreen";
+import SignupInfoTwoScreeen from "../screens/postAuthScreens/SignUpInfoTwoScreen";
+import SignUpInterestScreen from "../screens/postAuthScreens/SignUpInterestsScreen";
 
 const Stack = createStackNavigator();
 
@@ -44,7 +44,7 @@ const PostAuthNavigator = (props) => {
       />
       <Stack.Screen
         name="selectInterests"
-        component={InterestScreen}
+        component={SignUpInterestScreen}
         options={{
           title: "Travel Interests",
         }}

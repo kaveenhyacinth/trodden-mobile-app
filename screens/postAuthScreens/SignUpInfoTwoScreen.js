@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
-import { storeUser } from "../store/actions/storeUser";
+import { storeUser } from "../../store/actions/storeUser";
 import * as ImagePicker from "expo-image-picker";
-import Colors from "../theme/Colors";
-import Typography from "../theme/Typography";
-import ScreenView from "../components/ScreenView";
-import BigButton from "../components/BigButton";
-import LoadingButton from "../components/LoadingButton";
-import BodyText from "../components/BodyText";
-import ImageUploader from "../components/ImageUploader";
-import InputBox from "../components/InputBox";
-import FormContainer from "../components/FormContainer";
+import Colors from "../../theme/Colors";
+import Typography from "../../theme/Typography";
+import ScreenView from "../../components/ScreenView";
+import BigButton from "../../components/BigButton";
+import LoadingButton from "../../components/LoadingButton";
+import BodyText from "../../components/BodyText";
+import ImageUploader from "../../components/ImageUploader";
+import InputBox from "../../components/InputBox";
+import FormContainer from "../../components/FormContainer";
 
 const SignupInfoTwoScreen = (props) => {
   const [loading, setLoading] = useState(false);

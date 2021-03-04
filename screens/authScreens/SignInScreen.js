@@ -1,36 +1,39 @@
 import React, { useState, useEffect } from "react";
 import { Text, StyleSheet, Pressable, Alert } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
-import { saveKey } from "../services/deviceStorage";
-import { storeToken } from "../store/actions/storeToken";
-import Http from "../api/kit";
-import Colors from "../theme/Colors";
-import Typography from "../theme/Typography";
-import ScreenView from "../components/ScreenView";
-import BodyText from "../components/BodyText";
-import InputBox from "../components/InputBox";
-import BigButton from "../components/BigButton";
-import LoadingButton from "../components/LoadingButton";
-import FormContainer from "../components/FormContainer";
+import { Save, Fetch } from "../../services/deviceStorage";
+import { storeToken } from "../../store/actions/storeToken";
+import Http from "../../api/kit";
+import Colors from "../../theme/Colors";
+import Typography from "../../theme/Typography";
+import ScreenView from "../../components/ScreenView";
+import BodyText from "../../components/BodyText";
+import InputBox from "../../components/InputBox";
+import BigButton from "../../components/BigButton";
+import LoadingButton from "../../components/LoadingButton";
+import FormContainer from "../../components/FormContainer";
 
 const SignInScreen = (props) => {
+  //#region Local State
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
-  // catch error messages
   const [inputErrorMessage, setInputErrorMessage] = useState({
     email: "",
     password: "",
   });
+  //#endregion
 
-  const localSignToken = useSelector((state) => state.tokenStore.signToken);
+  const localRefToken = useSelector((state) => state.tokenStore.signToken);
+  const presistentRefToken = Fetch("refToken")
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log("Updated Token @UseEffect: " + localSignToken);
-  }, [localSignToken]);
+    console.log("ReduxStore Token: " + localRefToken);
+    console.log("SecureStore Token: " + presistentRefToken);
+  }, [localRefToken, presistentRefToken]);
 
   const inputHandler = (inputText, field) => {
     switch (field) {
@@ -97,7 +100,7 @@ const SignInScreen = (props) => {
       const refToken = response.data.result.refToken;
 
       // saving refresh token in securestore
-      saveKey("refToken", refToken);
+      Save("refToken", refToken);
 
       //updating global state with new sign token
       updateTokenHandler(signToken, refToken);

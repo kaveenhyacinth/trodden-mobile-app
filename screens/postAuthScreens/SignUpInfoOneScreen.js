@@ -1,19 +1,19 @@
 import React, { useState, useEffect, useRef } from "react";
 import { View, StyleSheet, Alert } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
-import { storeUser } from "../store/actions/storeUser";
+import { storeUser } from "../../store/actions/storeUser";
 import { Picker } from "@react-native-picker/picker";
 import DatePickerModel from "react-native-modal-datetime-picker";
-import Colors from "../theme/Colors";
-import Typography from "../theme/Typography";
-import ScreenView from "../components/ScreenView";
-import BodyText from "../components/BodyText";
-import InputBox from "../components/InputBox";
-import CountryPicker from "../components/CountryPicker";
-import CallingCodePicker from "../components/CallingCodePicker";
-import BigButton from "../components/BigButton";
-import LoadingButton from "../components/LoadingButton";
-import FormContainer from "../components/FormContainer";
+import Colors from "../../theme/Colors";
+import Typography from "../../theme/Typography";
+import ScreenView from "../../components/ScreenView";
+import BodyText from "../../components/BodyText";
+import InputBox from "../../components/InputBox";
+import CountryPicker from "../../components/CountryPicker";
+import CallingCodePicker from "../../components/CallingCodePicker";
+import BigButton from "../../components/BigButton";
+import LoadingButton from "../../components/LoadingButton";
+import FormContainer from "../../components/FormContainer";
 
 const SignupInfoOneScreen = (props) => {
   //#region Local State
@@ -104,10 +104,13 @@ const SignupInfoOneScreen = (props) => {
       console.log("Validity:", isValid);
       if (!isValid) throw new Error("Don't leave your information empty!");
 
-      console.log("Age", new Date().getFullYear() - birthdateInput.getFullYear());
+      console.log(
+        "Age",
+        new Date().getFullYear() - birthdateInput.getFullYear()
+      );
       const age = new Date().getFullYear() - birthdateInput.getFullYear();
 
-      if(age < 18) throw new Error("You should be at least 18 years old");
+      if (age < 18) throw new Error("You should be at least 18 years old");
 
       const userData = {
         contact: `${countrycodeInput}${contactInput}`,
@@ -172,7 +175,9 @@ const SignupInfoOneScreen = (props) => {
         <View style={styles.genderPicker}>
           <Picker
             selectedValue={genderInput}
-            onValueChange={(itemValue, itemIndex) => setGenderInput(itemValue)}
+            onValueChange={(itemValue, itemIndex) =>
+              handleGenderInput(itemValue, itemIndex)
+            }
           >
             <Picker.Item label="--Select--" value={undefined} />
             <Picker.Item label="Male" value="male" />

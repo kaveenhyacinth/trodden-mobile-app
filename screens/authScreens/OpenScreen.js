@@ -1,10 +1,10 @@
 import React from "react";
 import { View, Text, Image, StyleSheet, Dimensions } from "react-native";
-import Colors from "../theme/Colors";
-import Typography from "../theme/Typography";
-import ScreenView from "../components/ScreenView";
-import BigButton from "../components/BigButton";
-import BigButtonLight from "../components/BigButtonLight";
+import Colors from "../../theme/Colors";
+import Typography from "../../theme/Typography";
+import ScreenView from "../../components/ScreenView";
+import BigButton from "../../components/BigButton";
+import BigButtonLight from "../../components/BigButtonLight";
 
 const OpenScreen = (props) => {
   return (
@@ -15,7 +15,7 @@ const OpenScreen = (props) => {
       </View>
       <View style={styles.imageContainer}>
         <Image
-          source={require("../assets/openScreenImage.png")}
+          source={require("../../assets/openScreenImage.png")}
           style={styles.image}
         />
       </View>
@@ -31,9 +31,10 @@ const OpenScreen = (props) => {
         <BigButtonLight
           style={styles.button}
           onPress={() => {
-            props.navigation.navigate("postAuth", {
-              screen: "signupInfoTwo",
-            });
+            // props.navigation.navigate("postAuth", {
+            //   screen: "signupInfoTwo",
+            // });
+            props.navigation.navigate("signIn");
           }}
         >
           Sign in
@@ -61,7 +62,7 @@ const styles = StyleSheet.create({
   quote: {
     ...Typography.bodyTextBold,
     color: "#999",
-    fontSize: 14
+    fontSize: 14,
   },
   imageContainer: {
     height: Dimensions.get("window").height * 0.4,
@@ -71,7 +72,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     alignItems: "center",
     justifyContent: "center",
-    
   },
   image: {
     width: "100%",
