@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet, FlatList, Alert, Dimensions } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
-import { getInterests } from "../../store/actions/getInterests";
-import Http from "../../api/kit";
-import Colors from "../../theme/Colors";
-import Typography from "../../theme/Typography";
-import BodyText from "../../components/BodyText";
-import InterestGridTile from "../../components/InterestGridTile";
-import BigButton from "../../components/BigButton";
-import { INTERESTS } from "../../data/dummy_data";
+import { getInterests } from "../store/actions/getInterests";
+import Http from "../api/kit";
+import Colors from "../theme/Colors";
+import Typography from "../theme/Typography";
+import BodyText from "../components/BodyText";
+import InterestGridTile from "../components/InterestGridTile";
+import BigButton from "../components/BigButton";
+import { INTERESTS } from "../data/dummy_data";
 
 const InterestScreen = (props) => {
   const [selectedInterests, setSelectedInterests] = useState([]);

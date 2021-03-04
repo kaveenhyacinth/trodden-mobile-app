@@ -1,10 +1,10 @@
 import React from "react";
 import { View, Text, Image, StyleSheet, Dimensions } from "react-native";
-import Colors from "../../theme/Colors";
-import Typography from "../../theme/Typography";
-import ScreenView from "../../components/ScreenView";
-import BigButton from "../../components/BigButton";
-import BigButtonLight from "../../components/BigButtonLight";
+import Colors from "../theme/Colors";
+import Typography from "../theme/Typography";
+import ScreenView from "../components/ScreenView";
+import BigButton from "../components/BigButton";
+import BigButtonLight from "../components/BigButtonLight";
 
 const OpenScreen = (props) => {
   return (
@@ -15,7 +15,7 @@ const OpenScreen = (props) => {
       </View>
       <View style={styles.imageContainer}>
         <Image
-          source={require("../../assets/openScreenImage.png")}
+          source={require("../assets/openScreenImage.png")}
           style={styles.image}
         />
       </View>
@@ -34,7 +34,9 @@ const OpenScreen = (props) => {
             // props.navigation.navigate("postAuth", {
             //   screen: "signupInfoTwo",
             // });
-            props.navigation.navigate("signIn");
+            props.navigation.replace("core", {
+              screen: "Home",
+            });
           }}
         >
           Sign in

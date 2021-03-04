@@ -7,7 +7,6 @@ import { NavigationContainer } from "@react-navigation/native";
 // import { useScreens } from "react-native-screens";
 import { createStore } from "redux";
 import { Provider } from "react-redux";
-
 import rootReducer from "./store/reducers/rootReducer";
 import MainNavigator from "./navigation/MainNavigator";
 

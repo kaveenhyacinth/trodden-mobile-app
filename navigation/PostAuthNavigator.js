@@ -1,11 +1,10 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-
 import Colors from "../theme/Colors";
-import SignupConfirmationScreen from "../screens/postAuthScreens/SignUpConfirmationScreen";
-import SignupInfoOneScreen from "../screens/postAuthScreens/SignUpInfoOneScreen";
-import SignupInfoTwoScreeen from "../screens/postAuthScreens/SignUpInfoTwoScreen";
-import SignUpInterestScreen from "../screens/postAuthScreens/SignUpInterestsScreen";
+import SignupConfirmationScreen from "../screens/SignUpConfirmationScreen";
+import SignupInfoOneScreen from "../screens/SignUpInfoOneScreen";
+import SignupInfoTwoScreeen from "../screens/SignUpInfoTwoScreen";
+import SignUpInterestScreen from "../screens/SignUpInterestsScreen";
 
 const Stack = createStackNavigator();
 

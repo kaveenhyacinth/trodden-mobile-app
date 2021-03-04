@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { Text, StyleSheet, Pressable, Alert } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
-import { Save, Fetch } from "../../services/deviceStorage";
-import { storeToken } from "../../store/actions/storeToken";
-import Http from "../../api/kit";
-import Colors from "../../theme/Colors";
-import Typography from "../../theme/Typography";
-import ScreenView from "../../components/ScreenView";
-import BodyText from "../../components/BodyText";
-import InputBox from "../../components/InputBox";
-import BigButton from "../../components/BigButton";
-import LoadingButton from "../../components/LoadingButton";
-import FormContainer from "../../components/FormContainer";
+import { Save, Fetch } from "../services/deviceStorage";
+import { storeToken } from "../store/actions/storeToken";
+import Http from "../api/kit";
+import Colors from "../theme/Colors";
+import Typography from "../theme/Typography";
+import ScreenView from "../components/ScreenView";
+import BodyText from "../components/BodyText";
+import InputBox from "../components/InputBox";
+import BigButton from "../components/BigButton";
+import LoadingButton from "../components/LoadingButton";
+import FormContainer from "../components/FormContainer";
 
 const SignInScreen = (props) => {
   //#region Local State
@@ -39,7 +39,7 @@ const SignInScreen = (props) => {
     switch (field) {
       case "email":
         setFormData({ ...formData, email: inputText });
-        break;
+        bre
       case "password":
         setFormData({ ...formData, password: inputText });
         break;
