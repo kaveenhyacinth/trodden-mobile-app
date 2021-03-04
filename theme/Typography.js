@@ -1,35 +1,42 @@
 import Colors from "./Colors";
 
 export default {
-  displayHeavy: {
+  trodden: {
     fontFamily: "comfortaa-bold",
     fontSize: 36,
+    letterSpacing: 1,
+    marginVertical: 10,
+  },
+  displayHeavy: {
+    fontFamily: "roboto-black",
+    fontSize: 36,
+    letterSpacing: 1,
     marginVertical: 10,
   },
   displayLight: {
-    fontFamily: "comfortaa-light",
+    fontFamily: "roboto-regular",
     fontSize: 36,
     marginVertical: 10,
     color: Colors.text,
   },
   title: {
-    fontFamily: "comfortaa-bold",
+    fontFamily: "roboto-medium",
     fontSize: 24,
     marginVertical: 10,
     color: Colors.text,
   },
   bodyText: {
-    fontFamily: "open-sans",
+    fontFamily: "roboto-regular",
     fontSize: 16,
     color: Colors.text,
   },
   bodyTextLight: {
-    fontFamily: "open-sans-light",
+    fontFamily: "roboto-light",
     fontSize: 16,
     color: Colors.text,
   },
   bodyTextBold: {
-    fontFamily: "open-sans-semi-bold",
+    fontFamily: "roboto-bold",
     fontSize: 16,
     color: Colors.text,
   },

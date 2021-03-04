@@ -5,8 +5,7 @@ import Colors from "../theme/Colors";
 import ExploreNavigation from "./ExploreNavigation";
 import TribeNavigation from "./TribeNavigation";
 import ProfileNavigation from "./ProfileStackNavigation";
-import HomeScreen from "../screens/core/HomeScreen";
-import ProfileScreen from "../screens/core/ProfileScreen";
+import HomeNavigation from "./HomeNavigation";
 import NewPostScreen from "../screens/core/NewPostScreen";
 
 const Tab = createBottomTabNavigator();
@@ -33,7 +32,7 @@ const CoreNavigator = (props) => {
     >
       <Tab.Screen
         name={"Home"}
-        component={HomeScreen}
+        component={HomeNavigation}
         options={{
           tabBarIcon: (tabInfo) => renderIcIcons(tabInfo)("home", 30),
         }}

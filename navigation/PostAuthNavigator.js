@@ -1,6 +1,7 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import Colors from "../theme/Colors";
+import Typography from "../theme/Typography"
 import SignupConfirmationScreen from "../screens/SignUpConfirmationScreen";
 import SignupInfoOneScreen from "../screens/SignUpInfoOneScreen";
 import SignupInfoTwoScreeen from "../screens/SignUpInfoTwoScreen";
@@ -13,8 +14,10 @@ const defaultStackNavOptions = {
     backgroundColor: Colors.accent,
   },
   headerTitleStyle: {
-    fontFamily: "comfortaa-bold",
+    fontFamily: Typography.displayHeavy.fontFamily,
+    letterSpacing: Typography.displayHeavy.letterSpacing,
   },
+  headerTintColor: Colors.outline,
 };
 
 const PostAuthNavigator = (props) => {

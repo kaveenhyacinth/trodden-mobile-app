@@ -5,7 +5,7 @@ import Typography from "../theme/Typography";
 
 const BodyText = (props) => {
   return (
-    <Text style={{ ...styles.title, ...props.style }}>{props.children}</Text>
+    <Text {...props} style={{ ...styles.title, ...props.style }}>{props.children}</Text>
   );
 };
 

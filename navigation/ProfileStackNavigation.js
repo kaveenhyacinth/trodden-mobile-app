@@ -1,15 +1,14 @@
 import React from "react";
-import { View, Text, Dimensions } from "react-native";
+import { ScrollView } from "react-native";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import Colors from "../theme/Colors";
+import Typography from "../theme/Typography";
 import NomadsExplore from "../screens/misc/NomadsExploreScreen";
 import CaravansExplore from "../screens/misc/CaravansExploreScreen";
 import BlazeScreen from "../screens/misc/BlazesScreen";
-import { color } from "react-native-reanimated";
-
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("screen");
+import ProfileHeader from "../components/ProfileHeader";
 
 const Stack = createStackNavigator();
 const Tab = createMaterialTopTabNavigator();
@@ -23,14 +22,16 @@ const defaultStackNavOptions = {
     backgroundColor: Colors.accent,
   },
   headerTitleStyle: {
-    fontFamily: "comfortaa-bold",
+    fontFamily: Typography.displayHeavy.fontFamily,
+    letterSpacing: Typography.displayHeavy.letterSpacing,
   },
+  headerTintColor: Colors.info,
 };
 
 const defaultTabOptions = {
   activeTintColor: Colors.primary,
   inactiveTintColor: Colors.outline,
-  labelStyle: { fontFamily: "comfortaa-bold" },
+  labelStyle: { fontFamily: Typography.title },
   tabStyle: { backgroundColor: Colors.accent },
   showIcon: true,
   showLabel: false,
@@ -38,35 +39,8 @@ const defaultTabOptions = {
 
 const ExploreNavigator = (props) => {
   return (
-    <React.Fragment>
-      <View
-        style={{
-          height: SCREEN_HEIGHT * 0.2,
-          width: SCREEN_WIDTH,
-          flexDirection: "row",
-        }}
-      >
-        <View
-          style={{
-            width: SCREEN_WIDTH * 0.4,
-            justifyContent: "center",
-            alignItems: "center",
-            backgroundColor: Colors.accent,
-          }}
-        >
-          <View
-            style={{
-              width: SCREEN_WIDTH * 0.3,
-              height: SCREEN_WIDTH * 0.3,
-              borderRadius: SCREEN_WIDTH * 0.15,
-              backgroundColor: Colors.primary,
-            }}
-          ></View>
-        </View>
-        <View style={{ flex: 1, backgroundColor: Colors.accent }}>
-          <Text>Kaveen Hyacinth</Text>
-        </View>
-      </View>
+    <ScrollView>
+      <ProfileHeader />
       <Tab.Navigator
         tabBarOptions={{
           ...defaultTabOptions,
@@ -88,16 +62,16 @@ const ExploreNavigator = (props) => {
             tabBarIcon: (tabInfo) => renderFaIcons(tabInfo)("briefcase", 20),
           }}
         />
-        <Tab.Screen
+        {/* <Tab.Screen
           name="nomads"
           component={NomadsExplore}
           options={{
             title: "Settings",
             tabBarIcon: (tabInfo) => renderFaIcons(tabInfo)("cog", 20),
           }}
-        />
+        /> */}
       </Tab.Navigator>
-    </React.Fragment>
+    </ScrollView>
   );
 };
 

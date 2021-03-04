@@ -3,5 +3,6 @@ export default {
   accent: "#F7FDF7",
   text: "#131915",
   white: "#ffffff",
-  outline: "rgba(0,0,0,0.2)"
+  outline: "rgba(0,0,0,0.2)",
+  info: "rgba(0,0,0,0.5)"
 };

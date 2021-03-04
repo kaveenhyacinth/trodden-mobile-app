@@ -17,11 +17,12 @@ const store = createStore(rootReducer);
 
 const fetchFonts = () => {
   return Font.loadAsync({
-    "comfortaa-light": require("./assets/fonts/Comfortaa-Light.ttf"),
+    "roboto-light": require("./assets/fonts/Roboto-Light.ttf"),
+    "roboto-regular": require("./assets/fonts/Roboto-Regular.ttf"),
+    "roboto-medium": require("./assets/fonts/Roboto-Medium.ttf"),
+    "roboto-bold": require("./assets/fonts/Roboto-Bold.ttf"),
+    "roboto-black": require("./assets/fonts/Roboto-Black.ttf"),
     "comfortaa-bold": require("./assets/fonts/Comfortaa-Bold.ttf"),
-    "open-sans-light": require("./assets/fonts/OpenSans-Light.ttf"),
-    "open-sans": require("./assets/fonts/OpenSans-Regular.ttf"),
-    "open-sans-semi-bold": require("./assets/fonts/OpenSans-SemiBold.ttf"),
   });
 };
 

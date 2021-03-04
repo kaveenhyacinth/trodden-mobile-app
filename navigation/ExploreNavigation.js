@@ -2,6 +2,7 @@ import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import Colors from "../theme/Colors";
+import Typography from "../theme/Typography";
 import NomadsExplore from "../screens/misc/NomadsExploreScreen";
 import CaravansExplore from "../screens/misc/CaravansExploreScreen";
 
@@ -13,14 +14,16 @@ const defaultStackNavOptions = {
     backgroundColor: Colors.accent,
   },
   headerTitleStyle: {
-    fontFamily: "comfortaa-bold",
+    fontFamily: Typography.displayHeavy.fontFamily,
+    letterSpacing: Typography.displayHeavy.letterSpacing,
   },
+  headerTintColor: Colors.info,
 };
 
 const defaultTabOptions = {
   activeTintColor: Colors.primary,
   inactiveTintColor: Colors.outline,
-  labelStyle: { fontFamily: "comfortaa-bold" },
+  labelStyle: { fontFamily: Typography.title.fontFamily },
   tabStyle: { backgroundColor: Colors.accent },
 };
 

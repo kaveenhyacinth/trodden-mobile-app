@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   title: {
-    ...Typography.displayHeavy,
+    ...Typography.trodden,
     color: Colors.primary,
     textAlign: "center",
   },

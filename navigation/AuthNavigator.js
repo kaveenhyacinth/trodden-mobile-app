@@ -1,10 +1,10 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-
 import OpenScreen from "../screens/OpenScreen";
 import SignInScreen from "../screens/SignInScreen";
 import SignUpScreen from "../screens/SignUpScreen";
 import Colors from "../theme/Colors";
+import Typography from "../theme/Typography";
 
 const Stack = createStackNavigator();
 
@@ -13,8 +13,10 @@ const defaultStackNavOptions = {
     backgroundColor: Colors.accent,
   },
   headerTitleStyle: {
-    fontFamily: "comfortaa-bold",
+    fontFamily: Typography.displayHeavy.fontFamily,
+    letterSpacing: Typography.displayHeavy.letterSpacing,
   },
+  headerTintColor: Colors.outline,
 };
 
 const AuthNavigator = (props) => {
