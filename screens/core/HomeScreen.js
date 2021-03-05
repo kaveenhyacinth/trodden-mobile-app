@@ -1,11 +1,15 @@
 import React from "react";
 import { Text, View } from "react-native";
+import Colors from "../../theme/Colors";
+import ScreenView from "../../components/ScreenView";
+import Memory from "../../components/Memory";
 
 const HomeScreen = () => {
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>Home!</Text>
-    </View>
+    <ScreenView style={{backgroundColor: Colors.background}}>
+      <Memory />
+      <Memory />
+    </ScreenView>
   );
 };
 
