@@ -9,8 +9,8 @@ const Stack = createStackNavigator();
 const defaultStackNavOptions = {
   headerStyle: {
     backgroundColor: Colors.accent,
-    elevation: 0,
-    shadowOpacity: 0,
+    // elevation: 5,
+    // shadowOpacity: 0,
   },
   headerTitleStyle: {
     ...Typography.trodden,

@@ -1,20 +1,26 @@
-import React from "react";
-import {
-  Text,
-  View,
-  Image,
-  Pressable,
-  StyleSheet,
-  Dimensions,
-} from "react-native";
-import { FontAwesome5 } from "@expo/vector-icons";
+import React, { useState } from "react";
+import { View, Image, Pressable, StyleSheet, Dimensions } from "react-native";
+import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
 import Colors from "../theme/Colors";
 import Typography from "../theme/Typography";
 import BodyText from "./BodyText";
+import ImageGallary from "./ImageGallary";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("screen");
 
 const Memory = () => {
+  const ContentText =
+    "Lorem ipsum dolor sit amet, consectetur adipiscing eleit. Mauris id diam consectetur, tincidunt lorem quis tempus urna. Nullam sagittis efficitur augue, vitae laoreet dui pharetra non. Morbi accumsan. Lorem ipsum dolor sit amet, consectetur adipiscing eleit. Mauris id diam consectetur, tincidunt lorem quis tempus urna. Nullam sagittis efficitur augue, vitae laoreet dui pharetra non. Morbi accumsan. Lorem ipsum dolor sit amet, consectetur adipiscing eleit. Mauris id diam consectetur, tincidunt lorem quis tempus urna. Nullam sagittis efficitur augue, vitae laoreet dui pharetra non. Morbi accumsan.";
+
+  const images = [
+    { link: "https://bit.ly/3rfCwbA", id: 3 },
+    { link: "https://bit.ly/3e9xh9N", id: 1 },
+    { link: "https://bit.ly/3qeC7EV", id: 2 },
+  ];
+
+  const [isReadMore, setIsReadMore] = useState(false);
+  const [isOpenSettings, setIsOpenSettings] = useState(false);
+
   return (
     <View style={styles.container} removeClippedSubviews>
       {/* Start Header */}
@@ -35,7 +41,9 @@ const Memory = () => {
           </BodyText>
         </View>
         <View style={styles.rightSection}>
-          <Pressable>
+          <Pressable
+            onPress={() => setIsOpenSettings((prevState) => !prevState)}
+          >
             <FontAwesome5 name="ellipsis-v" size={15} color={Colors.info} />
           </Pressable>
         </View>
@@ -44,20 +52,46 @@ const Memory = () => {
 
       {/* Start Content */}
       <View style={styles.content}>
-        <BodyText>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris id
-          diam consectetur, tincidunt lorem quis, tempus urna. Nullam sagittis
-          efficitur augue, vitae laoreet dui pharetra non. Morbi accumsan.
-        </BodyText>
+        {isReadMore ? (
+          <>
+            <BodyText>{ContentText}</BodyText>
+            <Pressable onPress={() => setIsReadMore(false)}>
+              <BodyText style={styles.colExpLink}>Collapse...</BodyText>
+            </Pressable>
+          </>
+        ) : (
+          <>
+            <BodyText>{ContentText.substr(0, 100)}</BodyText>
+            <Pressable onPress={() => setIsReadMore(true)}>
+              <BodyText style={styles.colExpLink}>Read More...</BodyText>
+            </Pressable>
+          </>
+        )}
       </View>
       {/* End Content */}
 
       {/* Start Image Section */}
-      <View style={styles.imagesWrapper}></View>
+      {images.length > 1 ? (
+        <ImageGallary images={images} />
+      ) : (
+        <View style={styles.imagesWrapper}>
+          {images.map((item) => (
+            <Image
+              style={styles.image}
+              key={item.id}
+              source={{ uri: item.link }}
+            />
+          ))}
+        </View>
+      )}
       {/* End Image Section */}
 
       {/* Start Status Bar */}
-      <View style={styles.statusBar}></View>
+      <View style={styles.statusBar}>
+        <Ionicons size={30} color={Colors.outline} name="md-bonfire-sharp" />
+        <Ionicons size={25} color={Colors.outline} name="md-chatbubble" />
+        <Ionicons size={25} color={Colors.outline} name="md-share-social" />
+      </View>
       {/* End Status Bar */}
     </View>
   );
@@ -120,16 +154,28 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   content: {
-    backgroundColor: "#ffc",
-    height: 80,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+  },
+  colExpLink: {
+    ...Typography.bodyTextBold,
+    color: Colors.primary,
+    fontSize: 14,
   },
   imagesWrapper: {
-    backgroundColor: "#cfc",
     height: SCREEN_WIDTH,
+    width: SCREEN_WIDTH,
+  },
+  image: {
+    flex: 1,
   },
   statusBar: {
-    backgroundColor: "#ccf",
-    height: 60,
+    // backgroundColor: "#ccf",
+    height: 70,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 20
   },
 });
 

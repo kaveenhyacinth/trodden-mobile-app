@@ -6,7 +6,7 @@ import Colors from "../theme/Colors";
 const ScreenView = (props) => {
   return (
     <View style={{ ...styles.screen, ...props.style }}>
-      <ScrollView contentContainerStyle={styles.scroll}>
+      <ScrollView nestedScrollEnabled contentContainerStyle={styles.scroll}>
         {props.children}
       </ScrollView>
     </View>
