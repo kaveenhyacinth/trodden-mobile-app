@@ -20,6 +20,12 @@ const Memory = () => {
 
   const [isReadMore, setIsReadMore] = useState(false);
   const [isOpenSettings, setIsOpenSettings] = useState(false);
+  const [isLiked, setIsLiked] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
+
+  const handleLike = () => {
+    setIsLiked((prevState) => !prevState);
+  };
 
   return (
     <View style={styles.container} removeClippedSubviews>
@@ -88,9 +94,53 @@ const Memory = () => {
 
       {/* Start Status Bar */}
       <View style={styles.statusBar}>
-        <Ionicons size={30} color={Colors.outline} name="md-bonfire-sharp" />
-        <Ionicons size={25} color={Colors.outline} name="md-chatbubble" />
-        <Ionicons size={25} color={Colors.outline} name="md-share-social" />
+        <View style={styles.statusIconContainer}>
+          <Pressable onPress={handleLike}>
+            {isLiked ? (
+              <Ionicons
+                style={styles.statusIcon}
+                size={30}
+                color={Colors.primary}
+                name="bonfire"
+              />
+            ) : (
+              <Ionicons
+                style={styles.statusIcon}
+                size={30}
+                color={Colors.outline}
+                name="bonfire-outline"
+              />
+            )}
+          </Pressable>
+          <Ionicons
+            style={styles.statusIcon}
+            size={25}
+            color={Colors.outline}
+            name="chatbubble-outline"
+          />
+          {/* <Pressable onPress={() => setIsSaved((prevState) => !prevState)}>
+          {isSaved ? (
+            <Ionicons
+              style={styles.statusIcon}
+              size={25}
+              color={Colors.primary}
+              name="bookmark"
+            />
+          ) : (
+            <Ionicons
+              style={styles.statusIcon}
+              size={25}
+              color={Colors.outline}
+              name="bookmark-outline"
+            />
+          )}
+        </Pressable> */}
+        </View>
+        <View style={styles.statusTextContainer}>
+          <BodyText style={styles.statusText}>
+            {isLiked ? "52" : "51"} Twigs
+          </BodyText>
+        </View>
       </View>
       {/* End Status Bar */}
     </View>
@@ -170,12 +220,22 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   statusBar: {
-    // backgroundColor: "#ccf",
-    height: 70,
+    height: 50,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingHorizontal: 20
+    paddingHorizontal: 20,
+  },
+  statusIconContainer: {
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    alignItems: "center",
+  },
+  statusIcon: {
+    marginRight: 10,
+  },
+  statusText: {
+    color: Colors.outline,
   },
 });
 
