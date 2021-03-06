@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
   },
   scroll: {
     flexGrow: 1,
-    padding: 10,
+    // padding: 10,
     alignItems: "center",
     justifyContent: "flex-start",
   },

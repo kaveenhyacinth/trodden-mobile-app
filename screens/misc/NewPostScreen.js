@@ -5,15 +5,12 @@ import ScreenView from "../../components/ScreenView";
 import Memory from "../../components/Memory";
 import NewPost from "../../components/NewPostHome";
 
-const HomeScreen = (props) => {
-  console.log("Nav:", props.navigation)
+const NewPostScreen = () => {
   return (
     <ScreenView style={{ backgroundColor: Colors.background }}>
-      <NewPost onPress={() => props.navigation.navigate("newMemo")} />
-      <Memory />
-      <Memory />
+      <Text>New Post</Text>
     </ScreenView>
   );
 };
 
-export default HomeScreen;
+export default NewPostScreen;
