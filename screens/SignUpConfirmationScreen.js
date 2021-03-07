@@ -50,7 +50,7 @@ const ConfirmationScreen = (props) => {
    * @param {String} inputText Input field value
    * @param {Number} index Input field index
    */
-  const inputHandler = (inputText, index) => {
+  const handleInput = (inputText, index) => {
     switch (index) {
       case 1:
         setOtpInput((prevState) => ({ ...prevState, e1: inputText }));
@@ -84,7 +84,7 @@ const ConfirmationScreen = (props) => {
   /**
    * Clear OTP field inputs
    */
-  const clearOtpInput = () => {
+  const handleOtpInputClear = () => {
     setOtpInput((prevState) => ({
       ...prevState,
       e1: "",
@@ -107,10 +107,10 @@ const ConfirmationScreen = (props) => {
     otpGenerated === otpEntered ? true : false;
 
   const dispatch = useDispatch();
-  const updateUserStoreHandler = (userData) => {
+  const handleUserStoreUpdate = (userData) => {
     dispatch(storeUser(userData));
   };
-  const updateTokenStoreHandler = (signToken, refToken) => {
+  const handleTokenStoreUpdate = (signToken, refToken) => {
     dispatch(storeToken(signToken, refToken));
   };
 
@@ -162,9 +162,10 @@ const ConfirmationScreen = (props) => {
    * @param {String} otpOriginal System generated OTP
    * @param {String} signupToken System generated signup token
    */
-  const confirmationHandler = async (otpInput, otpOriginal, signupToken) => {
+  const handleConfirm = async (otpInput, otpOriginal, signupToken) => {
     const otpEntered = `${otpInput.e1}${otpInput.e2}${otpInput.e3}${otpInput.e4}${otpInput.e5}${otpInput.e6}`;
 
+    // Validate OTP
     if (!isMatchOtp(otpEntered, otpOriginal)) {
       return Alert.alert(
         "Varification Failed",
@@ -173,7 +174,7 @@ const ConfirmationScreen = (props) => {
           {
             text: "Re-enter",
             style: "destructive",
-            onPress: () => clearOtpInput(),
+            onPress: () => handleOtpInputClear(),
           },
         ],
         { cancelable: false }
@@ -192,15 +193,29 @@ const ConfirmationScreen = (props) => {
       const refToken = response.data.result.refToken;
 
       // Update redux stores
-      updateUserStoreHandler(response.data.result);
-      updateTokenStoreHandler(signToken, refToken);
+      handleUserStoreUpdate({ id: response.data.result.id });
+      handleTokenStoreUpdate(signToken, refToken);
 
-      // Save refresh token in secure store
-      Save("refToken", refToken);
+      Save("refToken", refToken); // Save refresh token in secure store
+      Save("userRole", response.data.result.role); // Save user signup state
 
       // Navigate to Interest selection
       props.navigation.replace("signupInfoOne");
     } catch (error) {
+      if (!error.response) {
+        console.log("Error @confirmation:", error);
+        return Alert.alert(
+          "Something went wrong",
+          "Sorry, it's our fault! Please try again later...",
+          [
+            {
+              text: "Okay",
+              style: "destructive",
+            },
+          ],
+          { cancelable: false }
+        );
+      }
       handleError(error);
     } finally {
       setLoading(false);
@@ -225,7 +240,7 @@ const ConfirmationScreen = (props) => {
             keyboardType="number-pad"
             containerStyle={styles.input}
             style={styles.inputBox}
-            onChangeText={(inputText) => inputHandler(inputText, 1)}
+            onChangeText={(inputText) => handleInput(inputText, 1)}
           />
           <InputBox
             ref={E2}
@@ -236,7 +251,7 @@ const ConfirmationScreen = (props) => {
             keyboardType="number-pad"
             containerStyle={styles.input}
             style={styles.inputBox}
-            onChangeText={(inputText) => inputHandler(inputText, 2)}
+            onChangeText={(inputText) => handleInput(inputText, 2)}
           />
           <InputBox
             placeholder="X"
@@ -247,7 +262,7 @@ const ConfirmationScreen = (props) => {
             keyboardType="number-pad"
             containerStyle={styles.input}
             style={styles.inputBox}
-            onChangeText={(inputText) => inputHandler(inputText, 3)}
+            onChangeText={(inputText) => handleInput(inputText, 3)}
           />
           <InputBox
             placeholder="X"
@@ -258,7 +273,7 @@ const ConfirmationScreen = (props) => {
             keyboardType="number-pad"
             containerStyle={styles.input}
             style={styles.inputBox}
-            onChangeText={(inputText) => inputHandler(inputText, 4)}
+            onChangeText={(inputText) => handleInput(inputText, 4)}
           />
           <InputBox
             placeholder="X"
@@ -269,7 +284,7 @@ const ConfirmationScreen = (props) => {
             keyboardType="number-pad"
             containerStyle={styles.input}
             style={styles.inputBox}
-            onChangeText={(inputText) => inputHandler(inputText, 5)}
+            onChangeText={(inputText) => handleInput(inputText, 5)}
           />
           <InputBox
             placeholder="X"
@@ -280,7 +295,7 @@ const ConfirmationScreen = (props) => {
             keyboardType="number-pad"
             containerStyle={styles.input}
             style={styles.inputBox}
-            onChangeText={(inputText) => inputHandler(inputText, 6)}
+            onChangeText={(inputText) => handleInput(inputText, 6)}
           />
         </View>
         {loading ? (
@@ -289,11 +304,7 @@ const ConfirmationScreen = (props) => {
           <BigButton
             style={styles.button}
             onPress={() =>
-              confirmationHandler(
-                otpInput,
-                paramData.otp,
-                paramData.signupToken
-              )
+              handleConfirm(otpInput, paramData.otp, paramData.signupToken)
             }
           >
             Confirm

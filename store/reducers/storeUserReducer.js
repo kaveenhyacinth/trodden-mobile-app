@@ -6,6 +6,7 @@ const initialState = {
   lastName: "",
   username: "",
   email: "",
+  role: "",
   contact: "",
   country: "",
   region: "",
