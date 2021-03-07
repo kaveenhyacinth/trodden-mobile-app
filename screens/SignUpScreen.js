@@ -11,6 +11,7 @@ import LoadingButton from "../components/LoadingButton";
 import FormContainer from "../components/FormContainer";
 
 const SignUpScreen = (props) => {
+  //#region local state
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     firstName: "",
@@ -27,10 +28,12 @@ const SignUpScreen = (props) => {
     email: "",
     password: "",
   });
+  //#endregion
 
   useEffect(() => console.log(formData), [formData]);
 
-  const inputHandler = (inputText, field) => {
+  // Handle user inputs
+  const handleInput = (inputText, field) => {
     switch (field) {
       case "firstName":
         setFormData({ ...formData, firstName: inputText });
@@ -47,14 +50,14 @@ const SignUpScreen = (props) => {
       case "password":
         setFormData({ ...formData, password: inputText });
         break;
-
       default:
         break;
     }
   };
 
+  // Handle errors
   const handleError = (error) => {
-    const errorData = error.response.data;
+    const errorData = error.response.data ?? error;
     const isValidationError = Array.isArray(errorData.result);
     if (isValidationError) {
       return errorData.result.map((err) => {
@@ -104,9 +107,11 @@ const SignUpScreen = (props) => {
     );
   };
 
-  const requestSignup = async () => {
+  const handleSignup = async () => {
     try {
       setLoading(true);
+
+      // Request signup
       const response = await Http.post("/api/auth/signup", {
         firstName: formData.firstName,
         lastName: formData.lastName,
@@ -115,6 +120,8 @@ const SignUpScreen = (props) => {
         password: formData.password,
       });
       if (!response) throw new Error("Please try again later");
+
+      // Navigate to confirmation
       props.navigation.replace("postAuth", {
         screen: "confirmOTP",
         params: {
@@ -149,21 +156,21 @@ const SignUpScreen = (props) => {
           placeholder="First Name"
           style={styles.input}
           message={inputErrorMessage.firstName}
-          onChangeText={(inputText) => inputHandler(inputText, "firstName")}
+          onChangeText={(inputText) => handleInput(inputText, "firstName")}
           value={formData.firstName}
         />
         <InputBox
           placeholder="Last Name"
           style={styles.input}
           message={inputErrorMessage.lastName}
-          onChangeText={(inputText) => inputHandler(inputText, "lastName")}
+          onChangeText={(inputText) => handleInput(inputText, "lastName")}
           value={formData.lastName}
         />
         <InputBox
           placeholder="UserName"
           style={styles.input}
           message={inputErrorMessage.username}
-          onChangeText={(inputText) => inputHandler(inputText, "username")}
+          onChangeText={(inputText) => handleInput(inputText, "username")}
           value={formData.username}
         />
         <InputBox
@@ -171,7 +178,7 @@ const SignUpScreen = (props) => {
           style={styles.input}
           keyboardType="email-address"
           message={inputErrorMessage.email}
-          onChangeText={(inputText) => inputHandler(inputText, "email")}
+          onChangeText={(inputText) => handleInput(inputText, "email")}
           value={formData.email}
         />
         <InputBox
@@ -179,13 +186,13 @@ const SignUpScreen = (props) => {
           style={styles.input}
           secureTextEntry
           message={inputErrorMessage.password}
-          onChangeText={(inputText) => inputHandler(inputText, "password")}
+          onChangeText={(inputText) => handleInput(inputText, "password")}
           value={formData.password}
         />
         {loading ? (
           <LoadingButton />
         ) : (
-          <BigButton style={styles.button} onPress={requestSignup}>
+          <BigButton style={styles.button} onPress={handleSignup}>
             Sign Up
           </BigButton>
         )}
