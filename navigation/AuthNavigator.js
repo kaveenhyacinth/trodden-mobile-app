@@ -16,7 +16,7 @@ const defaultStackNavOptions = {
     fontFamily: Typography.displayHeavy.fontFamily,
     letterSpacing: Typography.displayHeavy.letterSpacing,
   },
-  headerTintColor: Colors.outline,
+  headerTintColor: Colors.info,
 };
 
 const AuthNavigator = (props) => {

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { View, Text, Image, StyleSheet, Dimensions } from "react-native";
 import Colors from "../theme/Colors";
 import Typography from "../theme/Typography";
@@ -31,12 +31,7 @@ const OpenScreen = (props) => {
         <BigButtonLight
           style={styles.button}
           onPress={() => {
-            // props.navigation.navigate("postAuth", {
-            //   screen: "signupInfoTwo",
-            // });
-            props.navigation.replace("core", {
-              screen: "Home",
-            });
+            props.navigation.navigate("signIn");
           }}
         >
           Sign in
