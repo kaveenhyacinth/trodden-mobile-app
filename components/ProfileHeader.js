@@ -42,14 +42,14 @@ const ProfileHeader = (props) => {
         <BodyText style={styles.name} numberOfLines={2}>
           {user.firstName} {user.lastName}
         </BodyText>
-        <BodyText style={styles.username}>{user.username}</BodyText>
+        <BodyText style={styles.username}>@{user.username}</BodyText>
         <BodyText style={styles.country}>
           <FontAwesome5 name="map-marker-alt" /> Sri Lanka
         </BodyText>
         <View style={styles.bio}>
           <BodyText style={styles.bioText}>
             Fall Foward; flow freely. 🔆{"\n"}Sri Lankan | Dev | IEEEian |
-            Writer. ❤
+            Writer ❤
           </BodyText>
         </View>
       </View>

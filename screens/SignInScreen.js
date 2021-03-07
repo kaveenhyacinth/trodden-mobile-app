@@ -117,6 +117,7 @@ const SignInScreen = (props) => {
       props.navigation.replace("core");
     } catch (error) {
       handleError(error);
+      console.log("Error Happens Here...", error);
     } finally {
       setLoading(false);
     }
