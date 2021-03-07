@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Image, StyleSheet, Dimensions } from "react-native";
 import { FontAwesome5 } from "@expo/vector-icons";
+import { useSelector } from "react-redux";
 import Colors from "../theme/Colors";
 import Typography from "../theme/Typography";
 import BodyText from "../components/BodyText";
@@ -8,6 +9,7 @@ import BodyText from "../components/BodyText";
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("screen");
 
 const ProfileHeader = (props) => {
+  const user = useSelector((state) => state.userStore);
   return (
     <View style={styles.container}>
       <View style={styles.topSection}>
@@ -38,9 +40,9 @@ const ProfileHeader = (props) => {
       </View>
       <View style={styles.bottomSection}>
         <BodyText style={styles.name} numberOfLines={2}>
-          Kaveen Hyacinth
+          {user.firstName} {user.lastName}
         </BodyText>
-        <BodyText style={styles.username}>@mr.syfero</BodyText>
+        <BodyText style={styles.username}>{user.username}</BodyText>
         <BodyText style={styles.country}>
           <FontAwesome5 name="map-marker-alt" /> Sri Lanka
         </BodyText>

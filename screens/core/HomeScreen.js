@@ -6,7 +6,6 @@ import Memory from "../../components/Memory";
 import NewPost from "../../components/NewPostHome";
 
 const HomeScreen = (props) => {
-  console.log("Nav:", props.navigation)
   return (
     <ScreenView style={{ backgroundColor: Colors.background }}>
       <NewPost onPress={() => props.navigation.navigate("newMemo")} />

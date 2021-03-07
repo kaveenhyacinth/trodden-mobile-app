@@ -15,7 +15,7 @@ const MainNavigator = (props) => {
 
   // Update tokens store with new tokens
   const dispatch = useDispatch();
-  const handleUpdateStoreToken = (signToken, refToken) => {
+  const handleTokenUpdate = (signToken, refToken) => {
     dispatch(storeToken(signToken, refToken));
   };
 
@@ -27,7 +27,7 @@ const MainNavigator = (props) => {
         if (!refToken) return setIsSignedIn(false);
 
         const { newSignInToken, newRefToken } = await refreshTokens(refToken);
-        handleUpdateStoreToken(newSignInToken, newRefToken);
+        handleTokenUpdate(newSignInToken, newRefToken);
 
         return setIsSignedIn(true);
       } catch (error) {

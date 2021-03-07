@@ -3,6 +3,7 @@ import { ScrollView } from "react-native";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
+
 import Colors from "../theme/Colors";
 import Typography from "../theme/Typography";
 import NomadsExplore from "../screens/misc/NomadsExploreScreen";

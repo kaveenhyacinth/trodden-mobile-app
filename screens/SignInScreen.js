@@ -3,6 +3,7 @@ import { Text, StyleSheet, Pressable, Alert } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { Save, Fetch } from "../services/deviceStorage";
 import { storeToken } from "../store/actions/storeToken";
+import { storeUser } from "../store/actions/storeUser";
 import Http from "../api/kit";
 import Colors from "../theme/Colors";
 import Typography from "../theme/Typography";
@@ -26,20 +27,12 @@ const SignInScreen = (props) => {
   });
   //#endregion
 
-  const localRefToken = useSelector((state) => state.tokenStore.signToken);
-  const presistentRefToken = Fetch("refToken")
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    console.log("ReduxStore Token: " + localRefToken);
-    console.log("SecureStore Token: " + presistentRefToken);
-  }, [localRefToken, presistentRefToken]);
-
-  const inputHandler = (inputText, field) => {
+  // Handle user input
+  const handleInput = (inputText, field) => {
     switch (field) {
       case "email":
         setFormData({ ...formData, email: inputText });
-        bre
+        break;
       case "password":
         setFormData({ ...formData, password: inputText });
         break;
@@ -49,8 +42,15 @@ const SignInScreen = (props) => {
     }
   };
 
-  const updateTokenHandler = (signToken, refToken) => {
+  // Uptate new tokens in token store
+  const dispatch = useDispatch();
+  const handleTokenUpdate = (signToken, refToken) => {
     dispatch(storeToken(signToken, refToken));
+  };
+
+  // Update singed user in user store
+  const handleUserUpdate = (userData) => {
+    dispatch(storeUser(userData));
   };
 
   const handleError = (error) => {
@@ -86,9 +86,10 @@ const SignInScreen = (props) => {
     );
   };
 
-  const requestSignin = async () => {
+  const handleSignIn = async () => {
     try {
       setLoading(true);
+
       // getting sign-in response
       const response = await Http.post("/api/auth/signin", {
         email: formData.email,
@@ -98,14 +99,22 @@ const SignInScreen = (props) => {
 
       const signToken = response.data.result.signToken;
       const refToken = response.data.result.refToken;
+      const userData = {
+        id: response.data.result.id,
+        firstName: response.data.result.firstName,
+        lastName: response.data.result.lastName,
+        username: response.data.result.username,
+        email: response.data.result.email,
+      };
 
       // saving refresh token in securestore
       Save("refToken", refToken);
-
       //updating global state with new sign token
-      updateTokenHandler(signToken, refToken);
+      handleTokenUpdate(signToken, refToken);
+      // updating global statewith signed user
+      handleUserUpdate(userData);
 
-      // TODO: => navigation (._.)
+      props.navigation.replace("core");
     } catch (error) {
       handleError(error);
     } finally {
@@ -120,7 +129,7 @@ const SignInScreen = (props) => {
           placeholder="Email"
           style={styles.input}
           message={inputErrorMessage.email}
-          onChangeText={(inputText) => inputHandler(inputText, "email")}
+          onChangeText={(inputText) => handleInput(inputText, "email")}
           value={formData.email}
           keyboardType="email-address"
         />
@@ -129,13 +138,13 @@ const SignInScreen = (props) => {
           style={styles.input}
           secureTextEntry
           message={inputErrorMessage.password}
-          onChangeText={(inputText) => inputHandler(inputText, "password")}
+          onChangeText={(inputText) => handleInput(inputText, "password")}
           value={formData.password}
         />
         {loading ? (
           <LoadingButton />
         ) : (
-          <BigButton style={styles.button} onPress={requestSignin}>
+          <BigButton style={styles.button} onPress={handleSignIn}>
             Sign In
           </BigButton>
         )}
