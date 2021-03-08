@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+//#region Imports
+import React, { useState, useReducer } from "react";
 import { Text, StyleSheet, Pressable, Alert } from "react-native";
-import { useSelector, useDispatch } from "react-redux";
-import { Save, Fetch } from "../services/deviceStorage";
+import { useDispatch } from "react-redux";
+import { Save } from "../services/deviceStorage";
 import { storeToken } from "../store/actions/storeToken";
 import { storeUser } from "../store/actions/storeUser";
 import Http from "../api/kit";
@@ -13,14 +14,44 @@ import InputBox from "../components/InputBox";
 import BigButton from "../components/BigButton";
 import LoadingButton from "../components/LoadingButton";
 import FormContainer from "../components/FormContainer";
+//#endregion
 
+const FORM_UPDATE = "FORM_UPDATE";
+
+const formReducer = (state, action) => {
+  if (action.type === FORM_UPDATE) {
+    const updatedValues = {
+      ...state.inputValues,
+      [action.payload.key]: action.payload.value,
+    };
+
+    return {
+      ...state,
+      inputValues: updatedValues,
+    };
+  }
+  return state;
+};
+
+//#region Component
 const SignInScreen = (props) => {
+  const dispatch = useDispatch();
+
+  // Merged form state
+  const [formState, dispatchFormState] = useReducer(formReducer, {
+    inputValues: {
+      email: "",
+      password: "",
+    },
+    inputValidities: {
+      email: true,
+      password: true,
+    },
+    formValidity: false,
+  });
+
   //#region Local State
   const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
   const [inputErrorMessage, setInputErrorMessage] = useState({
     email: "",
     password: "",
@@ -28,22 +59,17 @@ const SignInScreen = (props) => {
   //#endregion
 
   // Handle user input
-  const handleInput = (inputText, field) => {
-    switch (field) {
-      case "email":
-        setFormData({ ...formData, email: inputText });
-        break;
-      case "password":
-        setFormData({ ...formData, password: inputText });
-        break;
-
-      default:
-        break;
-    }
-  };
+  const handleInput = (inputText, key) =>
+    dispatchFormState({
+      type: FORM_UPDATE,
+      payload: {
+        value: inputText,
+        key,
+      },
+    });
 
   // Uptate new tokens in token store
-  const dispatch = useDispatch();
+
   const handleTokenUpdate = (signToken, refToken) => {
     dispatch(storeToken(signToken, refToken));
   };
@@ -54,7 +80,7 @@ const SignInScreen = (props) => {
   };
 
   const handleError = (error) => {
-    const errorData = error.response.data;
+    const errorData = error.response.data ?? error;
     const isValidationError = Array.isArray(errorData.result);
     if (isValidationError) {
       return errorData.result.map((err) => {
@@ -116,6 +142,18 @@ const SignInScreen = (props) => {
 
       props.navigation.replace("core");
     } catch (error) {
+      if (!error.response)
+        return Alert.alert(
+          "Something went wrong",
+          "Sorry, it's our fault! Please try again later...",
+          [
+            {
+              text: "Okay",
+              style: "destructive",
+            },
+          ],
+          { cancelable: false }
+        );
       handleError(error);
       console.log("Error Happens Here...", error);
     } finally {
@@ -131,8 +169,9 @@ const SignInScreen = (props) => {
           style={styles.input}
           message={inputErrorMessage.email}
           onChangeText={(inputText) => handleInput(inputText, "email")}
-          value={formData.email}
+          value={formState.inputValues.email}
           keyboardType="email-address"
+          returnKeyType="next"
         />
         <InputBox
           placeholder="Password"
@@ -140,7 +179,9 @@ const SignInScreen = (props) => {
           secureTextEntry
           message={inputErrorMessage.password}
           onChangeText={(inputText) => handleInput(inputText, "password")}
-          value={formData.password}
+          value={formState.inputValues.password}
+          returnKeyType="send"
+          onSubmitEditing={handleSignIn}
         />
         {loading ? (
           <LoadingButton />
@@ -164,7 +205,9 @@ const SignInScreen = (props) => {
     </ScreenView>
   );
 };
+//#endregion
 
+//#region Styles
 const styles = StyleSheet.create({
   screen: {
     justifyContent: "space-between",
@@ -184,5 +227,6 @@ const styles = StyleSheet.create({
     color: Colors.primary,
   },
 });
+//#endregion
 
 export default SignInScreen;

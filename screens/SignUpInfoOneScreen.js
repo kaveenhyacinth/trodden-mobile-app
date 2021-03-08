@@ -20,6 +20,7 @@ const SignupInfoOneScreen = (props) => {
   const [loading, setLoading] = useState(false);
   const [countrycodeInput, setCountryCodeInput] = useState("94");
   const [contactInput, setContactInput] = useState();
+  const [cityInput, setCityInput] = useState();
   const [countryInput, setCountryInput] = useState();
   const [regionInput, setRegionInput] = useState();
   const [birthdateInput, setBirthdateInput] = useState();
@@ -37,6 +38,11 @@ const SignupInfoOneScreen = (props) => {
   const datePickInput = useRef();
 
   //#region Input Handles
+
+  const handleCityInput = (value) => {
+    console.log("city", cityInput);
+    setCityInput(value);
+  };
 
   const handleCountryPick = (country) => {
     console.log("Countries:", country);
@@ -76,15 +82,16 @@ const SignupInfoOneScreen = (props) => {
   };
   //#endregion
 
-  //#region Update Handles
   const dispatch = useDispatch();
-  const updateUserStore = (userData) => {
+
+  //#region Update Handles
+  const handleUserStoreUpdate = (userData) => {
     dispatch(storeUser(userData));
   };
   //#endregion
 
   // #region Submit Handles
-  const handleOnSubmitNext = (
+  const handleSubmit = (
     countryCodeInput,
     contactInput,
     regionInput,
@@ -120,7 +127,7 @@ const SignupInfoOneScreen = (props) => {
         gender: genderInput,
       };
 
-      updateUserStore(userData);
+      handleUserStoreUpdate(userData);
 
       props.navigation.navigate("signupInfoTwo");
     } catch (error) {
@@ -148,6 +155,12 @@ const SignupInfoOneScreen = (props) => {
           Awesome Nomad! Welcome to the world of Trodden. Tell us more about
           you....
         </BodyText>
+        <BodyText>City</BodyText>
+        <InputBox
+          onChange={handleCityInput}
+          value={cityInput}
+          placeholder="What is your home town?"
+        />
         <BodyText>Country</BodyText>
         <CountryPicker onSelect={handleCountryPick} value={countryInput} />
         <BodyText>Contact</BodyText>
@@ -191,7 +204,7 @@ const SignupInfoOneScreen = (props) => {
           <BigButton
             style={styles.button}
             onPress={() =>
-              handleOnSubmitNext(
+              handleSubmit(
                 countrycodeInput,
                 contactInput,
                 regionInput,

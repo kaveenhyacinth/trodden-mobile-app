@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import { Formik } from "formik";
+import * as yup from "yup";
 import { Text, StyleSheet, Pressable, Alert } from "react-native";
 import Http from "../api/kit";
 import Colors from "../theme/Colors";
@@ -10,16 +12,43 @@ import BigButton from "../components/BigButton";
 import LoadingButton from "../components/LoadingButton";
 import FormContainer from "../components/FormContainer";
 
+//#region Validation schema
+const ValidationSchema = yup.object().shape({
+  firstName: yup
+    .string()
+    .trim()
+    .matches(/^[A-z]+$/, "Only letters!")
+    .min(2, "Too short! Enter at least two characters")
+    .max(32, "Too long! Keep it less than 32 characters")
+    .required(),
+  lastName: yup
+    .string()
+    .trim()
+    .matches(/^[A-z]+$/, "Only letters!")
+    .min(2, "Too short! Enter at least two characters")
+    .max(32, "Too long! Keep it less than 32 characters")
+    .required(),
+  username: yup
+    .string()
+    .trim()
+    .min(5, "Too short! Enter at least 5 characters")
+    .max(12, "Too long!", "Keep it less than 12 characters")
+    .matches(
+      /^(?=[a-zA-Z0-9._]{5,12}$)(?!.*[_.]{2})[^_.].*[^_.]$/,
+      "Invalid Username"
+    )
+    .required(),
+  email: yup.string().trim().email("Enter a valid email!").required(),
+  password: yup
+    .string()
+    .min(8, "Too short! Enter at leas 8 characters")
+    .max(20, "Too long! Keep it less than 20 characters")
+    .required(),
+});
+//#endregion
+
 const SignUpScreen = (props) => {
-  //#region local state
   const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    username: "",
-    email: "",
-    password: "",
-  });
   // catch error messages
   const [inputErrorMessage, setInputErrorMessage] = useState({
     firstName: "",
@@ -28,32 +57,6 @@ const SignUpScreen = (props) => {
     email: "",
     password: "",
   });
-  //#endregion
-
-  useEffect(() => console.log(formData), [formData]);
-
-  // Handle user inputs
-  const handleInput = (inputText, field) => {
-    switch (field) {
-      case "firstName":
-        setFormData({ ...formData, firstName: inputText });
-        break;
-      case "lastName":
-        setFormData({ ...formData, lastName: inputText });
-        break;
-      case "username":
-        setFormData({ ...formData, username: inputText.toLowerCase() });
-        break;
-      case "email":
-        setFormData({ ...formData, email: inputText.toLowerCase() });
-        break;
-      case "password":
-        setFormData({ ...formData, password: inputText });
-        break;
-      default:
-        break;
-    }
-  };
 
   // Handle errors
   const handleError = (error) => {
@@ -107,7 +110,7 @@ const SignUpScreen = (props) => {
     );
   };
 
-  const handleSignup = async () => {
+  const handleSignup = async (formData) => {
     try {
       setLoading(true);
 
@@ -151,63 +154,80 @@ const SignUpScreen = (props) => {
 
   return (
     <ScreenView style={styles.screen}>
-      <FormContainer>
-        <InputBox
-          placeholder="First Name"
-          style={styles.input}
-          message={inputErrorMessage.firstName}
-          onChangeText={(inputText) => handleInput(inputText, "firstName")}
-          value={formData.firstName}
-        />
-        <InputBox
-          placeholder="Last Name"
-          style={styles.input}
-          message={inputErrorMessage.lastName}
-          onChangeText={(inputText) => handleInput(inputText, "lastName")}
-          value={formData.lastName}
-        />
-        <InputBox
-          placeholder="UserName"
-          style={styles.input}
-          message={inputErrorMessage.username}
-          onChangeText={(inputText) => handleInput(inputText, "username")}
-          value={formData.username}
-        />
-        <InputBox
-          placeholder="Email"
-          style={styles.input}
-          keyboardType="email-address"
-          message={inputErrorMessage.email}
-          onChangeText={(inputText) => handleInput(inputText, "email")}
-          value={formData.email}
-        />
-        <InputBox
-          placeholder="Password"
-          style={styles.input}
-          secureTextEntry
-          message={inputErrorMessage.password}
-          onChangeText={(inputText) => handleInput(inputText, "password")}
-          value={formData.password}
-        />
-        {loading ? (
-          <LoadingButton />
-        ) : (
-          <BigButton style={styles.button} onPress={handleSignup}>
-            Sign Up
-          </BigButton>
-        )}
+      <Formik
+        initialValues={{
+          firstName: "",
+          lastName: "",
+          username: "",
+          email: "",
+          password: "",
+        }}
+        onSubmit={(values) => handleSignup(values)}
+        validationSchema={ValidationSchema}
+      >
+        {(formik) => (
+          <FormContainer>
+            <InputBox
+              placeholder="First Name"
+              style={styles.input}
+              message={formik.errors.firstName}
+              onChangeText={formik.handleChange("firstName")}
+              onBlur={formik.handleBlur("firstName")}
+              value={formik.values.firstName}
+            />
+            <InputBox
+              placeholder="Last Name"
+              style={styles.input}
+              message={formik.errors.lastName}
+              onChangeText={formik.handleChange("lastName")}
+              value={formik.values.lastName}
+            />
+            <InputBox
+              placeholder="UserName"
+              style={styles.input}
+              message={formik.errors.username}
+              onChangeText={formik.handleChange("username")}
+              value={formik.values.username}
+            />
+            <InputBox
+              placeholder="Email"
+              style={styles.input}
+              keyboardType="email-address"
+              message={formik.errors.email}
+              onChangeText={formik.handleChange("email")}
+              value={formik.values.email}
+            />
+            <InputBox
+              placeholder="Password"
+              style={styles.input}
+              secureTextEntry
+              returnKeyType="send"
+              onSubmitEditing={formik.handleSubmit}
+              message={formik.errors.password}
+              onChangeText={formik.handleChange("password")}
+              value={formik.values.password}
+            />
+            {loading ? (
+              <LoadingButton />
+            ) : (
+              <BigButton style={styles.button} onPress={formik.handleSubmit}>
+                Sign Up
+              </BigButton>
+            )}
 
-        <Pressable
-          onPress={() => {
-            props.navigation.navigate("signIn");
-          }}
-        >
-          <BodyText style={styles.linkText}>
-            if you already have an account{" "}
-            <Text style={styles.link}>Sign In</Text>
-          </BodyText>
-        </Pressable>
-      </FormContainer>
+            <Pressable
+              onPress={() => {
+                props.navigation.navigate("signIn");
+              }}
+            >
+              <BodyText style={styles.linkText}>
+                if you already have an account{" "}
+                <Text style={styles.link}>Sign In</Text>
+              </BodyText>
+            </Pressable>
+          </FormContainer>
+        )}
+      </Formik>
     </ScreenView>
   );
 };

@@ -1,15 +1,23 @@
 import React from "react";
-import { View, StyleSheet, ScrollView } from "react-native";
+import {
+  StyleSheet,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+} from "react-native";
 
 import Colors from "../theme/Colors";
 
 const ScreenView = (props) => {
   return (
-    <View style={{ ...styles.screen, ...props.style }}>
+    <KeyboardAvoidingView
+      style={{ ...styles.screen, ...props.style }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
       <ScrollView nestedScrollEnabled contentContainerStyle={styles.scroll}>
         {props.children}
       </ScrollView>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 
