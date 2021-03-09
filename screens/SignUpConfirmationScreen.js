@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useRef } from "react";
 import { Text, View, StyleSheet, Pressable, Alert } from "react-native";
 import { useDispatch } from "react-redux";
 import { Save } from "../services/deviceStorage";
@@ -40,10 +40,6 @@ const ConfirmationScreen = (props) => {
   const E5 = useRef();
   const E6 = useRef();
   //#endregion
-
-  useEffect(() => {
-    console.log("Params:", paramData);
-  }, []);
 
   /**
    * Handle InputBox array based on index

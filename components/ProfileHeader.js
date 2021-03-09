@@ -40,11 +40,11 @@ const ProfileHeader = (props) => {
       </View>
       <View style={styles.bottomSection}>
         <BodyText style={styles.name} numberOfLines={2}>
-          {user.firstName} {user.lastName}
+          Kaveen Hyacinth
         </BodyText>
-        <BodyText style={styles.username}>@{user.username}</BodyText>
+        <BodyText style={styles.username}>@mr.syfero</BodyText>
         <BodyText style={styles.country}>
-          <FontAwesome5 name="map-marker-alt" /> Sri Lanka
+          <FontAwesome5 name="map-marker-alt" /> Colombo, Sri Lanka
         </BodyText>
         <View style={styles.bio}>
           <BodyText style={styles.bioText}>

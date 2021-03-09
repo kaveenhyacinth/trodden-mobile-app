@@ -1,4 +1,6 @@
-import React, { useState, useEffect, useRef } from "react";
+//#region Imports
+import React, { useState, useEffect, useReducer } from "react";
+import * as yup from "yup";
 import { View, StyleSheet, Alert } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { storeUser } from "../store/actions/storeUser";
@@ -14,117 +16,224 @@ import CallingCodePicker from "../components/CallingCodePicker";
 import BigButton from "../components/BigButton";
 import LoadingButton from "../components/LoadingButton";
 import FormContainer from "../components/FormContainer";
+//#endregion
+
+const INFO_ONE_FORM_UPDATE = "INFO_ONE_FORM_UPDATE";
+
+const formReducer = (state, action) => {
+  if (action.type === INFO_ONE_FORM_UPDATE) {
+    let updatedValues;
+    let updatedValidities;
+    let updatedErrorMsgs;
+
+    updatedValues = {
+      ...state.inputValues,
+      [action.payload.key]: action.payload.value,
+    };
+
+    updatedValidities = {
+      ...state.inputValidities,
+      [action.payload.key]: action.payload.validation.validity,
+    };
+    updatedErrorMsgs = {
+      ...state.errorMsgs,
+      [action.payload.key]: action.payload.validation.msg,
+    };
+
+    return {
+      ...state,
+      inputValues: updatedValues,
+      inputValidities: updatedValidities,
+      errorMsgs: updatedErrorMsgs,
+    };
+  }
+
+  return state;
+};
+
+const validationSchema = yup.object().shape({
+  city: yup
+    .string()
+    .matches(/^[A-z]+$/, "Value for the City field is invalid!"),
+  country: yup.string(),
+  region: yup.string(),
+  callingCode: yup.string(),
+  contact: yup
+    .string()
+    .min(7, "Too short!")
+    .max(12, "Too long! Enter a valid contact number"),
+  birthdate: yup.string(),
+  gender: yup.string(),
+});
 
 const SignupInfoOneScreen = (props) => {
-  //#region Local State
+  //#region Local state
   const [loading, setLoading] = useState(false);
-  const [countrycodeInput, setCountryCodeInput] = useState("94");
-  const [contactInput, setContactInput] = useState();
-  const [cityInput, setCityInput] = useState();
-  const [countryInput, setCountryInput] = useState();
-  const [regionInput, setRegionInput] = useState();
-  const [birthdateInput, setBirthdateInput] = useState();
   const [birthdateOutput, setBirthdateOutput] = useState();
   const [isDatePickerVisible, setiIsDatePickerVisible] = useState(false);
-  const [genderInput, setGenderInput] = useState();
   //#endregion
 
+  //#region Local form state
+  const [formState, dispatchFormState] = useReducer(formReducer, {
+    inputValues: {
+      city: "",
+      country: undefined,
+      region: "",
+      callingCode: undefined,
+      contact: "",
+      birthdate: "",
+      gender: "",
+    },
+    inputValidities: {
+      city: false,
+      country: false,
+      region: false,
+      callingCode: false,
+      contact: false,
+      birthdate: false,
+      gender: false,
+    },
+    errorMsgs: {
+      city: "",
+      country: "",
+      region: "",
+      callingCode: "",
+      contact: "",
+      birthdate: "",
+      gender: "",
+    },
+  });
+  //#endregion
+
+  const dispatch = useDispatch();
   const store = useSelector((state) => state.userStore);
 
   useEffect(() => {
     console.log("User Store:", store);
   }, [store]);
 
-  const datePickInput = useRef();
+  const handleValidation = async (inputValue, inputKey) => {
+    try {
+      const result = await validationSchema.validate({
+        [inputKey]: inputValue,
+      });
 
-  //#region Input Handles
+      const key = Object.keys(result);
 
-  const handleCityInput = (value) => {
-    console.log("city", cityInput);
-    setCityInput(value);
+      dispatchFormState({
+        type: INFO_ONE_FORM_UPDATE,
+        payload: {
+          key,
+          value: result[key],
+          validation: {
+            validity: true,
+            msg: "",
+          },
+        },
+      });
+    } catch (err) {
+      dispatchFormState({
+        type: INFO_ONE_FORM_UPDATE,
+        payload: {
+          key: inputKey,
+          value: inputValue,
+          validation: {
+            validity: false,
+            msg: err.message,
+          },
+        },
+      });
+    }
   };
 
+  //#region Input Handler
+  const handleInput = async (value, key) => {
+    let validation = { validity: true, msg: "" };
+
+    // Check is the field is empty
+    if (
+      value === null ||
+      value === undefined ||
+      value === "" ||
+      value === "00"
+    ) {
+      validation = { validity: false, msg: "Don't leave empty" };
+      dispatchFormState({
+        type: INFO_ONE_FORM_UPDATE,
+        payload: {
+          value,
+          key,
+          validation,
+        },
+      });
+    } else {
+      if (key === "birthdate") {
+        const stringDate = `${value.getDate()}/${
+          value.getMonth() + 1
+        }/${value.getFullYear()}`;
+        setBirthdateOutput(stringDate);
+        handleHideDatePicker();
+      }
+
+      await handleValidation(value, key);
+    }
+  };
+  //#endregion
+
+  //#region Handles
   const handleCountryPick = (country) => {
-    console.log("Countries:", country);
-    setCountryInput(country.name);
-    setRegionInput(country.region);
-  };
-
-  const handleCountryCodePick = (country) => {
-    setCountryCodeInput(country.callingCode[0]);
-  };
-
-  const handleContactInput = (value) => {
-    setContactInput(value);
+    handleInput(country.name, "country");
+    handleInput(country.region, "region");
   };
 
   const handleShowDatePicker = () => {
     setiIsDatePickerVisible(true);
-    datePickInput.current.blur();
   };
 
   const handleHideDatePicker = () => {
     setiIsDatePickerVisible(false);
-    datePickInput.current.blur();
   };
 
-  const handleBirthdateInput = (date) => {
-    const stringDate = `${date.getDate()}/${
-      date.getMonth() + 1
-    }/${date.getFullYear()}`;
-    setBirthdateOutput(stringDate);
-    setBirthdateInput(date);
-    handleHideDatePicker();
-  };
-
-  const handleGenderInput = (itemValue, itemIndex) => {
-    setGenderInput(itemValue);
-  };
-  //#endregion
-
-  const dispatch = useDispatch();
-
-  //#region Update Handles
   const handleUserStoreUpdate = (userData) => {
     dispatch(storeUser(userData));
   };
   //#endregion
 
   // #region Submit Handles
-  const handleSubmit = (
-    countryCodeInput,
-    contactInput,
-    regionInput,
-    countryInput,
-    birthdateInput,
-    genderInput
-  ) => {
+  const handleSubmit = async () => {
+    const formData = formState.inputValues;
+    const formValidation = formState.inputValidities;
+
+    console.log("Form Data", formData);
     try {
       setLoading(true);
+
       const isValid =
-        countryCodeInput &&
-        contactInput &&
-        regionInput &&
-        countryInput &&
-        birthdateInput &&
-        genderInput;
+        formValidation.city &&
+        formValidation.country &&
+        formValidation.region &&
+        formValidation.callingCode &&
+        formValidation.contact &&
+        formValidation.birthdate &&
+        formValidation.gender;
+
       console.log("Validity:", isValid);
-      if (!isValid) throw new Error("Don't leave your information empty!");
 
-      console.log(
-        "Age",
-        new Date().getFullYear() - birthdateInput.getFullYear()
-      );
-      const age = new Date().getFullYear() - birthdateInput.getFullYear();
+      if (!isValid)
+        throw new Error("Invalid inputs detected. Please re-try...");
 
-      if (age < 18) throw new Error("You should be at least 18 years old");
+      const age =
+        new Date().getFullYear() - new Date(formData.birthdate).getFullYear();
+
+      if (age < 18) throw new Error("You should be at least 18 years old...");
 
       const userData = {
-        contact: `${countrycodeInput}${contactInput}`,
-        country: countryInput,
-        region: regionInput,
-        birthday: birthdateInput,
-        gender: genderInput,
+        city: formData.city,
+        country: formData.country,
+        region: formData.region,
+        contact: `${formData.callingCode}${formData.contact}`,
+        birthday: formData.birthdate,
+        gender: formData.gender,
       };
 
       handleUserStoreUpdate(userData);
@@ -157,39 +266,46 @@ const SignupInfoOneScreen = (props) => {
         </BodyText>
         <BodyText>City</BodyText>
         <InputBox
-          onChange={handleCityInput}
-          value={cityInput}
+          onChangeText={(value) => handleInput(value, "city")}
+          value={formState.inputValues.city}
+          message={formState.errorMsgs.city ?? ""}
           placeholder="What is your home town?"
         />
         <BodyText>Country</BodyText>
-        <CountryPicker onSelect={handleCountryPick} value={countryInput} />
+        <CountryPicker
+          onSelect={handleCountryPick}
+          value={formState.inputValues.country}
+        />
         <BodyText>Contact</BodyText>
         <CallingCodePicker
-          onSelect={handleCountryCodePick}
-          value={countrycodeInput}
-          inputValue={contactInput}
-          onChangeText={handleContactInput}
+          value={formState.inputValues.callingCode}
+          onSelect={(country) =>
+            handleInput(country.callingCode[0], "callingCode")
+          }
+          inputValue={formState.inputValues.contact}
+          onChangeText={(value) => handleInput(value, "contact")}
+          message={formState.errorMsgs.contact}
         />
         <BodyText>Birthday</BodyText>
-        <InputBox
-          onFocus={handleShowDatePicker}
-          onChange={handleShowDatePicker}
-          ref={datePickInput}
-          value={birthdateOutput}
-          placeholder="When is your your cake day?"
-        />
+        <BigButton
+          style={styles.bdayBtn}
+          textStyle={styles.bdayTxt}
+          onPress={handleShowDatePicker}
+        >
+          {birthdateOutput ?? "When is your cake day?"}
+        </BigButton>
         <DatePickerModel
           isVisible={isDatePickerVisible}
           mode="date"
-          onConfirm={handleBirthdateInput}
+          onConfirm={(date) => handleInput(date, "birthdate")}
           onCancel={handleHideDatePicker}
         />
         <BodyText>Gender</BodyText>
         <View style={styles.genderPicker}>
           <Picker
-            selectedValue={genderInput}
+            selectedValue={formState.inputValues.gender}
             onValueChange={(itemValue, itemIndex) =>
-              handleGenderInput(itemValue, itemIndex)
+              handleInput(itemValue, "gender")
             }
           >
             <Picker.Item label="--Select--" value={undefined} />
@@ -201,19 +317,7 @@ const SignupInfoOneScreen = (props) => {
         {loading ? (
           <LoadingButton />
         ) : (
-          <BigButton
-            style={styles.button}
-            onPress={() =>
-              handleSubmit(
-                countrycodeInput,
-                contactInput,
-                regionInput,
-                countryInput,
-                birthdateInput,
-                genderInput
-              )
-            }
-          >
+          <BigButton style={styles.button} onPress={() => handleSubmit()}>
             Next
           </BigButton>
         )}
@@ -236,6 +340,19 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     marginBottom: 20,
   },
+  bdayBtn: {
+    height: 50,
+    backgroundColor: Colors.accent,
+    borderColor: Colors.outline,
+    borderRadius: 5,
+    borderWidth: 1,
+    paddingHorizontal: 10,
+    marginBottom: 20,
+  },
+  bdayTxt: {
+    ...Typography.placeholderText,
+    textAlign: "left",
+  },
   genderPicker: {
     height: 50,
     borderColor: Colors.outline,
@@ -243,7 +360,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     paddingHorizontal: 10,
     marginTop: 5,
-    marginBottom: 20,
+    marginBottom: 30,
   },
   button: {
     width: "100%",

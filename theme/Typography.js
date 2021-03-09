@@ -30,6 +30,12 @@ export default {
     fontSize: 16,
     color: Colors.text,
   },
+  placeholderText: {
+    fontFamily: "roboto-regular",
+    fontSize: 14,
+    color: Colors.info,
+    textTransform: "none",
+  },
   bodyTextLight: {
     fontFamily: "roboto-light",
     fontSize: 16,
