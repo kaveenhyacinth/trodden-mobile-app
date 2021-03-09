@@ -184,6 +184,7 @@ const SignupInfoOneScreen = (props) => {
   const handleCountryPick = (country) => {
     handleInput(country.name, "country");
     handleInput(country.region, "region");
+    handleInput(country.callingCode[0], "callingCode")
   };
 
   const handleShowDatePicker = () => {
@@ -297,6 +298,7 @@ const SignupInfoOneScreen = (props) => {
         <DatePickerModel
           isVisible={isDatePickerVisible}
           mode="date"
+          display="spinner"
           onConfirm={(date) => handleInput(date, "birthdate")}
           onCancel={handleHideDatePicker}
         />
