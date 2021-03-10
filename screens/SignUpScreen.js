@@ -26,7 +26,7 @@ const ValidationSchema = yup.object().shape({
   lastName: yup
     .string()
     .trim()
-    .matches(/^[A-z]+$/, "Only letters!")
+    .matches(/^[A-z\s]+$/, "Only letters!")
     .min(2, "Too short! Enter at least two characters")
     .max(32, "Too long! Keep it less than 32 characters")
     .required(),

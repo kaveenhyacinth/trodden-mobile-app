@@ -23,7 +23,7 @@ const OpenScreen = (props) => {
         <BigButton
           style={styles.button}
           onPress={() => {
-            props.navigation.navigate("postAuth", { screen: "signupInfoTwo" });
+            props.navigation.navigate("signUp");
           }}
         >
           Sign up

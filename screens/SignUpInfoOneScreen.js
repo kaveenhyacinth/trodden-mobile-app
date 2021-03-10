@@ -224,13 +224,13 @@ const SignupInfoOneScreen = (props) => {
         country: formData.country,
         region: formData.region,
         contact: `${formData.callingCode}${formData.contact}`,
-        birthday: formData.birthdate,
+        birthdate: formData.birthdate,
         gender: formData.gender,
       };
 
       handleUserStoreUpdate(userData);
 
-      props.navigation.navigate("signupInfoTwo");
+      props.navigation.replace("signupInfoTwo");
     } catch (error) {
       Alert.alert(
         "Oh My Trod!",
@@ -324,6 +324,7 @@ const SignupInfoOneScreen = (props) => {
   );
 };
 
+//#region Styles
 const styles = StyleSheet.create({
   screen: {
     justifyContent: "space-between",
@@ -378,5 +379,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 3,
   },
 });
+//#endregion
 
 export default SignupInfoOneScreen;

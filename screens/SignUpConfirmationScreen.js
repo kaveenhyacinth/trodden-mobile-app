@@ -1,10 +1,10 @@
+//#region Imports
 import React, { useState, useRef } from "react";
 import { Text, View, StyleSheet, Pressable, Alert } from "react-native";
 import { useDispatch } from "react-redux";
 import { Save } from "../services/deviceStorage";
 import { storeUser } from "../store/actions/storeUser";
 import { storeToken } from "../store/actions/storeToken";
-import Http from "../api/kit";
 import api from "../api/api";
 import Colors from "../theme/Colors";
 import Typography from "../theme/Typography";
@@ -14,6 +14,7 @@ import InputBox from "../components/InputBox";
 import BigButton from "../components/BigButton";
 import LoadingButton from "../components/LoadingButton";
 import FormContainer from "../components/FormContainer";
+//#endregion
 
 const ConfirmationScreen = (props) => {
   // Store loading state
@@ -182,7 +183,7 @@ const ConfirmationScreen = (props) => {
       setLoading(true);
 
       // POST activation request
-      const activateProfileBody = {signupToken}
+      const activateProfileBody = { signupToken };
       const response = await api.activateProfile(activateProfileBody);
 
       if (!response.data.result)

@@ -210,7 +210,7 @@ const SignupInfoTwoScreen = (props) => {
       handleUserStoreUpdate(userData);
 
       // navigate to interests
-      props.navigation.navigate("selectInterests");
+      props.navigation.replace("selectInterests");
     } catch (error) {
       Alert.alert(
         "Oh My Trod!",

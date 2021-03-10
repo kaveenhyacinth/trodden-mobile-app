@@ -19,7 +19,7 @@ Http.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalReq = error.config;
-    let refToken = Fetch("refToken");
+    let refToken = await Fetch("refToken");
     console.log("refToken at api:", refToken);
 
     if (refToken && error.response.status === 401 && !originalReq._retry) {

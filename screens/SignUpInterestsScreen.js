@@ -190,7 +190,10 @@ const InterestScreen = (props) => {
           "Something went wrong while updating! Please try again later..."
         );
 
-      props.navigation.navigate("core");
+      props.navigation.replace("core", {
+        screen: "Home",
+        params: { UserId: id },
+      });
     } catch (error) {
       Alert.alert(
         "Select more Interests",
