@@ -10,6 +10,8 @@ import InterestGridTile from "../components/InterestGridTile";
 import BigButton from "../components/BigButton";
 import { INTERESTS } from "../data/dummy_data";
 
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("screen");
+
 const InterestScreen = (props) => {
   const [selectedInterests, setSelectedInterests] = useState([]);
 
@@ -84,26 +86,28 @@ const InterestScreen = (props) => {
     // TODO: add navigation
   };
 
+  //#region TODO:
   // TODO: handleOnDone
 
   // Upload image
-      // const body = new FormData();
-      // body.append("image", {
-      //   uri: imageFile.uri,
-      //   name: `image.${fileType}`,
-      //   type: `image/${fileType}`,
-      // });
+  // const body = new FormData();
+  // body.append("image", {
+  //   uri: imageFile.uri,
+  //   name: `image.${fileType}`,
+  //   type: `image/${fileType}`,
+  // });
 
-      // const response = await Http.post("/image/add", body, {
-      //   headers: {
-      //     Accept: "application/json",
-      //     "Content-Type": "multipart/form-data",
-      //   },
-      // });
-      // console.log("Image file path", response.data.result);
+  // const response = await Http.post("/image/add", body, {
+  //   headers: {
+  //     Accept: "application/json",
+  //     "Content-Type": "multipart/form-data",
+  //   },
+  // });
+  // console.log("Image file path", response.data.result);
 
-      // // Check response success
-      // if (!response) throw new Error("Something wend wrong");
+  // // Check response success
+  // if (!response) throw new Error("Something wend wrong");
+  //#endregion
 
   return (
     <View style={styles.screen}>
@@ -138,9 +142,10 @@ const InterestScreen = (props) => {
   );
 };
 
+//#region Styles
 const styles = StyleSheet.create({
   screen: {
-    width: Dimensions.get("screen").width,
+    width: SCREEN_WIDTH,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: Colors.accent,
@@ -150,7 +155,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     position: "absolute",
-    width: Dimensions.get("screen").width,
+    width: SCREEN_WIDTH,
     bottom: 0,
     backgroundColor: Colors.accent,
   },
@@ -174,5 +179,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 3,
   },
 });
+//#endregion
 
 export default InterestScreen;

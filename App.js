@@ -5,7 +5,8 @@ import React, { useState } from "react";
 import * as Font from "expo-font";
 import { NavigationContainer } from "@react-navigation/native";
 // import { useScreens } from "react-native-screens";
-import { createStore } from "redux";
+import { createStore, applyMiddleware } from "redux";
+import thunk from "redux-thunk";
 import { Provider } from "react-redux";
 import rootReducer from "./store/reducers/rootReducer";
 import MainNavigator from "./navigation/MainNavigator";
@@ -13,7 +14,7 @@ import MainNavigator from "./navigation/MainNavigator";
 // useScreens();
 
 // Redux globalized store
-const store = createStore(rootReducer);
+const store = createStore(rootReducer, applyMiddleware(thunk));
 
 const fetchFonts = () => {
   return Font.loadAsync({
