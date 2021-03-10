@@ -6,6 +6,7 @@ import {
   Pressable,
   ImageBackground,
 } from "react-native";
+import Constants from 'expo-constants';
 
 import Colors from "../theme/Colors";
 
@@ -26,7 +27,9 @@ const InterestGridTile = (props) => {
         <View style={{ ...styles.selectedContainer, ...props.style }}>
           <ImageBackground
             style={styles.bgimg}
-            source={props.imageUrl}
+            source={{
+              uri: `${Constants.manifest.extra.BASE_URL}/image/${props.imageUrl}`,
+            }}
           >
             <Text style={styles.selectedTitle} numberOfLines={1}>
               {props.title}
@@ -37,7 +40,9 @@ const InterestGridTile = (props) => {
         <View style={{ ...styles.container, ...props.style }}>
           <ImageBackground
             style={styles.bgimg}
-            source={props.imageUrl}
+            source={{
+              uri: `${Constants.manifest.extra.BASE_URL}/image/${props.imageUrl}`,
+            }}
           >
             <Text style={styles.title} numberOfLines={1}>
               {props.title}
@@ -59,10 +64,10 @@ const styles = StyleSheet.create({
     flex: 1,
     height: "100%",
     borderRadius: 10,
-    borderColor: "#ccc",
+    borderColor: Colors.outline,
     borderWidth: 1,
     elevation: 5,
-    shadowColor: "black",
+    shadowColor: Colors.text,
     shadowOpacity: 0.26,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 3,
@@ -75,7 +80,7 @@ const styles = StyleSheet.create({
     borderColor: Colors.primary,
     borderWidth: 1,
     elevation: 5,
-    shadowColor: "black",
+    shadowColor: Colors.text,
     shadowOpacity: 0.26,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 3,
@@ -94,6 +99,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     padding: 10,
     backgroundColor: "rgba(62, 148, 63, 0.8)",
+    backgroundColor: Colors.text,
     color: "white",
   },
   selectedTitle: {

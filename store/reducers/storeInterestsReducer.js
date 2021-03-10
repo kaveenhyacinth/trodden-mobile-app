@@ -1,14 +1,18 @@
 import { GET_INTERESTS } from "../actionTypes";
 
-const initialState = []
+const initialState = {
+  interests: [],
+  loading: true,
+};
 
 const storeUserReducer = (state = initialState, action) => {
   switch (action.type) {
     case GET_INTERESTS:
-      return [
+      return {
         ...state,
-        ...action.payload,
-      ];
+        interests: action.payload,
+        loading: false,
+      };
     default:
       return state;
   }

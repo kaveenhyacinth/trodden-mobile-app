@@ -1,3 +1,4 @@
+//#region Imports
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet, FlatList, Alert, Dimensions } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
@@ -8,7 +9,7 @@ import Typography from "../theme/Typography";
 import BodyText from "../components/BodyText";
 import InterestGridTile from "../components/InterestGridTile";
 import BigButton from "../components/BigButton";
-import { INTERESTS } from "../data/dummy_data";
+//#endregion
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("screen");
 
@@ -20,18 +21,24 @@ const InterestScreen = (props) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    loadInterests();
+    handleLoadInterests();
     console.log("userData", userData);
     console.log("Interests", interetsStore);
   }, []);
 
-  const loadInterests = async () => {
+  const checkIsValidSelection = () => {
+    const selectionCount = selectedInterests.length;
+    if (selectionCount < 3) return false;
+    return true;
+  };
+
+  const handleLoadInterests = async () => {
     try {
       await getInterests()(dispatch);
     } catch (error) {
       Alert.alert(
         "Oh My trod!",
-        "Something went wrong. Please try again later",
+        error.message ?? "Something went wrong. Please try again later",
         [
           {
             text: "I Will",
@@ -44,10 +51,11 @@ const InterestScreen = (props) => {
     }
   };
 
-  const interestSelectionHandler = (id) => {
+  const handleSelectInterests = (id) => {
     const prevSelectedInterest = selectedInterests.find(
       (interest) => interest === id
     );
+    console.log("Interests Selected", selectedInterests);
 
     prevSelectedInterest !== undefined
       ? setSelectedInterests((prevState) =>
@@ -56,23 +64,26 @@ const InterestScreen = (props) => {
       : setSelectedInterests((prevState) => [...prevState, id]);
   };
 
-  const renderInterests = (itemData) => {
+  const handleRenderInterests = (itemData) => {
     return (
       <InterestGridTile
-        title={itemData.item.name}
-        imageUrl={itemData.item.path}
-        onSelect={() => interestSelectionHandler(itemData.item.id)}
+        title={itemData.item.title}
+        imageUrl={itemData.item.image}
+        onSelect={() => handleSelectInterests(itemData.item._id)}
       />
     );
   };
 
-  const selectionValidator = () => {
-    const selectionCount = selectedInterests.length;
-
-    if (selectionCount < 3) {
+  const handleSubmit = async () => {
+    try {
+      const isValid = checkIsValidSelection();
+      if (!isValid)
+        throw new Error("Please select at least 3 interests to proceed");
+      console.log("User Data:", userData);
+    } catch (error) {
       Alert.alert(
         "Select more Interests",
-        "Please select at least 3 interests to proceed",
+        error.message ?? "Something went wrong! Please try again later...",
         [
           {
             text: "I Will",
@@ -82,8 +93,6 @@ const InterestScreen = (props) => {
         { cancelable: false }
       );
     }
-
-    // TODO: add navigation
   };
 
   //#region TODO:
@@ -114,9 +123,9 @@ const InterestScreen = (props) => {
       <View style={{ width: "100%", marginBottom: 80 }}>
         <FlatList
           style={styles.list}
-          data={INTERESTS}
-          renderItem={renderInterests}
-          keyExtractor={(item) => item.id}
+          data={interetsStore.interests}
+          renderItem={handleRenderInterests}
+          keyExtractor={(item) => item._id}
           numColumns={2}
           ListHeaderComponent={() => (
             <BodyText>Select at least 3 interests</BodyText>
@@ -129,7 +138,7 @@ const InterestScreen = (props) => {
         />
       </View>
       <View style={styles.buttonContainer}>
-        <BigButton style={styles.button} onPress={selectionValidator}>
+        <BigButton style={styles.button} onPress={handleSubmit}>
           Done
         </BigButton>
         <View style={styles.bottomBars}>
