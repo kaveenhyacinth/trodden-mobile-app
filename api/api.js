@@ -40,6 +40,7 @@ Http.interceptors.response.use(
 const api = {
   signup: (body) => Http.post("/api/auth/signup", body),
   activateProfile: (body) => Http.post("/api/auth/activate", body),
+  getInterests: () => Http.get("/api/interests"),
   updateProfile: (body) => Http.put("/api/profile/setup", body),
   uploadImage: (body) => (config) => Http.post("/image/add", body, config),
 };
