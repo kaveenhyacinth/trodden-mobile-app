@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from "react";
-import { View, StyleSheet } from "react-native";
+//#region Imports
+import React, { useState, useEffect, useReducer } from "react";
+import { View, Alert, StyleSheet } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import * as ImagePicker from "expo-image-picker";
+import * as yup from "yup";
 import { storeUser } from "../store/actions/storeUser";
 import Colors from "../theme/Colors";
 import Typography from "../theme/Typography";
@@ -12,20 +14,72 @@ import BodyText from "../components/BodyText";
 import ImageUploader from "../components/ImageUploader";
 import InputBox from "../components/InputBox";
 import FormContainer from "../components/FormContainer";
+//#endregion
+
+const INFO_TWO_FORM_UPDATE = "INFO_TWO_FORM_UPDATE";
+
+const formReducer = (state, action) => {
+  if (action.type === INFO_TWO_FORM_UPDATE) {
+    const updatedValues = {
+      ...state.initialValues,
+      [action.payload.key]: action.payload.value,
+    };
+    const updatedValidities = {
+      ...state.initialValidities,
+      [action.payload.key]: action.payload.validation.validity,
+    };
+    const updatedErrorMsgs = {
+      ...state.errorMsgs,
+      [action.payload.key]: action.payload.validation.msg,
+    };
+
+    return {
+      ...state,
+      initialValues: updatedValues,
+      initialValidities: updatedValidities,
+      errorMsgs: updatedErrorMsgs,
+    };
+  }
+  return state;
+};
+
+const validationSchema = yup.object().shape({
+  bio: yup
+    .string()
+    .min(50, "Too short! Keep it descriptive...")
+    .max(150, "Too long! Keep it short..."),
+  occupation: yup.string().matches(/^[A-z\s]+$/, "Field value is invalid!"),
+});
 
 const SignupInfoTwoScreen = (props) => {
+  //#region Local State
   const [loading, setLoading] = useState(false);
   const [imageFile, setImageFile] = useState({});
-  const [formData, setFormData] = useState({
-    bio: "",
-    occupation: "",
+  //#endregion
+
+  //#region Local Form State
+  const [formState, dispatchFormState] = useReducer(formReducer, {
+    initialValues: {
+      bio: "",
+      occupation: "",
+    },
+    initialValidities: {
+      bio: false,
+      occupation: false,
+    },
+    errorMsgs: {
+      bio: "",
+      occupation: "",
+    },
   });
+  //#endregion
 
   const dispatch = useDispatch();
   const userStore = useSelector((state) => state.userStore);
 
   useEffect(() => console.log("User Store:", userStore), [userStore]);
 
+  //#region Image Selection Flow
   const handleRequestPermission = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
@@ -62,35 +116,91 @@ const SignupInfoTwoScreen = (props) => {
       setImageFile((prevState) => ({ ...prevState, ...result }));
     }
   };
+  //#endregion
 
-  const handleInput = (inputText, field) => {
-    switch (field) {
-      case "bio":
-        setFormData({ ...formData, bio: inputText });
-        break;
-      case "occupation":
-        setFormData({ ...formData, occupation: inputText });
-        break;
-      default:
-        break;
+  //#region Input Handle & Validation Flow
+  const handleValidation = async (inputValue, inputKey) => {
+    try {
+      const result = await validationSchema.validate({
+        [inputKey]: inputValue,
+      });
+      const key = Object.keys(result);
+      dispatchFormState({
+        type: INFO_TWO_FORM_UPDATE,
+        payload: {
+          key,
+          value: result[key],
+          validation: {
+            validity: true,
+            msg: "",
+          },
+        },
+      });
+    } catch (error) {
+      dispatchFormState({
+        type: INFO_TWO_FORM_UPDATE,
+        payload: {
+          key: inputKey,
+          value: inputValue,
+          validation: {
+            validity: false,
+            msg: error.message,
+          },
+        },
+      });
     }
   };
+
+  const handleInput = (value) => async (key) => {
+    let validation = { validity: true, msg: "" };
+
+    if (value === null || value === undefined || value === "") {
+      validation = { validity: false, msg: "Don't leave empty" };
+      dispatchFormState({
+        type: INFO_TWO_FORM_UPDATE,
+        payload: {
+          value,
+          key,
+          validation,
+        },
+      });
+    } else {
+      await handleValidation(value, key);
+    }
+  };
+  //#endregion
 
   const handleUserStoreUpdate = (userData) => {
     dispatch(storeUser(userData));
   };
 
-  const handleOnPressNext = async () => {
+  const handleSubmit = async () => {
+    const formData = formState.initialValues;
+    const formValidation = formState.initialValidities;
+
     try {
       setLoading(true);
+
+      const isValid = formValidation.bio && formValidation.occupation;
+
+      if (!isValid)
+        throw new Error("Invalid inputs detected. Please re-try...");
+      if (!imageFile.uri) throw new Error("Please upload your profile image");
 
       // Get file type
       const fileType = imageFile.uri.split(".").pop();
 
+      // Format occupation input
+      const words = formData.occupation.split(" ");
+      for (let i = 0; i < words.length; i++) {
+        words[i] = words[i][0].toUpperCase() + words[i].substr(1).toLowerCase();
+      }
+      const occupation = words.join(" ");
+
       // Prepare image data
       const userData = {
         bio: formData.bio,
-        occupation: formData.occupation,
+        occupation: occupation,
         ImageDataUri: imageFile.uri,
         ImageDataName: `image.${fileType}`,
         ImageDataType: `image/${fileType}`,
@@ -101,27 +211,18 @@ const SignupInfoTwoScreen = (props) => {
 
       // navigate to interests
       props.navigation.navigate("selectInterests");
-
-      // Upload image
-      // const body = new FormData();
-      // body.append("image", {
-      //   uri: imageFile.uri,
-      //   name: `image.${fileType}`,
-      //   type: `image/${fileType}`,
-      // });
-
-      // const response = await Http.post("/image/add", body, {
-      //   headers: {
-      //     Accept: "application/json",
-      //     "Content-Type": "multipart/form-data",
-      //   },
-      // });
-      // console.log("Image file path", response.data.result);
-
-      // // Check response success
-      // if (!response) throw new Error("Something wend wrong");
     } catch (error) {
-      console.warn(error);
+      Alert.alert(
+        "Oh My Trod!",
+        error.message ?? "Something went wrong! Please try again later...",
+        [
+          {
+            text: "Sure",
+            style: "destructive",
+          },
+        ],
+        { cancelable: false }
+      );
     } finally {
       setLoading(false);
     }
@@ -133,25 +234,28 @@ const SignupInfoTwoScreen = (props) => {
         <ImageUploader
           style={styles.imageUploader}
           onUpload={handleSelectImage}
-          image={imageFile.uri}
+          image={imageFile.uri ?? "https://bit.ly/3t7hmNd"}
         />
         <InputBox
           multiline={true}
           style={styles.inputArea}
           placeholder="Bio"
-          message=""
-          onChangeText={(inputText) => handleInput(inputText, "bio")}
+          message={formState.errorMsgs.bio}
+          value={formState.initialValues.bio}
+          returnKeyType="none"
+          onChangeText={(inputText) => handleInput(inputText)("bio")}
         />
         <InputBox
           style={styles.input}
           placeholder="Currently work as ..."
-          message=""
-          onChangeText={(inputText) => handleInput(inputText, "occupation")}
+          message={formState.errorMsgs.occupation}
+          value={formState.initialValues.occupation}
+          onChangeText={(inputText) => handleInput(inputText)("occupation")}
         />
         {loading ? (
           <LoadingButton />
         ) : (
-          <BigButton style={styles.button} onPress={handleOnPressNext}>
+          <BigButton style={styles.button} onPress={handleSubmit}>
             Next
           </BigButton>
         )}
@@ -165,6 +269,7 @@ const SignupInfoTwoScreen = (props) => {
   );
 };
 
+//#region Styles
 const styles = StyleSheet.create({
   inputArea: {
     height: 200,
@@ -197,5 +302,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 3,
   },
 });
+//#endregion
 
 export default SignupInfoTwoScreen;

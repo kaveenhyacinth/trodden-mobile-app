@@ -22,20 +22,16 @@ const INFO_ONE_FORM_UPDATE = "INFO_ONE_FORM_UPDATE";
 
 const formReducer = (state, action) => {
   if (action.type === INFO_ONE_FORM_UPDATE) {
-    let updatedValues;
-    let updatedValidities;
-    let updatedErrorMsgs;
-
-    updatedValues = {
+    const updatedValues = {
       ...state.inputValues,
       [action.payload.key]: action.payload.value,
     };
 
-    updatedValidities = {
+    const updatedValidities = {
       ...state.inputValidities,
       [action.payload.key]: action.payload.validation.validity,
     };
-    updatedErrorMsgs = {
+    const updatedErrorMsgs = {
       ...state.errorMsgs,
       [action.payload.key]: action.payload.validation.msg,
     };
@@ -151,12 +147,7 @@ const SignupInfoOneScreen = (props) => {
     let validation = { validity: true, msg: "" };
 
     // Check is the field is empty
-    if (
-      value === null ||
-      value === undefined ||
-      value === "" ||
-      value === "00"
-    ) {
+    if (value === null || value === undefined || value === "") {
       validation = { validity: false, msg: "Don't leave empty" };
       dispatchFormState({
         type: INFO_ONE_FORM_UPDATE,
@@ -184,7 +175,7 @@ const SignupInfoOneScreen = (props) => {
   const handleCountryPick = (country) => {
     handleInput(country.name, "country");
     handleInput(country.region, "region");
-    handleInput(country.callingCode[0], "callingCode")
+    handleInput(country.callingCode[0], "callingCode");
   };
 
   const handleShowDatePicker = () => {
@@ -243,7 +234,7 @@ const SignupInfoOneScreen = (props) => {
     } catch (error) {
       Alert.alert(
         "Oh My Trod!",
-        error.message,
+        error.message ?? "Something went wrong! Please try again later...",
         [
           {
             text: "Sure",

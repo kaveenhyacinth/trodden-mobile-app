@@ -86,6 +86,25 @@ const InterestScreen = (props) => {
 
   // TODO: handleOnDone
 
+  // Upload image
+      // const body = new FormData();
+      // body.append("image", {
+      //   uri: imageFile.uri,
+      //   name: `image.${fileType}`,
+      //   type: `image/${fileType}`,
+      // });
+
+      // const response = await Http.post("/image/add", body, {
+      //   headers: {
+      //     Accept: "application/json",
+      //     "Content-Type": "multipart/form-data",
+      //   },
+      // });
+      // console.log("Image file path", response.data.result);
+
+      // // Check response success
+      // if (!response) throw new Error("Something wend wrong");
+
   return (
     <View style={styles.screen}>
       <View style={{ width: "100%", marginBottom: 80 }}>
