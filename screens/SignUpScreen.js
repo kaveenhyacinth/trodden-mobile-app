@@ -1,8 +1,9 @@
+//#region Imports
 import React, { useState } from "react";
 import { Formik } from "formik";
 import * as yup from "yup";
 import { Text, StyleSheet, Pressable, Alert } from "react-native";
-import Http from "../api/kit";
+import api from "../api/api";
 import Colors from "../theme/Colors";
 import Typography from "../theme/Typography";
 import ScreenView from "../components/ScreenView";
@@ -11,6 +12,7 @@ import InputBox from "../components/InputBox";
 import BigButton from "../components/BigButton";
 import LoadingButton from "../components/LoadingButton";
 import FormContainer from "../components/FormContainer";
+//#endregion
 
 //#region Validation schema
 const ValidationSchema = yup.object().shape({
@@ -115,14 +117,15 @@ const SignUpScreen = (props) => {
       setLoading(true);
 
       // Request signup
-      const response = await Http.post("/api/auth/signup", {
+      const signupBody = {
         firstName: formData.firstName,
         lastName: formData.lastName,
         username: formData.username,
         email: formData.email,
         password: formData.password,
-      });
-      if (!response) throw new Error("Please try again later");
+      };
+      const response = await api.signup(signupBody);
+      if (!response.data.result) throw new Error("Please try again later");
 
       // Navigate to confirmation
       props.navigation.replace("postAuth", {

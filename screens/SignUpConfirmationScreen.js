@@ -5,6 +5,7 @@ import { Save } from "../services/deviceStorage";
 import { storeUser } from "../store/actions/storeUser";
 import { storeToken } from "../store/actions/storeToken";
 import Http from "../api/kit";
+import api from "../api/api";
 import Colors from "../theme/Colors";
 import Typography from "../theme/Typography";
 import ScreenView from "../components/ScreenView";
@@ -181,9 +182,13 @@ const ConfirmationScreen = (props) => {
       setLoading(true);
 
       // POST activation request
-      const response = await Http.post("/api/auth/activate", {
-        signupToken,
-      });
+      const activateProfileBody = {signupToken}
+      const response = await api.activateProfile(activateProfileBody);
+
+      if (!response.data.result)
+        throw new Error(
+          "Something went wrong while activating profile! Please try again later..."
+        );
 
       const signToken = response.data.result.signToken;
       const refToken = response.data.result.refToken;
@@ -192,6 +197,7 @@ const ConfirmationScreen = (props) => {
       handleUserStoreUpdate({ id: response.data.result.id });
       handleTokenStoreUpdate(signToken, refToken);
 
+      Save("signToken", signToken); // Save sign token in secure store
       Save("refToken", refToken); // Save refresh token in secure store
       Save("userRole", response.data.result.role); // Save user signup state
 
@@ -202,7 +208,7 @@ const ConfirmationScreen = (props) => {
         console.log("Error @confirmation:", error);
         return Alert.alert(
           "Something went wrong",
-          "Sorry, it's our fault! Please try again later...",
+          error.message ?? "Sorry, it's our fault! Please try again later...",
           [
             {
               text: "Okay",

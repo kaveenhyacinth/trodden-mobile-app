@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { View, StyleSheet, FlatList, Alert, Dimensions } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { getInterests } from "../store/actions/getInterests";
-import Http from "../api/kit";
+import api from "../api/api";
 import Colors from "../theme/Colors";
 import Typography from "../theme/Typography";
 import BodyText from "../components/BodyText";
@@ -91,12 +91,13 @@ const InterestScreen = (props) => {
    */
   const handleUploadImage = async (body) => {
     try {
-      const response = await Http.post("/image/add", body, {
+      const config = {
         headers: {
           Accept: "application/json",
           "Content-Type": "multipart/form-data",
         },
-      });
+      };
+      const response = await api.uploadImage(body)(config);
       console.log("Image file path", response.data.result);
 
       // Check response success
@@ -117,12 +118,7 @@ const InterestScreen = (props) => {
    */
   const handleUpdateUserProfile = async (body) => {
     try {
-      const response = await Http.put("/api/profile/setup", body, {
-        headers: {
-          Accept: "application/json",
-          Authorization: `Bearer ${tokenStore.signToken}`,
-        },
-      });
+      const response = await api.updateProfile(body);
 
       if (!response.data.success)
         throw new Error(
