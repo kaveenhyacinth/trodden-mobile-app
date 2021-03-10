@@ -38,6 +38,7 @@ Http.interceptors.response.use(
 );
 
 const api = {
+  refreshToken: (body) => Http.post("/api/auth/refresh-token", body),
   signup: (body) => Http.post("/api/auth/signup", body),
   activateProfile: (body) => Http.post("/api/auth/activate", body),
   getInterests: () => Http.get("/api/interests"),

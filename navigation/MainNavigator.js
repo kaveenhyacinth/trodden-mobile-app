@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { createStackNavigator } from "@react-navigation/stack";
+import { Alert } from "react-native";
 import { useDispatch } from "react-redux";
-import { Fetch } from "../services/deviceStorage";
+import { Save, Fetch } from "../services/deviceStorage";
 import { storeToken } from "../store/actions/storeToken";
-import refreshTokens from "../services/refreshTokens";
+import api from "../api/api";
 import AuthNavigator from "./AuthNavigator";
 import PostAuthNavigator from "./PostAuthNavigator";
 import CoreNavigator from "./CoreNavigator";
@@ -15,27 +16,53 @@ const MainNavigator = (props) => {
 
   // Update tokens store with new tokens
   const dispatch = useDispatch();
-  const handleTokenUpdate = (signToken, refToken) => {
-    dispatch(storeToken(signToken, refToken));
-  };
 
   useEffect(() => {
-    // Check storage ref token availability
-    const handleSigninCheck = async () => {
-      try {
-        const refToken = await Fetch("refTokn");
-        if (!refToken) return setIsSignedIn(false);
-
-        const { newSignInToken, newRefToken } = await refreshTokens(refToken);
-        handleTokenUpdate(newSignInToken, newRefToken);
-
-        return setIsSignedIn(true);
-      } catch (error) {
-        console.log("Error loading screen token checkup:", error.message);
-      }
-    };
-    handleSigninCheck();
+    checkIsSignedIn();
   }, []);
+
+  // Check storage ref token availability
+  const checkIsSignedIn = async () => {
+    try {
+      // Fetch token form localstorage
+      const refToken = await Fetch("refToken");
+      if (!refToken) return setIsSignedIn(false);
+
+      // Request for new tokens
+      const refreshTokenBody = {
+        refreshToken: refToken,
+      };
+      const response = await api.refreshToken(refreshTokenBody);
+
+      if (!response.data.result) throw new Error("Something went wrong!");
+
+      const newSignToken = response.data.result.signToken;
+      const newRefToken = response.data.result.refToken;
+
+      // Update state and localstorage with new tokens
+      handleUpdateTokens(newSignToken, newRefToken);
+      await Save("signToken", newSignToken);
+      await Save("refToken", newRefToken);
+
+      return setIsSignedIn(true);
+    } catch (error) {
+      Alert.alert(
+        "Oh My Trod!",
+        "Something went wrong! Please check your internet connection and try again...",
+        [
+          {
+            text: "I Will",
+            style: "destructive",
+          },
+        ],
+        { cancelable: false }
+      );
+    }
+  };
+
+  const handleUpdateTokens = (signToken, refToken) => {
+    dispatch(storeToken(signToken, refToken));
+  };
 
   // Navigate accordign to auth state
   return isSignedIn ? (
