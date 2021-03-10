@@ -14,16 +14,19 @@ import BigButton from "../components/BigButton";
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("screen");
 
 const InterestScreen = (props) => {
-  const [selectedInterests, setSelectedInterests] = useState([]);
-
-  const userData = useSelector((state) => state.userStore);
-  const interetsStore = useSelector((state) => state.interestsStore);
   const dispatch = useDispatch();
+
+  const userStore = useSelector((state) => state.userStore);
+  const tokenStore = useSelector((state) => state.tokenStore);
+  const interetsStore = useSelector((state) => state.interestsStore);
+
+  const [loading, setLoading] = useState(false);
+  const [selectedInterests, setSelectedInterests] = useState([]);
 
   useEffect(() => {
     handleLoadInterests();
-    console.log("userData", userData);
-    console.log("Interests", interetsStore);
+    // console.log("userData", userStore);
+    // console.log("Interests", interetsStore);
   }, []);
 
   const checkIsValidSelection = () => {
@@ -51,17 +54,25 @@ const InterestScreen = (props) => {
     }
   };
 
+  const handlePrepareUserData = (userStore, interests) => {
+    return {
+      ...userStore,
+      interests,
+    };
+  };
+
   const handleSelectInterests = (id) => {
     const prevSelectedInterest = selectedInterests.find(
       (interest) => interest === id
     );
-    console.log("Interests Selected", selectedInterests);
 
-    prevSelectedInterest !== undefined
-      ? setSelectedInterests((prevState) =>
-          prevState.filter((interest) => interest !== id)
-        )
-      : setSelectedInterests((prevState) => [...prevState, id]);
+    if (prevSelectedInterest !== undefined) {
+      setSelectedInterests((prevState) =>
+        prevState.filter((interest) => interest !== id)
+      );
+    } else {
+      setSelectedInterests((prevState) => [...prevState, id]);
+    }
   };
 
   const handleRenderInterests = (itemData) => {
@@ -74,12 +85,116 @@ const InterestScreen = (props) => {
     );
   };
 
+  /** Upload Image
+   * @param {Object} body Image data
+   * @returns Filename
+   */
+  const handleUploadImage = async (body) => {
+    try {
+      const response = await Http.post("/image/add", body, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      console.log("Image file path", response.data.result);
+
+      // Check response success
+      if (!response.data.result)
+        throw new Error(
+          "Something went wrong while saving the profile picture! Please try again later..."
+        );
+
+      return response.data.result;
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  /** Update user profile
+   * @param {Object} body userData to update
+   * @returns boolean
+   */
+  const handleUpdateUserProfile = async (body) => {
+    try {
+      const response = await Http.put("/api/profile/setup", body, {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${tokenStore.signToken}`,
+        },
+      });
+
+      if (!response.data.success)
+        throw new Error(
+          "Something went wrong while updating the information! Please try again later..."
+        );
+
+      return response.data.success;
+    } catch (error) {
+      console.log("Error =>", error.response);
+      throw error;
+    }
+  };
+
   const handleSubmit = async () => {
+    setLoading(true);
     try {
       const isValid = checkIsValidSelection();
       if (!isValid)
-        throw new Error("Please select at least 3 interests to proceed");
-      console.log("User Data:", userData);
+        throw new Error("Please select at least 3 interests to proceed...");
+
+      const data = handlePrepareUserData(userStore, selectedInterests);
+      console.log("Data to send to the server\n", data);
+
+      // Upload image
+      const ImageBody = new FormData();
+      ImageBody.append("image", {
+        uri: data.ImageDataUri,
+        name: data.ImageDataName,
+        type: data.ImageDataType,
+      });
+
+      const filename = await handleUploadImage(ImageBody);
+      if (!filename)
+        throw new Error(
+          "Something went wrong while saving the profile picture! Please try again later..."
+        );
+
+      const {
+        id,
+        city,
+        country,
+        region,
+        contact,
+        birthdate,
+        gender,
+        bio,
+        occupation,
+        interests,
+      } = data;
+
+      const userBody = {
+        userId: id,
+        bio,
+        occupation,
+        contact,
+        city,
+        country,
+        region,
+        birthdate,
+        gender,
+        interests,
+        filename,
+      };
+
+      const isUpdatedUserProfile = await handleUpdateUserProfile(userBody);
+
+      if (!isUpdatedUserProfile)
+        throw new Error(
+          "Something went wrong while updating! Please try again later..."
+        );
+
+      props.navigation.navigate("core");
     } catch (error) {
       Alert.alert(
         "Select more Interests",
@@ -92,31 +207,10 @@ const InterestScreen = (props) => {
         ],
         { cancelable: false }
       );
+    } finally {
+      setLoading(false);
     }
   };
-
-  //#region TODO:
-  // TODO: handleOnDone
-
-  // Upload image
-  // const body = new FormData();
-  // body.append("image", {
-  //   uri: imageFile.uri,
-  //   name: `image.${fileType}`,
-  //   type: `image/${fileType}`,
-  // });
-
-  // const response = await Http.post("/image/add", body, {
-  //   headers: {
-  //     Accept: "application/json",
-  //     "Content-Type": "multipart/form-data",
-  //   },
-  // });
-  // console.log("Image file path", response.data.result);
-
-  // // Check response success
-  // if (!response) throw new Error("Something wend wrong");
-  //#endregion
 
   return (
     <View style={styles.screen}>

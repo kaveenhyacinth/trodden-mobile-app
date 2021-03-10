@@ -6,23 +6,19 @@ import {
   Pressable,
   ImageBackground,
 } from "react-native";
-import Constants from 'expo-constants';
-
+import Constants from "expo-constants";
 import Colors from "../theme/Colors";
 
 const InterestGridTile = (props) => {
   const [isSelected, setIsSelected] = useState(false);
 
-  const selectionHandler = () => {
+  const handleSelect = () => {
     props.onSelect();
     setIsSelected((selection) => !selection);
   };
 
   return (
-    <Pressable
-      style={({ pressed }) => [{ opacity: pressed ? 0.8 : 1 }, styles.gridItem]}
-      onPress={selectionHandler}
-    >
+    <Pressable style={styles.gridItem} onPress={handleSelect}>
       {isSelected === true ? (
         <View style={{ ...styles.selectedContainer, ...props.style }}>
           <ImageBackground
@@ -54,6 +50,7 @@ const InterestGridTile = (props) => {
   );
 };
 
+//#region Styles
 const styles = StyleSheet.create({
   gridItem: {
     flex: 1,
@@ -93,23 +90,25 @@ const styles = StyleSheet.create({
     resizeMode: "cover",
     justifyContent: "flex-end",
     overflow: "hidden",
+    backgroundColor: Colors.primary,
   },
   title: {
     fontSize: 24,
     textAlign: "center",
     padding: 10,
-    backgroundColor: "rgba(62, 148, 63, 0.8)",
-    backgroundColor: Colors.text,
+    backgroundColor: Colors.textOverlay,
     color: "white",
   },
   selectedTitle: {
     flex: 1,
     fontSize: 24,
     textAlign: "center",
+    textAlignVertical: "center",
     padding: 10,
-    backgroundColor: "rgba(62, 148, 63, 0.95)",
+    backgroundColor: Colors.textOverlay,
     color: "white",
   },
 });
+//#endregion
 
 export default InterestGridTile;
