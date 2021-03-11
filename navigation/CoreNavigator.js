@@ -6,7 +6,7 @@ import ExploreNavigation from "./ExploreNavigation";
 import TribeNavigation from "./TribeNavigation";
 import ProfileNavigation from "./ProfileStackNavigation";
 import HomeNavigation from "./HomeNavigation";
-import NewPostScreen from "../screens/core/NewPostScreen";
+import InboxScreen from "../screens/core/InboxScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -61,7 +61,7 @@ const CoreNavigator = (props) => {
       />
       <Tab.Screen
         name={"NewPost"}
-        component={NewPostScreen}
+        component={InboxScreen}
         options={{
           tabBarIcon: (tabInfo) => renderFaIcons(tabInfo)("inbox", 25),
         }}
