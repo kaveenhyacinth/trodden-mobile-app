@@ -8,7 +8,7 @@ export const Save = async (key, value) => {
     await SecureStore.setItemAsync(key, value);
     console.log("Storage Value: " + value);
   } catch (error) {
-    console.log("🔴 Secure Storage Error: " + error.message);
+    console.log("🔴 Secure Storage Saving Error: " + error.message);
   }
 };
 
@@ -21,7 +21,7 @@ export const Fetch = async (key) => {
     console.log("Storage fetch Value: " + result);
     return result;
   } catch (error) {
-    console.log("🔴 Secure Storage Error: " + error.message);
+    console.log("🔴 Secure Storage Fetching Error: " + error.message);
   }
 };
 

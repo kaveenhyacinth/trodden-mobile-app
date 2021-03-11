@@ -44,13 +44,11 @@ const ProfileHeader = (props) => {
         </BodyText>
         <BodyText style={styles.username}>@mr.syfero</BodyText>
         <BodyText style={styles.country}>
-          <FontAwesome5 name="map-marker-alt" /> Colombo, Sri Lanka
+          <FontAwesome5 name="map-marker-alt" />{" "}
+          {`${user.city}, ${user.country}`}
         </BodyText>
         <View style={styles.bio}>
-          <BodyText style={styles.bioText}>
-            Fall Foward; flow freely. 🔆{"\n"}Sri Lankan | Dev | IEEEian |
-            Writer ❤
-          </BodyText>
+          <BodyText style={styles.bioText}>{user.bio}</BodyText>
         </View>
       </View>
     </View>
@@ -59,7 +57,7 @@ const ProfileHeader = (props) => {
 
 const styles = StyleSheet.create({
   container: {
-    height: SCREEN_HEIGHT * 0.4,
+    maxHeight: SCREEN_HEIGHT * 0.4,
     width: SCREEN_WIDTH,
     backgroundColor: Colors.accent,
   },

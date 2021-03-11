@@ -106,7 +106,7 @@ const SignupInfoOneScreen = (props) => {
 
   useEffect(() => {
     console.log("User Store:", store);
-  }, [store]);
+  }, []);
 
   const handleValidation = async (inputValue, inputKey) => {
     try {

@@ -25,7 +25,7 @@ const MainNavigator = (props) => {
   const checkIsSignedIn = async () => {
     try {
       // Fetch token form localstorage
-      const refToken = await Fetch("refTken");
+      const refToken = await Fetch("refToken");
       if (!refToken) return setIsSignedIn(false);
 
       // Request for new tokens

@@ -200,7 +200,9 @@ const ConfirmationScreen = (props) => {
 
       Save("signToken", signToken); // Save sign token in secure store
       Save("refToken", refToken); // Save refresh token in secure store
-      Save("userRole", response.data.result.role); // Save user signup state
+      Save("userRole", response.data.result.role.toString()); // Save user signup state
+
+      console.log(`role ${response.data.result.role.toString()}`);
 
       // Navigate to Interest selection
       props.navigation.replace("signupInfoOne");
