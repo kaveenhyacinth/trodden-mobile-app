@@ -1,29 +1,365 @@
+//#region Imports
 import React, { useState } from "react";
 import {
   View,
   Image,
-  Button,
+  Alert,
   Pressable,
   StyleSheet,
   ScrollView,
   Dimensions,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import * as ImagePicker from "expo-image-picker";
+import { Video, AVPlaybackStatus } from "expo-av";
 import Colors from "../../theme/Colors";
 import Typography from "../../theme/Typography";
 import ScreenView from "../../components/ScreenView";
 import BodyText from "../../components/BodyText";
 import InputBox from "../../components/InputBox";
 import MemoImagePreview from "../../components/MemoImagePreview";
+//#endregion
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 
 const NewPostScreen = () => {
-  const [images, setImages] = useState([
-    { link: "https://bit.ly/3rfCwbA", id: 3 },
-    { link: "https://bit.ly/3e9xh9N", id: 1 },
-    { link: "https://bit.ly/3qeC7EV", id: 2 },
-  ]);
+  const [images, setImages] = useState([]);
+  const [video, setVideo] = useState([]);
+
+  // Request permision for camera roll
+  const handleRequestCameraRollPermission = async () => {
+    try {
+      const getPerm = await ImagePicker.getMediaLibraryPermissionsAsync();
+      if (getPerm.granted) return true;
+
+      const reqPerm = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (!reqPerm.granted) {
+        Alert.alert(
+          "Insufficient Permissions",
+          "You need to grant camera roll permission to proceed",
+          [
+            {
+              text: "Okay",
+              style: "destructive",
+            },
+          ],
+          { cancelable: false }
+        );
+        return false;
+      }
+      return true;
+    } catch (error) {
+      return Alert.alert(
+        "Something went wrong!",
+        error.message,
+        [
+          {
+            text: "Okay",
+            style: "destructive",
+          },
+        ],
+        { cancelable: false }
+      );
+    }
+  };
+
+  // Request permission for camera
+  const handleRequestCameraPermission = async () => {
+    try {
+      const getPerm = await ImagePicker.getCameraPermissionsAsync();
+      if (getPerm.granted) return true;
+
+      const reqPerm = await ImagePicker.requestCameraPermissionsAsync();
+      if (!reqPerm.granted) {
+        Alert.alert(
+          "Insufficient Permissions",
+          "You need to grant camera permission to proceed",
+          [
+            {
+              text: "Okay",
+              style: "destructive",
+            },
+          ],
+          { cancelable: false }
+        );
+        return false;
+      }
+      return true;
+    } catch (error) {
+      return Alert.alert(
+        "Something went wrong!",
+        error.message,
+        [
+          {
+            text: "Okay",
+            style: "destructive",
+          },
+        ],
+        { cancelable: false }
+      );
+    }
+  };
+
+  const handleSelectImage = async () => {
+    try {
+      const hasPermission = await handleRequestCameraRollPermission();
+      if (!hasPermission) {
+        return;
+      }
+
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 1,
+      });
+
+      console.log("Selected Image:", result); // <-- clg
+
+      if (!result.cancelled) {
+        setImages((prevState) => [
+          ...prevState,
+          { type: result.type, uri: result.uri },
+        ]);
+      }
+    } catch (error) {
+      return Alert.alert(
+        "Something went wrong!",
+        error.message,
+        [
+          {
+            text: "Okay",
+            style: "destructive",
+          },
+        ],
+        { cancelable: false }
+      );
+    }
+  };
+
+  const handleSelectVideo = async () => {
+    try {
+      const hasPermission = await handleRequestCameraRollPermission();
+      if (!hasPermission) {
+        return;
+      }
+
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Videos,
+        videoQuality: 0.5,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 1,
+      });
+
+      console.log("Selected Image:", result); // <-- clg
+
+      if (!result.cancelled) {
+        setVideo((prevState) => [
+          ...prevState,
+          { type: result.type, uri: result.uri },
+        ]);
+      }
+    } catch (error) {
+      return Alert.alert(
+        "Something went wrong!",
+        error.message,
+        [
+          {
+            text: "Okay",
+            style: "destructive",
+          },
+        ],
+        { cancelable: false }
+      );
+    }
+  };
+
+  const handleTakePhoto = async () => {
+    try {
+      const hasCameraPermission = await handleRequestCameraPermission();
+      const hasCameraRollPermission = await handleRequestCameraRollPermission();
+      if (!hasCameraPermission || !hasCameraRollPermission) {
+        return;
+      }
+
+      let result = await ImagePicker.launchCameraAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 1,
+      });
+
+      console.log("Taken Photo:", result); // <-- clg
+
+      if (!result.cancelled) {
+        setImages((prevState) => [
+          ...prevState,
+          { type: result.type, uri: result.uri },
+        ]);
+      }
+    } catch (error) {
+      return Alert.alert(
+        "Something went wrong!",
+        error.message,
+        [
+          {
+            text: "Okay",
+            style: "destructive",
+          },
+        ],
+        { cancelable: false }
+      );
+    }
+  };
+
+  const handleRenderSelcetedItems = () => {
+    if (video.length !== 0 && images.length === 0) {
+      return (
+        <View style={styles.videoContainer}>
+          {video.map((item) => (
+            <>
+              <Video
+                key={video.indexOf(item)}
+                style={styles.video}
+                source={{
+                  uri: item.uri,
+                }}
+                useNativeControls
+                resizeMode="cover"
+                isLooping={false}
+              />
+              <View style={styles.videoTrashWrapper}>
+                <Pressable
+                  style={styles.videoTrash}
+                  onPress={() =>
+                    setVideo((prevState) =>
+                      prevState.filter((pick) => pick.uri !== item.uri)
+                    )
+                  }
+                >
+                  <Ionicons
+                    name="close-circle"
+                    size={20}
+                    color={Colors.accent}
+                  />
+                </Pressable>
+              </View>
+            </>
+          ))}
+        </View>
+      );
+    } else {
+      return (
+        <>
+          {images.map((item) => (
+            <MemoImagePreview
+              key={images.indexOf(item)}
+              source={item.uri}
+              onClose={() =>
+                setImages((prevState) =>
+                  prevState.filter((pick) => pick.uri !== item.uri)
+                )
+              }
+              style={styles.selectedImage}
+            />
+          ))}
+        </>
+      );
+    }
+  };
+
+  const handleRenderActionButtons = () => {
+    if (images.length === 0 && video.length === 0) {
+      return (
+        <>
+          <Pressable onPress={handleSelectImage}>
+            <Ionicons name="image-outline" size={30} color={Colors.primary} />
+          </Pressable>
+          <Pressable onPress={handleTakePhoto}>
+            <Ionicons name="camera-outline" size={30} color={Colors.primary} />
+          </Pressable>
+          <Pressable onPress={handleSelectVideo}>
+            <Ionicons
+              name="videocam-outline"
+              size={30}
+              color={Colors.primary}
+            />
+          </Pressable>
+          <Pressable>
+            <Ionicons
+              name="location-outline"
+              size={30}
+              color={Colors.primary}
+            />
+          </Pressable>
+        </>
+      );
+    } else if (images.length !== 0) {
+      if (images.length < 2) {
+        return (
+          <>
+            <Pressable onPress={handleSelectImage}>
+              <Ionicons name="image-outline" size={30} color={Colors.primary} />
+            </Pressable>
+            <Pressable onPress={handleTakePhoto}>
+              <Ionicons
+                name="camera-outline"
+                size={30}
+                color={Colors.primary}
+              />
+            </Pressable>
+            <Ionicons
+              name="videocam-outline"
+              size={30}
+              color={Colors.outline}
+            />
+            <Pressable>
+              <Ionicons
+                name="location-outline"
+                size={30}
+                color={Colors.primary}
+              />
+            </Pressable>
+          </>
+        );
+      } else {
+        return (
+          <>
+            <Ionicons name="image-outline" size={30} color={Colors.outline} />
+            <Ionicons name="camera-outline" size={30} color={Colors.outline} />
+            <Ionicons
+              name="videocam-outline"
+              size={30}
+              color={Colors.outline}
+            />
+            <Pressable>
+              <Ionicons
+                name="location-outline"
+                size={30}
+                color={Colors.primary}
+              />
+            </Pressable>
+          </>
+        );
+      }
+    } else {
+      return (
+        <>
+          <Ionicons name="image-outline" size={30} color={Colors.outline} />
+          <Ionicons name="camera-outline" size={30} color={Colors.outline} />
+          <Ionicons name="videocam-outline" size={30} color={Colors.outline} />
+          <Pressable>
+            <Ionicons
+              name="location-outline"
+              size={30}
+              color={Colors.primary}
+            />
+          </Pressable>
+        </>
+      );
+    }
+  };
 
   return (
     <ScreenView style={styles.screen}>
@@ -43,33 +379,19 @@ const NewPostScreen = () => {
       <InputBox
         style={styles.inputArea}
         containerStyle={styles.inputAreaContainer}
-        placeholder="Share your memories with trodden..."
+        placeholder="Share your memories with Trodden..."
         placeholderStyle={{ color: "white" }}
         multiline={true}
         returnKeyType="none"
       />
       <View style={styles.selectedItemsAreaContainer}>
         <ScrollView contentContainerStyle={styles.scroll} horizontal>
-          {images.map((item) => (
-            <MemoImagePreview
-              key={item.id}
-              source={item.link}
-              onClose={() =>
-                setImages((prevState) =>
-                  prevState.filter((pick) => pick.id !== item.id)
-                )
-              }
-              style={styles.selectedImage}
-            />
-          ))}
+          {handleRenderSelcetedItems()}
         </ScrollView>
       </View>
       <View style={styles.actionAreaContainer}>
         <View style={styles.actionUploadWrapper}>
-          <Ionicons name="image-outline" size={30} color={Colors.primary} />
-          <Ionicons name="camera-outline" size={30} color={Colors.primary} />
-          <Ionicons name="videocam-outline" size={30} color={Colors.primary} />
-          <Ionicons name="location-outline" size={30} color={Colors.primary} />
+          {handleRenderActionButtons()}
         </View>
         <View style={styles.actionSendWrapper}>
           <Ionicons name="send" size={30} color={Colors.primary} />
@@ -149,6 +471,26 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     alignItems: "center",
     paddingHorizontal: 5,
+  },
+  videoContainer: {
+    flex: 1,
+    flexDirection: "row",
+    marginHorizontal: 5,
+  },
+  video: {
+    alignSelf: "flex-start",
+    width: SCREEN_HEIGHT * 0.25,
+    height: SCREEN_HEIGHT * 0.18,
+  },
+  videoTrashWrapper: {
+    alignItems: "center",
+    justifyContent: "flex-start",
+    marginLeft: -25,
+    marginTop: 5,
+  },
+  videoTrash: {
+    backgroundColor: Colors.info,
+    borderRadius: 30,
   },
   selectedImage: {
     height: SCREEN_HEIGHT * 0.15,

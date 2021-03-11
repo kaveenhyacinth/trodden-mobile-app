@@ -17,7 +17,7 @@ const NewPostHome = (props) => {
         <View style={styles.topColRgt}>
           <Pressable onPress={props.onPress}>
             <BodyText style={styles.postText}>
-              Share a trodden moment...
+              Share your memories with Trodden...
             </BodyText>
           </Pressable>
         </View>
@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
     flex: 5,
   },
   postText: {
-    ...Typography.bodyTextBold,
+    ...Typography.bodyText,
     paddingVertical: 10,
   },
   bottomRow: {
