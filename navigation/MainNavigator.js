@@ -8,10 +8,12 @@ import api from "../api/api";
 import AuthNavigator from "./AuthNavigator";
 import PostAuthNavigator from "./PostAuthNavigator";
 import CoreNavigator from "./CoreNavigator";
+import LoadingScreen from "../screens/LoadingScreen"
 
 const Stack = createStackNavigator();
 
 const MainNavigator = (props) => {
+  const [loading, setLoading] = useState(false);
   const [isSignedIn, setIsSignedIn] = useState(false);
 
   // Update tokens store with new tokens
@@ -23,6 +25,7 @@ const MainNavigator = (props) => {
 
   // Check storage ref token availability
   const checkIsSignedIn = async () => {
+    setLoading(true);
     try {
       // Fetch token form localstorage
       const refToken = await Fetch("refToken");
@@ -57,12 +60,18 @@ const MainNavigator = (props) => {
         ],
         { cancelable: false }
       );
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleUpdateTokens = (signToken, refToken) => {
     dispatch(storeToken(signToken, refToken));
   };
+
+  if(loading) {
+    return <LoadingScreen />
+  }
 
   // Navigate accordign to auth state
   return isSignedIn ? (
