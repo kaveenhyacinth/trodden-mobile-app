@@ -7,7 +7,7 @@ import NewPost from "../../components/NewPostHome";
 import EmptyScreen from "../extra/EmptyScreen";
 
 const HomeScreen = (props) => {
-  const [memos, setMemos] = useState(false);
+  const [memos, setMemos] = useState(true);
 
   return (
     <ScreenView style={styles.screen}>
