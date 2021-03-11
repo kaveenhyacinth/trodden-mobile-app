@@ -1,11 +1,13 @@
 import React from "react";
 import { Text, View } from "react-native";
+import ScreenView from "../../components/ScreenView"
+import EmptyScreen from "../extra/EmptyScreen";
 
 const BlazesScreen = () => {
   return (
-    <View style={{ height: 500, justifyContent: "center", alignItems: "center" }}>
-      <Text>Blazes Explore!</Text>
-    </View>
+    <ScreenView>
+      <EmptyScreen />
+    </ScreenView>
   );
 };
 

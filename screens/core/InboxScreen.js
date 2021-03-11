@@ -3,7 +3,7 @@ import { Text, View } from "react-native";
 import ScreenView from "../../components/ScreenView";
 import EmptyScreen from "../extra/EmptyScreen";
 
-const CaravansExploreScreen = () => {
+const InboxScreen = () => {
   return (
     <ScreenView>
       <EmptyScreen />
@@ -11,4 +11,4 @@ const CaravansExploreScreen = () => {
   );
 };
 
-export default CaravansExploreScreen;
+export default InboxScreen;

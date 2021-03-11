@@ -1,11 +1,13 @@
 import React from "react";
 import { Text, View } from "react-native";
+import ScreenView from "../../components/ScreenView";
+import EmptyScreen from "../extra/EmptyScreen";
 
 const NomadsExploreScreen = () => {
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>Nomads Explore!</Text>
-    </View>
+    <ScreenView>
+      <EmptyScreen />
+    </ScreenView>
   );
 };
 
