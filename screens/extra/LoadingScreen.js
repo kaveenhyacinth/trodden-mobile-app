@@ -18,7 +18,10 @@ const LoadingScreen = (props) => {
         <Text style={styles.title}>Trodden</Text>
       </View>
       <View style={styles.imageContainer}>
-        <Image source={require("../../assets/loading.png")} style={styles.image} />
+        <Image
+          source={require("../../assets/loading.png")}
+          style={styles.image}
+        />
       </View>
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color={Colors.primary} />

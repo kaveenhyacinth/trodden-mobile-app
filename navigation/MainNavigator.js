@@ -8,7 +8,7 @@ import api from "../api/api";
 import AuthNavigator from "./AuthNavigator";
 import PostAuthNavigator from "./PostAuthNavigator";
 import CoreNavigator from "./CoreNavigator";
-import LoadingScreen from "../screens/extra/LoadingScreen"
+import LoadingScreen from "../screens/extra/LoadingScreen";
 
 const Stack = createStackNavigator();
 
@@ -69,8 +69,8 @@ const MainNavigator = (props) => {
     dispatch(storeToken(signToken, refToken));
   };
 
-  if(loading) {
-    return <LoadingScreen />
+  if (loading) {
+    return <LoadingScreen />;
   }
 
   // Navigate accordign to auth state
