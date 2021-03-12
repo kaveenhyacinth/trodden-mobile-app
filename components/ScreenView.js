@@ -14,7 +14,11 @@ const ScreenView = (props) => {
       style={{ ...styles.screen, ...props.style }}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
-      <ScrollView nestedScrollEnabled contentContainerStyle={styles.scroll}>
+      <ScrollView
+        nestedScrollEnabled
+        contentContainerStyle={styles.scroll}
+        keyboardShouldPersistTaps={"handled"}
+      >
         {props.children}
       </ScrollView>
     </KeyboardAvoidingView>

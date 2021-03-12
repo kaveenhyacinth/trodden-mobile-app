@@ -6,6 +6,7 @@ export default {
   info: "rgba(0,0,0,0.5)",
   background: "rgba(62, 148, 63, 0.05)",
   textOverlay: "rgba(62, 148, 63, 0.9)",
+  backgroundOverlay: "rgba(0,0,0,0.1)",
   red: "red",
   black: "black",
   white: "white",

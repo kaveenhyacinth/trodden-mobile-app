@@ -28,6 +28,7 @@
     },
     "extra": {
       "BASE_URL": "http://192.168.8.101:8000",
+      "PLACE_API_KEY": "AIzaSyCOR9TirjkqbmxLSuwTtJrCIK1nAyR2IZQ"
     }
   }
 }

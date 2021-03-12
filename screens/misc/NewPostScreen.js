@@ -1,8 +1,9 @@
 //#region Imports
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Image,
+  Modal,
   Alert,
   Pressable,
   StyleSheet,
@@ -18,13 +19,24 @@ import ScreenView from "../../components/ScreenView";
 import BodyText from "../../components/BodyText";
 import InputBox from "../../components/InputBox";
 import MemoImagePreview from "../../components/MemoImagePreview";
+import PlaceSearch from "../../components/PlaceSearchBottomSheet";
 //#endregion
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 
-const NewPostScreen = () => {
+const NewPostScreen = (props) => {
+  const [isLocationModelOpen, setIsLocationModelOpen] = useState(false);
   const [images, setImages] = useState([]);
   const [video, setVideo] = useState([]);
+  const [location, setLocation] = useState({
+    name: undefined,
+    id: undefined,
+    types: [],
+  });
+
+  useEffect(() => {
+    console.log("Stored Location Data:", location);
+  });
 
   // Request permision for camera roll
   const handleRequestCameraRollPermission = async () => {
@@ -286,7 +298,7 @@ const NewPostScreen = () => {
               color={Colors.primary}
             />
           </Pressable>
-          <Pressable>
+          <Pressable onPress={() => setIsLocationModelOpen(true)}>
             <Ionicons
               name="location-outline"
               size={30}
@@ -314,7 +326,7 @@ const NewPostScreen = () => {
               size={30}
               color={Colors.outline}
             />
-            <Pressable>
+            <Pressable onPress={() => setIsLocationModelOpen(true)}>
               <Ionicons
                 name="location-outline"
                 size={30}
@@ -333,7 +345,7 @@ const NewPostScreen = () => {
               size={30}
               color={Colors.outline}
             />
-            <Pressable>
+            <Pressable onPress={() => setIsLocationModelOpen(true)}>
               <Ionicons
                 name="location-outline"
                 size={30}
@@ -349,7 +361,7 @@ const NewPostScreen = () => {
           <Ionicons name="image-outline" size={30} color={Colors.outline} />
           <Ionicons name="camera-outline" size={30} color={Colors.outline} />
           <Ionicons name="videocam-outline" size={30} color={Colors.outline} />
-          <Pressable>
+          <Pressable onPress={() => setIsLocationModelOpen(true)}>
             <Ionicons
               name="location-outline"
               size={30}
@@ -359,6 +371,20 @@ const NewPostScreen = () => {
         </>
       );
     }
+  };
+
+  const handleSelectLocation = (data) => {
+    const loc = `${data.terms[0].value}, ${
+      data.terms[data.terms.length - 1].value
+    }`;
+    setLocation((prevState) => ({
+      ...prevState,
+      name: loc,
+      id: data.place_id,
+      types: data.types,
+    }));
+    setIsLocationModelOpen(false);
+    console.log(data);
   };
 
   return (
@@ -373,7 +399,10 @@ const NewPostScreen = () => {
           </View>
         </View>
         <View style={styles.sharePrefWrapper}>
-          <BodyText style={styles.sharePref}>Public</BodyText>
+          <BodyText style={styles.NomadName}>{"Kaveen Hyacinth"}</BodyText>
+          <BodyText style={styles.NomadLocation}>
+            {location.name ?? "Tag a location below..."}
+          </BodyText>
         </View>
       </View>
       <InputBox
@@ -397,6 +426,20 @@ const NewPostScreen = () => {
           <Ionicons name="send" size={30} color={Colors.primary} />
         </View>
       </View>
+      <Modal
+        visible={isLocationModelOpen}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setIsLocationModelOpen(false)}
+      >
+        <Pressable
+          onPress={() => setIsLocationModelOpen(false)}
+          style={{ flex: 1, backgroundColor: Colors.backgroundOverlay }}
+        ></Pressable>
+        <PlaceSearch
+          onPress={(data, details = null) => handleSelectLocation(data)}
+        />
+      </Modal>
     </ScreenView>
   );
 };
@@ -443,8 +486,11 @@ const styles = StyleSheet.create({
   sharePrefWrapper: {
     width: SCREEN_WIDTH * 0.8,
   },
-  sharePref: {
-    fontSize: 16,
+  NomadName: {
+    ...Typography.bodyTextBold,
+  },
+  NomadLocation: {
+    fontSize: 14,
   },
   //#endregion
 
