@@ -27,6 +27,32 @@ const Memory = () => {
     setIsLiked((prevState) => !prevState);
   };
 
+  const handleRenderContent = () => {
+    if (ContentText.length < 100) {
+      return <BodyText>{ContentText}</BodyText>;
+    }
+
+    if (!isReadMore) {
+      return (
+        <>
+          <BodyText>{ContentText.substr(0, 100)}</BodyText>
+          <Pressable onPress={() => setIsReadMore(true)}>
+            <BodyText style={styles.colExpLink}>Read More...</BodyText>
+          </Pressable>
+        </>
+      );
+    }
+
+    return (
+      <>
+        <BodyText>{ContentText}</BodyText>
+        <Pressable onPress={() => setIsReadMore(false)}>
+          <BodyText style={styles.colExpLink}>Collapse...</BodyText>
+        </Pressable>
+      </>
+    );
+  };
+
   return (
     <View style={styles.container} removeClippedSubviews>
       {/* Start Header */}
@@ -58,21 +84,7 @@ const Memory = () => {
 
       {/* Start Content */}
       <View style={styles.content}>
-        {isReadMore ? (
-          <>
-            <BodyText>{ContentText}</BodyText>
-            <Pressable onPress={() => setIsReadMore(false)}>
-              <BodyText style={styles.colExpLink}>Collapse...</BodyText>
-            </Pressable>
-          </>
-        ) : (
-          <>
-            <BodyText>{ContentText.substr(0, 100)}</BodyText>
-            <Pressable onPress={() => setIsReadMore(true)}>
-              <BodyText style={styles.colExpLink}>Read More...</BodyText>
-            </Pressable>
-          </>
-        )}
+        {handleRenderContent()}
       </View>
       {/* End Content */}
 

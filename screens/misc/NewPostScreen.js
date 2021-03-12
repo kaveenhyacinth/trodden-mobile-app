@@ -25,7 +25,10 @@ import PlaceSearch from "../../components/PlaceSearchBottomSheet";
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 
 const NewPostScreen = (props) => {
+  const [loading, setLoading] = useState(false);
+  const [isPostReady, setIsPostReady] = useState(false);
   const [isLocationModelOpen, setIsLocationModelOpen] = useState(false);
+  const [content, setContent] = useState("");
   const [images, setImages] = useState([]);
   const [video, setVideo] = useState([]);
   const [location, setLocation] = useState({
@@ -35,8 +38,16 @@ const NewPostScreen = (props) => {
   });
 
   useEffect(() => {
+    checkIsPostReady();
     console.log("Stored Location Data:", location);
-  });
+    console.log("Stored Content:", content);
+  }, [images, video, content]);
+
+  const checkIsPostReady = () => {
+    if ((images.length !== 0 || video.length !== 0) && content.length >= 5)
+      return setIsPostReady(true);
+    return setIsPostReady(false);
+  };
 
   // Request permision for camera roll
   const handleRequestCameraRollPermission = async () => {
@@ -232,7 +243,7 @@ const NewPostScreen = (props) => {
           {video.map((item) => (
             <>
               <Video
-                key={video.indexOf(item)}
+                key={Math.random()}
                 style={styles.video}
                 source={{
                   uri: item.uri,
@@ -241,7 +252,7 @@ const NewPostScreen = (props) => {
                 resizeMode="cover"
                 isLooping={false}
               />
-              <View style={styles.videoTrashWrapper}>
+              <View key={Math.random()} style={styles.videoTrashWrapper}>
                 <Pressable
                   style={styles.videoTrash}
                   onPress={() =>
@@ -387,6 +398,27 @@ const NewPostScreen = (props) => {
     console.log(data);
   };
 
+  const handleSubmit = async () => {
+    const mediaFiles = images.length !== 0 ? images : video;
+
+    const createMemoBody = {
+      content: content,
+      media: "",
+      destination: {
+        id: location.id,
+        name: location.name,
+        types: location.types,
+      },
+    };
+
+    try {
+      setLoading(true);
+    } catch (error) {
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <ScreenView style={styles.screen}>
       <View style={styles.header}>
@@ -408,8 +440,9 @@ const NewPostScreen = (props) => {
       <InputBox
         style={styles.inputArea}
         containerStyle={styles.inputAreaContainer}
+        onChangeText={(value) => setContent(value)}
+        value={content}
         placeholder="Share your memories with Trodden..."
-        placeholderStyle={{ color: "white" }}
         multiline={true}
         returnKeyType="none"
       />
@@ -423,7 +456,13 @@ const NewPostScreen = (props) => {
           {handleRenderActionButtons()}
         </View>
         <View style={styles.actionSendWrapper}>
-          <Ionicons name="send" size={30} color={Colors.primary} />
+          {isPostReady ? (
+            <Pressable onPress={handleSubmit}>
+              <Ionicons name="send" size={30} color={Colors.primary} />
+            </Pressable>
+          ) : (
+            <Ionicons name="send" size={30} color={Colors.outline} />
+          )}
         </View>
       </View>
       <Modal
