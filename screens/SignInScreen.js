@@ -4,7 +4,6 @@ import { Text, StyleSheet, Pressable, Alert } from "react-native";
 import { useDispatch } from "react-redux";
 import { Save } from "../services/deviceStorage";
 import { storeToken } from "../store/actions/storeToken";
-import { storeUser } from "../store/actions/storeUser";
 import Http from "../api/kit";
 import Colors from "../theme/Colors";
 import Typography from "../theme/Typography";
@@ -74,11 +73,6 @@ const SignInScreen = (props) => {
     dispatch(storeToken(signToken, refToken));
   };
 
-  // Update singed user in user store
-  const handleUserUpdate = (userData) => {
-    dispatch(storeUser(userData));
-  };
-
   const handleError = (error) => {
     const errorData = error.response.data ?? error;
     const isValidationError = Array.isArray(errorData.result);
@@ -118,27 +112,23 @@ const SignInScreen = (props) => {
 
       // getting sign-in response
       const response = await Http.post("/api/auth/signin", {
-        email: formData.email,
-        password: formData.password,
+        email: formState.inputValues.email,
+        password: formState.inputValues.password,
       });
       if (!response) throw new Error("Something went wrong on our side");
 
+      // console.log("Response taken:", response.data);
+
       const signToken = response.data.result.signToken;
       const refToken = response.data.result.refToken;
-      const userData = {
-        id: response.data.result.id,
-        firstName: response.data.result.firstName,
-        lastName: response.data.result.lastName,
-        username: response.data.result.username,
-        email: response.data.result.email,
-      };
+      const nomadId = response.data.result.id;
 
-      // saving refresh token in securestore
-      Save("refToken", refToken);
+      // saving sign and refresh tokens in securestore
+      await Save("signToken", signToken);
+      await Save("refToken", refToken);
+      await Save("nomadId", nomadId);
       //updating global state with new sign token
       handleTokenUpdate(signToken, refToken);
-      // updating global statewith signed user
-      handleUserUpdate(userData);
 
       props.navigation.replace("core");
     } catch (error) {

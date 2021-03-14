@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet, FlatList, Alert, Dimensions } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
+import { Save } from "../services/deviceStorage";
 import { getInterests } from "../store/actions/getInterests";
 import api from "../api/api";
 import Colors from "../theme/Colors";
@@ -190,9 +191,10 @@ const InterestScreen = (props) => {
           "Something went wrong while updating! Please try again later..."
         );
 
+      await Save("nomadId", id);
+
       props.navigation.replace("core", {
         screen: "Home",
-        params: { UserId: id },
       });
     } catch (error) {
       Alert.alert(
