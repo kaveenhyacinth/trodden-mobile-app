@@ -3,7 +3,6 @@ import { ScrollView } from "react-native";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-
 import Colors from "../theme/Colors";
 import Typography from "../theme/Typography";
 import NomadsExplore from "../screens/misc/NomadsExploreScreen";
@@ -38,7 +37,7 @@ const defaultTabOptions = {
   showLabel: false,
 };
 
-const ExploreNavigator = (props) => {
+const ProfileNavigator = (props) => {
   return (
     <ScrollView>
       <ProfileHeader />
@@ -76,12 +75,12 @@ const ExploreNavigator = (props) => {
   );
 };
 
-const ExploreStack = (props) => {
+const ProfileStackNavigation = (props) => {
   return (
     <Stack.Navigator screenOptions={{ ...defaultStackNavOptions }}>
-      <Stack.Screen name="Profile" component={ExploreNavigator} />
+      <Stack.Screen name="Profile" component={ProfileNavigator} />
     </Stack.Navigator>
   );
 };
 
-export default ExploreStack;
+export default ProfileStackNavigation;
