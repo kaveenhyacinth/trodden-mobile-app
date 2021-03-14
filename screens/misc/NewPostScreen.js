@@ -6,13 +6,15 @@ import {
   Modal,
   Alert,
   Pressable,
+  ActivityIndicator,
   StyleSheet,
   ScrollView,
   Dimensions,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
-import { Video, AVPlaybackStatus } from "expo-av";
+import { Video } from "expo-av";
+import api from "../../api/api";
 import Colors from "../../theme/Colors";
 import Typography from "../../theme/Typography";
 import ScreenView from "../../components/ScreenView";
@@ -39,8 +41,6 @@ const NewPostScreen = (props) => {
 
   useEffect(() => {
     checkIsPostReady();
-    console.log("Stored Location Data:", location);
-    console.log("Stored Content:", content);
   }, [images, video, content]);
 
   const checkIsPostReady = () => {
@@ -49,199 +49,12 @@ const NewPostScreen = (props) => {
     return setIsPostReady(false);
   };
 
-  // Request permision for camera roll
-  const handleRequestCameraRollPermission = async () => {
-    try {
-      const getPerm = await ImagePicker.getMediaLibraryPermissionsAsync();
-      if (getPerm.granted) return true;
-
-      const reqPerm = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (!reqPerm.granted) {
-        Alert.alert(
-          "Insufficient Permissions",
-          "You need to grant camera roll permission to proceed",
-          [
-            {
-              text: "Okay",
-              style: "destructive",
-            },
-          ],
-          { cancelable: false }
-        );
-        return false;
-      }
-      return true;
-    } catch (error) {
-      return Alert.alert(
-        "Something went wrong!",
-        error.message,
-        [
-          {
-            text: "Okay",
-            style: "destructive",
-          },
-        ],
-        { cancelable: false }
-      );
-    }
-  };
-
-  // Request permission for camera
-  const handleRequestCameraPermission = async () => {
-    try {
-      const getPerm = await ImagePicker.getCameraPermissionsAsync();
-      if (getPerm.granted) return true;
-
-      const reqPerm = await ImagePicker.requestCameraPermissionsAsync();
-      if (!reqPerm.granted) {
-        Alert.alert(
-          "Insufficient Permissions",
-          "You need to grant camera permission to proceed",
-          [
-            {
-              text: "Okay",
-              style: "destructive",
-            },
-          ],
-          { cancelable: false }
-        );
-        return false;
-      }
-      return true;
-    } catch (error) {
-      return Alert.alert(
-        "Something went wrong!",
-        error.message,
-        [
-          {
-            text: "Okay",
-            style: "destructive",
-          },
-        ],
-        { cancelable: false }
-      );
-    }
-  };
-
-  const handleSelectImage = async () => {
-    try {
-      const hasPermission = await handleRequestCameraRollPermission();
-      if (!hasPermission) {
-        return;
-      }
-
-      let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        aspect: [1, 1],
-        quality: 1,
-      });
-
-      console.log("Selected Image:", result); // <-- clg
-
-      if (!result.cancelled) {
-        setImages((prevState) => [
-          ...prevState,
-          { type: result.type, uri: result.uri },
-        ]);
-      }
-    } catch (error) {
-      return Alert.alert(
-        "Something went wrong!",
-        error.message,
-        [
-          {
-            text: "Okay",
-            style: "destructive",
-          },
-        ],
-        { cancelable: false }
-      );
-    }
-  };
-
-  const handleSelectVideo = async () => {
-    try {
-      const hasPermission = await handleRequestCameraRollPermission();
-      if (!hasPermission) {
-        return;
-      }
-
-      let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Videos,
-        videoQuality: 0.5,
-        allowsEditing: true,
-        aspect: [1, 1],
-        quality: 1,
-      });
-
-      console.log("Selected Image:", result); // <-- clg
-
-      if (!result.cancelled) {
-        setVideo((prevState) => [
-          ...prevState,
-          { type: result.type, uri: result.uri },
-        ]);
-      }
-    } catch (error) {
-      return Alert.alert(
-        "Something went wrong!",
-        error.message,
-        [
-          {
-            text: "Okay",
-            style: "destructive",
-          },
-        ],
-        { cancelable: false }
-      );
-    }
-  };
-
-  const handleTakePhoto = async () => {
-    try {
-      const hasCameraPermission = await handleRequestCameraPermission();
-      const hasCameraRollPermission = await handleRequestCameraRollPermission();
-      if (!hasCameraPermission || !hasCameraRollPermission) {
-        return;
-      }
-
-      let result = await ImagePicker.launchCameraAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        aspect: [1, 1],
-        quality: 1,
-      });
-
-      console.log("Taken Photo:", result); // <-- clg
-
-      if (!result.cancelled) {
-        setImages((prevState) => [
-          ...prevState,
-          { type: result.type, uri: result.uri },
-        ]);
-      }
-    } catch (error) {
-      return Alert.alert(
-        "Something went wrong!",
-        error.message,
-        [
-          {
-            text: "Okay",
-            style: "destructive",
-          },
-        ],
-        { cancelable: false }
-      );
-    }
-  };
-
-  const handleRenderSelcetedItems = () => {
+  const renderSelcetedItems = () => {
     if (video.length !== 0 && images.length === 0) {
       return (
         <View style={styles.videoContainer}>
           {video.map((item) => (
-            <>
+            <React.Fragment key={Math.random()}>
               <Video
                 key={Math.random()}
                 style={styles.video}
@@ -254,6 +67,7 @@ const NewPostScreen = (props) => {
               />
               <View key={Math.random()} style={styles.videoTrashWrapper}>
                 <Pressable
+                  key={Math.random()}
                   style={styles.videoTrash}
                   onPress={() =>
                     setVideo((prevState) =>
@@ -262,19 +76,20 @@ const NewPostScreen = (props) => {
                   }
                 >
                   <Ionicons
+                    key={Math.random()}
                     name="close-circle"
                     size={20}
                     color={Colors.accent}
                   />
                 </Pressable>
               </View>
-            </>
+            </React.Fragment>
           ))}
         </View>
       );
     } else {
       return (
-        <>
+        <React.Fragment>
           {images.map((item) => (
             <MemoImagePreview
               key={images.indexOf(item)}
@@ -287,12 +102,12 @@ const NewPostScreen = (props) => {
               style={styles.selectedImage}
             />
           ))}
-        </>
+        </React.Fragment>
       );
     }
   };
 
-  const handleRenderActionButtons = () => {
+  const renderActionButtons = () => {
     if (images.length === 0 && video.length === 0) {
       return (
         <>
@@ -384,6 +199,203 @@ const NewPostScreen = (props) => {
     }
   };
 
+  const renderSendButton = () => {
+    if (!isPostReady)
+      return <Ionicons name="send" size={30} color={Colors.outline} />;
+
+    if (loading)
+      return <ActivityIndicator size="large" color={Colors.primary} />;
+    return (
+      <Pressable onPress={handleSubmit}>
+        <Ionicons name="send" size={30} color={Colors.primary} />
+      </Pressable>
+    );
+  };
+
+  const handleRequestCameraRollPermission = async () => {
+    try {
+      const getPerm = await ImagePicker.getMediaLibraryPermissionsAsync();
+      if (getPerm.granted) return true;
+
+      const reqPerm = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (!reqPerm.granted) {
+        Alert.alert(
+          "Insufficient Permissions",
+          "You need to grant camera roll permission to proceed",
+          [
+            {
+              text: "Okay",
+              style: "destructive",
+            },
+          ],
+          { cancelable: false }
+        );
+        return false;
+      }
+      return true;
+    } catch (error) {
+      return Alert.alert(
+        "Something went wrong!",
+        error.message,
+        [
+          {
+            text: "Okay",
+            style: "destructive",
+          },
+        ],
+        { cancelable: false }
+      );
+    }
+  };
+
+  const handleRequestCameraPermission = async () => {
+    try {
+      const getPerm = await ImagePicker.getCameraPermissionsAsync();
+      if (getPerm.granted) return true;
+
+      const reqPerm = await ImagePicker.requestCameraPermissionsAsync();
+      if (!reqPerm.granted) {
+        Alert.alert(
+          "Insufficient Permissions",
+          "You need to grant camera permission to proceed",
+          [
+            {
+              text: "Okay",
+              style: "destructive",
+            },
+          ],
+          { cancelable: false }
+        );
+        return false;
+      }
+      return true;
+    } catch (error) {
+      return Alert.alert(
+        "Something went wrong!",
+        error.message,
+        [
+          {
+            text: "Okay",
+            style: "destructive",
+          },
+        ],
+        { cancelable: false }
+      );
+    }
+  };
+
+  const handleSelectImage = async () => {
+    try {
+      const hasPermission = await handleRequestCameraRollPermission();
+      if (!hasPermission) {
+        return;
+      }
+
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 0.7,
+      });
+
+      console.log("Selected Image:", result); // <-- clg
+
+      if (!result.cancelled) {
+        setImages((prevState) => [
+          ...prevState,
+          { type: result.type, uri: result.uri },
+        ]);
+      }
+    } catch (error) {
+      return Alert.alert(
+        "Something went wrong!",
+        error.message,
+        [
+          {
+            text: "Okay",
+            style: "destructive",
+          },
+        ],
+        { cancelable: false }
+      );
+    }
+  };
+
+  const handleSelectVideo = async () => {
+    try {
+      const hasPermission = await handleRequestCameraRollPermission();
+      if (!hasPermission) {
+        return;
+      }
+
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Videos,
+        videoQuality: 0.5,
+        aspect: [1, 1],
+        quality: 0.5,
+      });
+
+      console.log("Selected Image:", result); // <-- clg
+
+      if (!result.cancelled) {
+        setVideo((prevState) => [
+          ...prevState,
+          { type: result.type, uri: result.uri },
+        ]);
+      }
+    } catch (error) {
+      return Alert.alert(
+        "Something went wrong!",
+        error.message,
+        [
+          {
+            text: "Okay",
+            style: "destructive",
+          },
+        ],
+        { cancelable: false }
+      );
+    }
+  };
+
+  const handleTakePhoto = async () => {
+    try {
+      const hasCameraPermission = await handleRequestCameraPermission();
+      const hasCameraRollPermission = await handleRequestCameraRollPermission();
+      if (!hasCameraPermission || !hasCameraRollPermission) {
+        return;
+      }
+
+      let result = await ImagePicker.launchCameraAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 0.7,
+      });
+
+      console.log("Taken Photo:", result); // <-- clg
+
+      if (!result.cancelled) {
+        setImages((prevState) => [
+          ...prevState,
+          { type: result.type, uri: result.uri },
+        ]);
+      }
+    } catch (error) {
+      return Alert.alert(
+        "Something went wrong!",
+        error.message,
+        [
+          {
+            text: "Okay",
+            style: "destructive",
+          },
+        ],
+        { cancelable: false }
+      );
+    }
+  };
+
   const handleSelectLocation = (data) => {
     const loc = `${data.terms[0].value}, ${
       data.terms[data.terms.length - 1].value
@@ -399,21 +411,88 @@ const NewPostScreen = (props) => {
   };
 
   const handleSubmit = async () => {
-    const mediaFiles = images.length !== 0 ? images : video;
-
-    const createMemoBody = {
-      content: content,
-      media: "",
-      destination: {
-        id: location.id,
-        name: location.name,
-        types: location.types,
-      },
-    };
-
     try {
-      setLoading(true);
+      console.log("1. Inside Submit");
+      let mediaBody = new FormData();
+      let mediaArray = [];
+
+      // Upload media only if media files exist
+      if (images.length !== 0 || video.length !== 0) {
+        const isImage =
+          images.length !== 0 && video.length === 0 ? true : false;
+        const mediaFiles = isImage ? images : video;
+        const fieldName = isImage ? "images[]" : "videos[]";
+
+        console.log("2. Building form");
+        mediaFiles.map((media) => {
+          let fileType = media.uri.split(".").pop();
+          mediaBody.append(fieldName, {
+            uri: media.uri,
+            type: `${media.type}/${fileType}`,
+            name: `${media.type}.${fileType}`,
+          });
+        });
+
+        const config = {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "multipart/form-data",
+          },
+        };
+
+        setLoading(true);
+        console.log("3. Sending Request");
+
+        const mediaRes = isImage
+          ? await api.uploadImages(mediaBody)(config)
+          : await api.uploadVideos(mediaBody)(config);
+
+        if (!mediaRes.data.result)
+          throw new Error("Couldn't upload images eh!");
+
+        const resArray = mediaRes.data.result;
+
+        console.log("4. Response:", mediaRes.data.result);
+
+        resArray.map((resObj) => {
+          const mediaObj = {
+            uri: resObj.filename,
+            type: resObj.contentType,
+          };
+          mediaArray.push(mediaObj);
+        });
+
+        console.log("5. Media array:", mediaArray);
+      }
+
+      const memoBody = {
+        userId: "604983a250276511d8aa06ad",
+        content,
+        media: mediaArray,
+        destination: {
+          id: location.id,
+          name: location.name,
+          types: location.types,
+        },
+      };
+
+      console.log("6. Memory body:", memoBody);
+
+      console.log("7. Sending request");
+      const response = await api.createMemo(memoBody);
+      if (!response.data)
+        throw new Error(
+          "Something went wrong while creating the memory! Please try again later..."
+        );
+
+      console.log("8. Response:", response.data.result);
+
+      props.navigation.replace("core", { screen: "Profile" });
     } catch (error) {
+      console.log(
+        "Error Happen when creating new memory:",
+        error.message ?? error.response.data
+      );
     } finally {
       setLoading(false);
     }
@@ -448,22 +527,12 @@ const NewPostScreen = (props) => {
       />
       <View style={styles.selectedItemsAreaContainer}>
         <ScrollView contentContainerStyle={styles.scroll} horizontal>
-          {handleRenderSelcetedItems()}
+          {renderSelcetedItems()}
         </ScrollView>
       </View>
       <View style={styles.actionAreaContainer}>
-        <View style={styles.actionUploadWrapper}>
-          {handleRenderActionButtons()}
-        </View>
-        <View style={styles.actionSendWrapper}>
-          {isPostReady ? (
-            <Pressable onPress={handleSubmit}>
-              <Ionicons name="send" size={30} color={Colors.primary} />
-            </Pressable>
-          ) : (
-            <Ionicons name="send" size={30} color={Colors.outline} />
-          )}
-        </View>
+        <View style={styles.actionUploadWrapper}>{renderActionButtons()}</View>
+        <View style={styles.actionSendWrapper}>{renderSendButton()}</View>
       </View>
       <Modal
         visible={isLocationModelOpen}
