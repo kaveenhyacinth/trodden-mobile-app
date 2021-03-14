@@ -1,5 +1,9 @@
 import React from "react";
-import { createStackNavigator } from "@react-navigation/stack";
+import {
+  createStackNavigator,
+  TransitionPreset,
+  TransitionPresets,
+} from "@react-navigation/stack";
 import Colors from "../theme/Colors";
 import Typography from "../theme/Typography";
 import HomeScreen from "../screens/core/HomeScreen";
@@ -33,7 +37,10 @@ const HomeNavigation = (props) => {
       <Stack.Screen
         name="newMemo"
         component={NewPostScreen}
-        options={{ title: "New Memory" }}
+        options={{
+          title: "New Memory",
+          ...TransitionPresets.SlideFromRightIOS,
+        }}
       />
     </Stack.Navigator>
   );
