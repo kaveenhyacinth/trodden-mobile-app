@@ -18,7 +18,7 @@ Http.interceptors.request.use(
 Http.interceptors.response.use(
   (response) => response,
   async (error) => {
-    console.log("Error at response interceptor:", error)
+    console.log("Error at response interceptor:", error);
     const originalReq = error.config;
     let refToken = await Fetch("refToken");
     console.log("refToken at response interceptor:", refToken);
@@ -42,12 +42,13 @@ const api = {
   refreshToken: (body) => Http.post("/api/auth/refresh-token", body),
   signup: (body) => Http.post("/api/auth/signup", body),
   activateProfile: (body) => Http.post("/api/auth/activate", body),
-  getInterests: () => Http.get("/api/interests"),
   updateProfile: (body) => Http.put("/api/profile/setup", body),
   uploadImage: (body) => (config) => Http.post("/image/add", body, config),
   uploadImages: (body) => (config) => Http.post("/images/add", body, config),
   uploadVideos: (body) => (config) => Http.post("/videos/add", body, config),
   createMemo: (body) => Http.post("/api/memories/new", body),
+  getInterests: () => Http.get("/api/interests"),
+  getCurrentUser: (userId) => Http.get(`/api/profile/my/${userId}`),
 };
 
 export default api;
