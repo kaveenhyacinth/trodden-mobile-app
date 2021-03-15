@@ -1,10 +1,10 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-import OpenScreen from "../screens/OpenScreen";
-import SignInScreen from "../screens/SignInScreen";
-import SignUpScreen from "../screens/SignUpScreen";
 import Colors from "../theme/Colors";
 import Typography from "../theme/Typography";
+import OpenScreen from "../screens/auth/OpenScreen";
+import SignInScreen from "../screens/auth/SignInScreen";
+import SignUpScreen from "../screens/auth/SignUpScreen";
 
 const Stack = createStackNavigator();
 

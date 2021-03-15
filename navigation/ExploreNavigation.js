@@ -3,8 +3,8 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import Colors from "../theme/Colors";
 import Typography from "../theme/Typography";
-import NomadsExplore from "../screens/misc/NomadsExploreScreen";
-import CaravansExplore from "../screens/misc/CaravansExploreScreen";
+import NomadsExplore from "../screens/views/NomadsExploreScreen";
+import CaravansExplore from "../screens/views/CaravansExploreScreen";
 
 const Stack = createStackNavigator();
 const Tab = createMaterialTopTabNavigator();

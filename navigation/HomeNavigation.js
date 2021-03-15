@@ -7,7 +7,7 @@ import {
 import Colors from "../theme/Colors";
 import Typography from "../theme/Typography";
 import HomeScreen from "../screens/core/HomeScreen";
-import NewPostScreen from "../screens/misc/NewPostScreen";
+import NewPostScreen from "../screens/views/NewPostScreen";
 
 const Stack = createStackNavigator();
 

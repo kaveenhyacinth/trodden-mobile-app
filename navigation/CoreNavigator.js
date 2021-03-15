@@ -7,7 +7,7 @@ import { Fetch } from "../services/deviceStorage";
 import Colors from "../theme/Colors";
 import ExploreNavigation from "./ExploreNavigation";
 import TribeNavigation from "./TribeNavigation";
-import ProfileNavigation from "./ProfileStackNavigation";
+import ProfileNavigation from "./ProfileNavigation";
 import HomeNavigation from "./HomeNavigation";
 import InboxScreen from "../screens/core/InboxScreen";
 import LoadingScreen from "../screens/extra/LoadingScreen";
