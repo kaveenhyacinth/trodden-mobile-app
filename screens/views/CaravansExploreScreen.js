@@ -1,15 +1,14 @@
 import React from "react";
 import { Text, View } from "react-native";
 import ScreenView from "../../components/ScreenView";
+import EmptyScreen from "../extra/EmptyScreen";
 
-const NewPostScreen = () => {
+const CaravansExploreScreen = () => {
   return (
     <ScreenView>
-      <View>
-        <Text>Header</Text>
-      </View>
+      <EmptyScreen />
     </ScreenView>
   );
 };
 
-export default NewPostScreen;
+export default CaravansExploreScreen;
