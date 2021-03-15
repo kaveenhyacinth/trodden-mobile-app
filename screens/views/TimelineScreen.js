@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { View, Alert, FlatList } from "react-native";
+import { View, Image, Alert, FlatList, Dimensions } from "react-native";
+import Constants from "expo-constants";
 import { useSelector, useDispatch } from "react-redux";
 import { useIsFocused } from "@react-navigation/native";
 import { Fetch } from "../../services/deviceStorage";
@@ -8,6 +9,8 @@ import Colors from "../../theme/Colors";
 import Typography from "../../theme/Typography";
 import Memory from "../../components/Memory";
 import EmptyScreen from "../extra/EmptyScreen";
+
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("screen");
 
 const TimelineScreen = (props) => {
   const [loading, setLoading] = useState(false);
@@ -47,7 +50,7 @@ const TimelineScreen = (props) => {
     }
   };
 
-  const renderProfileTimeline = ({ item }) => <Memory />;
+  const renderProfileTimeline = ({ item }) => <Memory data={item} />;
 
   return (
     <View style={{ flex: 1 }}>

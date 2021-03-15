@@ -14,6 +14,9 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { Video } from "expo-av";
+import { useDispatch } from "react-redux";
+import { getOwnMemories } from "../../store/actions/getOwnMemories";
+import { Fetch } from "../../services/deviceStorage"
 import api from "../../api/api";
 import Colors from "../../theme/Colors";
 import Typography from "../../theme/Typography";
@@ -38,6 +41,8 @@ const NewPostScreen = (props) => {
     id: undefined,
     types: [],
   });
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     checkIsPostReady();
@@ -413,6 +418,7 @@ const NewPostScreen = (props) => {
   const handleSubmit = async () => {
     try {
       console.log("1. Inside Submit");
+      const userId = await Fetch("nomadId");
       let mediaBody = new FormData();
       let mediaArray = [];
 
@@ -466,7 +472,7 @@ const NewPostScreen = (props) => {
       }
 
       const memoBody = {
-        userId: "604983a250276511d8aa06ad",
+        userId,
         content,
         media: mediaArray,
         destination: {
@@ -487,6 +493,7 @@ const NewPostScreen = (props) => {
 
       console.log("8. Response:", response.data.result);
 
+      await getOwnMemories(userId)(dispatch);
       props.navigation.replace("core", { screen: "Profile" });
     } catch (error) {
       console.log(

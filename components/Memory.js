@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { View, Image, Pressable, StyleSheet, Dimensions } from "react-native";
+import { Video } from "expo-av";
+import Constants from "expo-constants";
 import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
 import Colors from "../theme/Colors";
 import Typography from "../theme/Typography";
@@ -8,15 +10,14 @@ import ImageGallary from "./ImageGallary";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("screen");
 
-const Memory = () => {
-  const ContentText =
-    "Lorem ipsum dolor sit amet, consectetur adipiscing eleit. Mauris id diam consectetur, tincidunt lorem quis tempus urna. Nullam sagittis efficitur augue, vitae laoreet dui pharetra non. Morbi accumsan. Lorem ipsum dolor sit amet, consectetur adipiscing eleit. Mauris id diam consectetur, tincidunt lorem quis tempus urna. Nullam sagittis efficitur augue, vitae laoreet dui pharetra non. Morbi accumsan. Lorem ipsum dolor sit amet, consectetur adipiscing eleit. Mauris id diam consectetur, tincidunt lorem quis tempus urna. Nullam sagittis efficitur augue, vitae laoreet dui pharetra non. Morbi accumsan.";
+const imageUrl = (uri) => `${Constants.manifest.extra.BASE_URL}/image/${uri}`;
+const videoUrl = (uri) => `${Constants.manifest.extra.BASE_URL}/video/${uri}`;
 
-  const images = [
-    { link: "https://bit.ly/3rfCwbA", id: 3 },
-    { link: "https://bit.ly/3e9xh9N", id: 1 },
-    { link: "https://bit.ly/3qeC7EV", id: 2 },
-  ];
+const Memory = ({ data }) => {
+  const ContentText = data.content;
+  const media = data.media;
+  const user = data.owner;
+  const destination = data.destination;
 
   const [isReadMore, setIsReadMore] = useState(false);
   const [isOpenSettings, setIsOpenSettings] = useState(false);
@@ -27,7 +28,7 @@ const Memory = () => {
     setIsLiked((prevState) => !prevState);
   };
 
-  const handleRenderContent = () => {
+  const renderContent = () => {
     if (ContentText.length < 100) {
       return <BodyText>{ContentText}</BodyText>;
     }
@@ -53,24 +54,69 @@ const Memory = () => {
     );
   };
 
+  const renderGalary = (media) => {
+    const type = media[0].type;
+    if (type.includes("image")) {
+      if (media.length > 1) return <ImageGallary media={media} />;
+      return (
+        <View style={styles.imagesWrapper}>
+          {media.map((item) => (
+            <Image
+              style={styles.image}
+              key={item._id}
+              source={{
+                uri: imageUrl(item.uri),
+              }}
+            />
+          ))}
+        </View>
+      );
+    }
+
+    if (type.includes("video")) {
+      return (
+        <View style={styles.videoWrapper}>
+          {media.map((item) => (
+            <Video
+              key={item._id}
+              style={styles.image}
+              source={{
+                uri: videoUrl(item.uri),
+              }}
+              useNativeControls
+              resizeMode="cover"
+              isLooping={true}
+            />
+          ))}
+        </View>
+      );
+    }
+  };
+
   return (
     <View style={styles.container} removeClippedSubviews>
       {/* Start Header */}
       <View style={styles.header}>
         <View style={styles.leftSection}>
-          <View style={styles.headerImageWrapper}>
-            <Image
-              style={styles.headerImage}
-              source={{ uri: "https://bit.ly/3rbZYXf" }}
-            />
-          </View>
+          <Pressable onPress={() => {}}>
+            <View style={styles.headerImageWrapper}>
+              <Image
+                style={styles.headerImage}
+                source={{ uri: imageUrl(user.prof_img) }}
+              />
+            </View>
+          </Pressable>
         </View>
         <View style={styles.midSection}>
-          <BodyText style={styles.headerName}>Kaveen Hyacinth</BodyText>
-          <BodyText style={styles.headerLocation}>
-            <FontAwesome5 name="map-marker-alt" color={Colors.primary} />{" "}
-            Meemure, Sri Lanka
-          </BodyText>
+          <BodyText
+            style={styles.headerName}
+          >{`${user.first_name} ${user.last_name}`}</BodyText>
+          <Pressable onPress={() => {}}>
+            <BodyText style={styles.headerLocation}>
+              <FontAwesome5 name="map-marker-alt" color={Colors.primary} />
+              {destination ? " " + destination.des_name : " Somewhere on Earth"}
+            </BodyText>
+          </Pressable>
         </View>
         <View style={styles.rightSection}>
           <Pressable
@@ -80,31 +126,8 @@ const Memory = () => {
           </Pressable>
         </View>
       </View>
-      {/* End Header */}
-
-      {/* Start Content */}
-      <View style={styles.content}>
-        {handleRenderContent()}
-      </View>
-      {/* End Content */}
-
-      {/* Start Image Section */}
-      {images.length > 1 ? (
-        <ImageGallary images={images} />
-      ) : (
-        <View style={styles.imagesWrapper}>
-          {images.map((item) => (
-            <Image
-              style={styles.image}
-              key={item.id}
-              source={{ uri: item.link }}
-            />
-          ))}
-        </View>
-      )}
-      {/* End Image Section */}
-
-      {/* Start Status Bar */}
+      <View style={styles.content}>{renderContent()}</View>
+      {renderGalary(media)}
       <View style={styles.statusBar}>
         <View style={styles.statusIconContainer}>
           <Pressable onPress={handleLike}>
@@ -154,7 +177,6 @@ const Memory = () => {
           </BodyText>
         </View>
       </View>
-      {/* End Status Bar */}
     </View>
   );
 };
@@ -225,6 +247,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   imagesWrapper: {
+    height: SCREEN_WIDTH,
+    width: SCREEN_WIDTH,
+  },
+  videoWrapper: {
     height: SCREEN_WIDTH,
     width: SCREEN_WIDTH,
   },

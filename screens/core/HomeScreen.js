@@ -17,14 +17,15 @@ const HomeScreen = (props) => {
   return (
     <ScreenView style={styles.screen}>
       <NewPost onPress={() => props.navigation.navigate("newMemo")} />
-      {memos ? (
+      {/* {memos ? (
         <>
           <Memory />
           <Memory />
         </>
       ) : (
         <EmptyScreen />
-      )}
+      )} */}
+      <EmptyScreen />
     </ScreenView>
   );
 };

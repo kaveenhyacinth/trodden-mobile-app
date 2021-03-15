@@ -6,10 +6,13 @@ import {
   StyleSheet,
   Dimensions,
 } from "react-native";
+import Constants from "expo-constants";
 import Colors from "../theme/Colors";
 import BodyText from "./BodyText";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("screen");
+
+const imageUrl = (uri) => `${Constants.manifest.extra.BASE_URL}/image/${uri}`;
 
 const ImageGallary = (props) => {
   let count = 0;
@@ -20,15 +23,17 @@ const ImageGallary = (props) => {
         horizontal
         pagingEnabled
       >
-        {props.images.map((item) => (
+        {props.media.map((item) => (
           <ImageBackground
-            key={item.id}
+            key={item._id}
             style={styles.image}
-            source={{ uri: item.link }}
+            source={{
+              uri: imageUrl(item.uri),
+            }}
           >
             <View style={styles.counterWrapper}>
               <BodyText style={styles.counter}>
-                {++count}/{props.images.length}
+                {++count}/{props.media.length}
               </BodyText>
             </View>
           </ImageBackground>
