@@ -39,17 +39,18 @@ Http.interceptors.response.use(
 );
 
 const api = {
-  refreshToken: (body) => Http.post("/api/auth/refresh-token", body),
-  signup: (body) => Http.post("/api/auth/signup", body),
-  activateProfile: (body) => Http.post("/api/auth/activate", body),
-  updateProfile: (body) => Http.put("/api/profile/setup", body),
   uploadImage: (body) => (config) => Http.post("/image/add", body, config),
   uploadImages: (body) => (config) => Http.post("/images/add", body, config),
   uploadVideos: (body) => (config) => Http.post("/videos/add", body, config),
+  signup: (body) => Http.post("/api/auth/signup", body),
+  refreshToken: (body) => Http.post("/api/auth/refresh-token", body),
+  activateProfile: (body) => Http.post("/api/auth/activate", body),
   createMemo: (body) => Http.post("/api/memories/new", body),
   getInterests: () => Http.get("/api/interests"),
   getCurrentUser: (userId) => Http.get(`/api/profile/my/${userId}`),
   getOwnMemories: (userId) => Http.get(`/api/memories/fetch/${userId}`),
+  updateProfile: (body) => Http.put("/api/profile/setup", body),
+  postComment: (body) => Http.patch("/api/memories/comment", body),
 };
 
 export default api;

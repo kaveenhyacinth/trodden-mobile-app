@@ -1,42 +1,58 @@
 import React, { useState } from "react";
-import { View, Image, Pressable, StyleSheet, Dimensions } from "react-native";
+import {
+  View,
+  Image,
+  Pressable,
+  Modal,
+  Alert,
+  StyleSheet,
+  Dimensions,
+} from "react-native";
 import { Video } from "expo-av";
 import Constants from "expo-constants";
 import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
+import { useDispatch } from "react-redux";
+import { getOwnMemories } from "../store/actions/getOwnMemories";
+import { Fetch } from "../services/deviceStorage";
+import api from "../api/api";
 import Colors from "../theme/Colors";
 import Typography from "../theme/Typography";
 import BodyText from "./BodyText";
 import ImageGallary from "./ImageGallary";
+import CommentsView from "../screens/views/CommentView";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("screen");
 
 const imageUrl = (uri) => `${Constants.manifest.extra.BASE_URL}/image/${uri}`;
 const videoUrl = (uri) => `${Constants.manifest.extra.BASE_URL}/video/${uri}`;
 
-const Memory = ({ data }) => {
-  const ContentText = data.content;
-  const media = data.media;
-  const user = data.owner;
-  const destination = data.destination;
+const Memory = (props) => {
+  const postId = props.data._id;
+  const content = props.data.content;
+  const media = props.data.media;
+  const user = props.data.owner;
+  const destination = props.data.destination;
+  const heats = props.data.heats;
+  const comments = props.data.comments;
 
   const [isReadMore, setIsReadMore] = useState(false);
   const [isOpenSettings, setIsOpenSettings] = useState(false);
+  const [isOpenComments, setisOpenComments] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
+  const [newComment, setNewComment] = useState("");
 
-  const handleLike = () => {
-    setIsLiked((prevState) => !prevState);
-  };
+  const dispatch = useDispatch();
 
   const renderContent = () => {
-    if (ContentText.length < 100) {
-      return <BodyText>{ContentText}</BodyText>;
+    if (content.length < 100) {
+      return <BodyText>{content}</BodyText>;
     }
 
     if (!isReadMore) {
       return (
         <>
-          <BodyText>{ContentText.substr(0, 100)}</BodyText>
+          <BodyText>{content.substr(0, 100)}</BodyText>
           <Pressable onPress={() => setIsReadMore(true)}>
             <BodyText style={styles.colExpLink}>Read More...</BodyText>
           </Pressable>
@@ -46,7 +62,7 @@ const Memory = ({ data }) => {
 
     return (
       <>
-        <BodyText>{ContentText}</BodyText>
+        <BodyText>{content}</BodyText>
         <Pressable onPress={() => setIsReadMore(false)}>
           <BodyText style={styles.colExpLink}>Collapse...</BodyText>
         </Pressable>
@@ -93,9 +109,42 @@ const Memory = ({ data }) => {
     }
   };
 
+  const handleLike = () => {
+    setIsLiked((prevState) => !prevState);
+  };
+
+  const handlePostComment = async () => {
+    if (!newComment || newComment.length === 0) return;
+    try {
+      const nomadId = await Fetch("nomadId");
+      const commentBody = {
+        userId: nomadId,
+        content: newComment,
+        postId,
+      };
+      const response = await api.postComment(commentBody);
+      if (!response.data.result)
+        throw new Error("Something went wrong! Please try again!");
+      setNewComment("");
+      await getOwnMemories(nomadId)(dispatch);
+    } catch (error) {
+      Alert.alert(
+        "Oh My trod!",
+        error.message ?? "Something went wrong. Please try again later",
+        [
+          {
+            text: "I Will",
+            style: "destructive",
+          },
+        ],
+        { cancelable: false }
+      );
+      console.log("Error Happen @handlePostComment", error);
+    }
+  };
+
   return (
     <View style={styles.container} removeClippedSubviews>
-      {/* Start Header */}
       <View style={styles.header}>
         <View style={styles.leftSection}>
           <Pressable onPress={() => {}}>
@@ -147,36 +196,46 @@ const Memory = ({ data }) => {
               />
             )}
           </Pressable>
-          <Ionicons
-            style={styles.statusIcon}
-            size={25}
-            color={Colors.outline}
-            name="chatbubble-outline"
-          />
-          {/* <Pressable onPress={() => setIsSaved((prevState) => !prevState)}>
-          {isSaved ? (
-            <Ionicons
-              style={styles.statusIcon}
-              size={25}
-              color={Colors.primary}
-              name="bookmark"
-            />
-          ) : (
+          <Pressable onPress={() => setisOpenComments(true)}>
             <Ionicons
               style={styles.statusIcon}
               size={25}
               color={Colors.outline}
-              name="bookmark-outline"
+              name="chatbubble-outline"
             />
-          )}
-        </Pressable> */}
+          </Pressable>
         </View>
         <View style={styles.statusTextContainer}>
           <BodyText style={styles.statusText}>
-            {isLiked ? "52" : "51"} Twigs
+            <Pressable>
+              <BodyText style={styles.statusText}>
+                {heats.length}
+                {heats.length === 1 ? ` twig` : ` twigs`}
+              </BodyText>
+            </Pressable>
+            {" . "}
+            <Pressable onPress={() => setisOpenComments(true)}>
+              <BodyText style={styles.statusText}>
+                {comments.length}
+                {comments.length === 1 ? ` comment` : ` comments`}
+              </BodyText>
+            </Pressable>
           </BodyText>
         </View>
       </View>
+      <Modal
+        animationType="slide"
+        visible={isOpenComments}
+        onRequestClose={() => setisOpenComments(false)}
+      >
+        <CommentsView
+          inputValue={newComment}
+          onInputChangeText={(value) => setNewComment(value)}
+          onSubmit={() => handlePostComment()}
+          onClose={() => setisOpenComments(false)}
+          comments={comments}
+        />
+      </Modal>
     </View>
   );
 };
@@ -273,7 +332,8 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   statusText: {
-    color: Colors.outline,
+    color: Colors.info,
+    fontSize: 14,
   },
 });
 

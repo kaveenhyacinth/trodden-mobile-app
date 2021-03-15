@@ -19,6 +19,8 @@ const TimelineScreen = (props) => {
   const isFocused = useIsFocused();
   const ownMemoriesStore = useSelector((state) => state.ownMemoriesStore);
 
+  // ownMemoriesStore.memories = [];
+
   useEffect(() => {
     loadOwnMemories();
   }, []);
@@ -60,6 +62,8 @@ const TimelineScreen = (props) => {
         renderItem={renderProfileTimeline}
         keyExtractor={(item) => item._id}
         ListEmptyComponent={<EmptyScreen />}
+        refreshing={loading}
+        onRefresh={() => loadOwnMemories()}
       />
     </View>
   );
