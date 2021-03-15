@@ -51,6 +51,7 @@ const api = {
   getOwnMemories: (userId) => Http.get(`/api/memories/fetch/${userId}`),
   updateProfile: (body) => Http.put("/api/profile/setup", body),
   postComment: (body) => Http.patch("/api/memories/comment", body),
+  postHeat: (body) => Http.patch("/api/memories/heat", body),
 };
 
 export default api;

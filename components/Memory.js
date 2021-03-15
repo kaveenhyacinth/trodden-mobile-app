@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+//#region Imports
+import React, { useState, useEffect } from "react";
 import {
   View,
   Image,
@@ -20,6 +21,7 @@ import Typography from "../theme/Typography";
 import BodyText from "./BodyText";
 import ImageGallary from "./ImageGallary";
 import CommentsView from "../screens/views/CommentView";
+//#endregion
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("screen");
 
@@ -39,8 +41,11 @@ const Memory = (props) => {
   const [isOpenSettings, setIsOpenSettings] = useState(false);
   const [isOpenComments, setisOpenComments] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
-  const [isSaved, setIsSaved] = useState(false);
   const [newComment, setNewComment] = useState("");
+
+  useEffect(() => {
+    handleMarkLike();
+  }, [props])
 
   const dispatch = useDispatch();
 
@@ -109,8 +114,55 @@ const Memory = (props) => {
     }
   };
 
-  const handleLike = () => {
-    setIsLiked((prevState) => !prevState);
+  const handleMarkLike = async () => {
+    try {
+      const userId = await Fetch("nomadId");
+      const isHeated = heats.find(heat => heat._id === userId);
+      console.log("Heated:", isHeated);
+      if(isHeated) return setIsLiked(true);
+      return setIsLiked(false);
+    } catch (error) {
+      Alert.alert(
+        "Oh My trod!",
+        error.message ?? "Something went wrong. Please try again later",
+        [
+          {
+            text: "I Will",
+            style: "destructive",
+          },
+        ],
+        { cancelable: false }
+      );
+      console.log("Error Happen @handleLike", error);
+    }
+  }
+
+  const handleLike = async () => {
+    try {
+      const userId = await Fetch("nomadId");
+      const heatBody = {
+        userId,
+        postId,
+      };
+      const response = await api.postHeat(heatBody);
+      if (!response.data.result)
+        throw new Error("Something went wrong! Please try again!");
+
+      await getOwnMemories(userId)(dispatch);
+    } catch (error) {
+      Alert.alert(
+        "Oh My trod!",
+        error.message ?? "Something went wrong. Please try again later",
+        [
+          {
+            text: "I Will",
+            style: "destructive",
+          },
+        ],
+        { cancelable: false }
+      );
+      console.log("Error Happen @handleLike", error);
+    }
   };
 
   const handlePostComment = async () => {
@@ -185,14 +237,14 @@ const Memory = (props) => {
                 style={styles.statusIcon}
                 size={30}
                 color={Colors.primary}
-                name="bonfire"
+                name="heart"
               />
             ) : (
               <Ionicons
                 style={styles.statusIcon}
                 size={30}
                 color={Colors.outline}
-                name="bonfire-outline"
+                name="heart-outline"
               />
             )}
           </Pressable>
@@ -213,7 +265,7 @@ const Memory = (props) => {
                 {heats.length === 1 ? ` twig` : ` twigs`}
               </BodyText>
             </Pressable>
-            {" . "}
+            {"  "}
             <Pressable onPress={() => setisOpenComments(true)}>
               <BodyText style={styles.statusText}>
                 {comments.length}
