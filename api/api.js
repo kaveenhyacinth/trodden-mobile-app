@@ -49,6 +49,7 @@ const api = {
   createMemo: (body) => Http.post("/api/memories/new", body),
   getInterests: () => Http.get("/api/interests"),
   getCurrentUser: (userId) => Http.get(`/api/profile/my/${userId}`),
+  getOwnMemories: (userId) => Http.get(`/api/memories/fetch/${userId}`),
 };
 
 export default api;
