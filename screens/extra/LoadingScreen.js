@@ -14,9 +14,9 @@ import ScreenView from "../../components/ScreenView";
 const LoadingScreen = (props) => {
   return (
     <ScreenView style={styles.container}>
-      <View style={styles.titleContainer}>
+      {/* <View style={styles.titleContainer}>
         <Text style={styles.title}>Trodden</Text>
-      </View>
+      </View> */}
       <View style={styles.imageContainer}>
         <Image
           source={require("../../assets/loading.png")}

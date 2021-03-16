@@ -13,7 +13,7 @@ import LoadingScreen from "../screens/extra/LoadingScreen";
 const Stack = createStackNavigator();
 
 const MainNavigator = (props) => {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [isSignedIn, setIsSignedIn] = useState(false);
 
   // Update tokens store with new tokens
@@ -25,7 +25,7 @@ const MainNavigator = (props) => {
       setLoading(true);
       try {
         // Fetch token form localstorage
-        const refToken = await Fetch("refTokn");
+        const refToken = await Fetch("refToken");
         if (!refToken) return setIsSignedIn(false);
 
         // Request for new tokens

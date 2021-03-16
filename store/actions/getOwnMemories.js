@@ -5,7 +5,7 @@ export const getOwnMemories = (userId) => async (dispatch) => {
   try {
     const response = await api.getOwnMemories(userId);
     if (!response.data.result)
-      throw new Error("Our server s are too busy! Please try again later...");
+      throw new Error("Our servers are too busy! Please try again later...");
     dispatch({
       type: GET_OWN_MEMORIES,
       payload: response.data.result,

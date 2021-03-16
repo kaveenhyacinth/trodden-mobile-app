@@ -39,6 +39,7 @@ Http.interceptors.response.use(
 );
 
 const api = {
+  // Post
   uploadImage: (body) => (config) => Http.post("/image/add", body, config),
   uploadImages: (body) => (config) => Http.post("/images/add", body, config),
   uploadVideos: (body) => (config) => Http.post("/videos/add", body, config),
@@ -47,12 +48,18 @@ const api = {
   refreshToken: (body) => Http.post("/api/auth/refresh-token", body),
   activateProfile: (body) => Http.post("/api/auth/activate", body),
   createMemo: (body) => Http.post("/api/memories/new", body),
+  // Get
   getInterests: () => Http.get("/api/interests"),
   getCurrentUser: (userId) => Http.get(`/api/profile/my/${userId}`),
   getOwnMemories: (userId) => Http.get(`/api/memories/fetch/${userId}`),
+  getNomadSuggestions: (userId) => Http.get(`/api/sug/i/nomads/${userId}`),
+  getCaravanSuggestions: (userId) => Http.get(`/api/sug/i/caravans/${userId}`),
+  // PUT
   updateProfile: (body) => Http.put("/api/profile/setup", body),
+  // Patch
   postComment: (body) => Http.patch("/api/memories/comment", body),
   postHeat: (body) => Http.patch("/api/memories/heat", body),
+  // Delete
 };
 
 export default api;
