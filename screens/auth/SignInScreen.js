@@ -4,7 +4,7 @@ import { Text, StyleSheet, Pressable, Alert } from "react-native";
 import { useDispatch } from "react-redux";
 import { Save } from "../../services/deviceStorage";
 import { storeToken } from "../../store/actions/storeToken";
-import Http from "../../api/kit";
+import api from "../../api/api";
 import Colors from "../../theme/Colors";
 import Typography from "../../theme/Typography";
 import ScreenView from "../../components/ScreenView";
@@ -111,10 +111,11 @@ const SignInScreen = (props) => {
       setLoading(true);
 
       // getting sign-in response
-      const response = await Http.post("/api/auth/signin", {
+      const signinBody = {
         email: formState.inputValues.email,
         password: formState.inputValues.password,
-      });
+      };
+      const response = await api.signin(signinBody);
       if (!response) throw new Error("Something went wrong on our side");
 
       // console.log("Response taken:", response.data);
