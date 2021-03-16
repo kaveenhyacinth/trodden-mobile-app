@@ -42,6 +42,7 @@
     "react-string-replace": "^0.4.4",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
+    "regexify-string": "^1.0.5",
     "yup": "^0.32.9"
   },
   "devDependencies": {

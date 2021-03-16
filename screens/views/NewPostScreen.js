@@ -139,7 +139,7 @@ const NewPostScreen = (props) => {
         </>
       );
     } else if (images.length !== 0) {
-      if (images.length < 2) {
+      if (images.length < 8) {
         return (
           <>
             <Pressable onPress={handleSelectImage}>

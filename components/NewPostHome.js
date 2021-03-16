@@ -12,7 +12,9 @@ const NewPostHome = (props) => {
     <View style={styles.container}>
       <View style={styles.topRow}>
         <View style={styles.topColLft}>
-          <FontAwesome5 name="edit" size={25} color={Colors.primary} />
+          <Pressable onPress={props.onPress}>
+            <FontAwesome5 name="edit" size={25} color={Colors.primary} />
+          </Pressable>
         </View>
         <View style={styles.topColRgt}>
           <Pressable onPress={props.onPress}>
@@ -24,21 +26,28 @@ const NewPostHome = (props) => {
       </View>
       <View style={styles.bottomRow}>
         <View style={styles.bottomCol}>
-          <BodyText>
-            <FontAwesome5 name="images" size={20} color={Colors.primary} />{" "}
-            Photo
-          </BodyText>
+          <Pressable onPress={props.onPress}>
+            <BodyText>
+              <FontAwesome5 name="images" size={20} color={Colors.primary} />{" "}
+              Photo
+            </BodyText>
+          </Pressable>
         </View>
         <View style={styles.bottomCol}>
-          <BodyText>
-            <FontAwesome5 name="camera" size={20} color={Colors.primary} />{" "}
-            Camera
-          </BodyText>
+          <Pressable onPress={props.onPress}>
+            <BodyText>
+              <FontAwesome5 name="camera" size={20} color={Colors.primary} />{" "}
+              Camera
+            </BodyText>
+          </Pressable>
         </View>
         <View style={styles.bottomCol}>
-          <BodyText>
-            <FontAwesome5 name="video" size={20} color={Colors.primary} /> Video
-          </BodyText>
+          <Pressable onPress={props.onPress}>
+            <BodyText>
+              <FontAwesome5 name="video" size={20} color={Colors.primary} />{" "}
+              Video
+            </BodyText>
+          </Pressable>
         </View>
       </View>
     </View>
@@ -78,7 +87,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     padding: 5,
-    backgroundColor: Colors.outline,
+    backgroundColor: Colors.backgroundOverlay,
     borderRadius: 20,
     marginHorizontal: 10,
   },

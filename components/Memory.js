@@ -13,6 +13,7 @@ import { Video } from "expo-av";
 import Constants from "expo-constants";
 import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
 import { useDispatch } from "react-redux";
+import regexifyString from "regexify-string";
 import { getOwnMemories } from "../store/actions/getOwnMemories";
 import { Fetch } from "../services/deviceStorage";
 import api from "../api/api";
@@ -45,21 +46,55 @@ const Memory = (props) => {
 
   useEffect(() => {
     handleMarkLike();
-  }, [props])
+  }, [props]);
 
   const dispatch = useDispatch();
 
+  const renderHashTags = (content) => {
+    const regexp = new RegExp(/(^|\s)#[a-zA-Z0-9][\w-]*\b/g);
+    const result = regexifyString({
+      pattern: regexp,
+      decorator: (match, index) => {
+        return (
+          <BodyText
+            onPress={() => {
+              alert(`This is ${match}`);
+            }}
+            key={index}
+            style={{ color: Colors.primary }}
+          >
+            {match}
+          </BodyText>
+        );
+      },
+      input: content,
+    });
+
+    let textList = result.map((item) => {
+      if (typeof item !== "string") {
+        return item;
+      } else {
+        return <BodyText>{item}</BodyText>;
+      }
+    });
+
+    return textList;
+  };
+
   const renderContent = () => {
     if (content.length < 100) {
-      return <BodyText>{content}</BodyText>;
+      return <BodyText>{renderHashTags(content)}</BodyText>;
     }
 
     if (!isReadMore) {
       return (
         <>
-          <BodyText>{content.substr(0, 100)}</BodyText>
+          <BodyText>
+            {renderHashTags(content.substr(0, 100))}
+            {"..."}
+          </BodyText>
           <Pressable onPress={() => setIsReadMore(true)}>
-            <BodyText style={styles.colExpLink}>Read More...</BodyText>
+            <BodyText style={styles.colExpLink}>{"Read More >>"}</BodyText>
           </Pressable>
         </>
       );
@@ -67,9 +102,9 @@ const Memory = (props) => {
 
     return (
       <>
-        <BodyText>{content}</BodyText>
+        <BodyText>{renderHashTags(content)}</BodyText>
         <Pressable onPress={() => setIsReadMore(false)}>
-          <BodyText style={styles.colExpLink}>Collapse...</BodyText>
+          <BodyText style={styles.colExpLink}>{"Collapse <<"}</BodyText>
         </Pressable>
       </>
     );
@@ -117,9 +152,8 @@ const Memory = (props) => {
   const handleMarkLike = async () => {
     try {
       const userId = await Fetch("nomadId");
-      const isHeated = heats.find(heat => heat._id === userId);
-      console.log("Heated:", isHeated);
-      if(isHeated) return setIsLiked(true);
+      const isHeated = heats.find((heat) => heat._id === userId);
+      if (isHeated) return setIsLiked(true);
       return setIsLiked(false);
     } catch (error) {
       Alert.alert(
@@ -135,7 +169,7 @@ const Memory = (props) => {
       );
       console.log("Error Happen @handleLike", error);
     }
-  }
+  };
 
   const handleLike = async () => {
     try {
@@ -262,7 +296,7 @@ const Memory = (props) => {
             <Pressable>
               <BodyText style={styles.statusText}>
                 {heats.length}
-                {heats.length === 1 ? ` twig` : ` twigs`}
+                {heats.length === 1 ? ` heart` : ` hearts`}
               </BodyText>
             </Pressable>
             {"  "}
@@ -301,12 +335,12 @@ const styles = StyleSheet.create({
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
-      height: 5,
+      height: 2,
     },
     shadowOpacity: 0.12,
     shadowRadius: 60,
     //#endregion
-    elevation: 5,
+    elevation: 2,
   },
   header: {
     // backgroundColor: "#fcc",
@@ -349,8 +383,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   content: {
-    paddingVertical: 10,
-    paddingHorizontal: 15,
+    padding: 10,
   },
   colExpLink: {
     ...Typography.bodyTextBold,
