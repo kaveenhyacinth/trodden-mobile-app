@@ -22,14 +22,14 @@ const ValidationSchema = yup.object().shape({
     .matches(/^[A-z]+$/, "Only letters!")
     .min(2, "Too short! Enter at least two characters")
     .max(32, "Too long! Keep it less than 32 characters")
-    .required(),
+    .required("Required!"),
   lastName: yup
     .string()
     .trim()
     .matches(/^[A-z\s]+$/, "Only letters!")
     .min(2, "Too short! Enter at least two characters")
     .max(32, "Too long! Keep it less than 32 characters")
-    .required(),
+    .required("Required!"),
   username: yup
     .string()
     .trim()
@@ -39,13 +39,13 @@ const ValidationSchema = yup.object().shape({
       /^(?=[a-zA-Z0-9._]{5,12}$)(?!.*[_.]{2})[^_.].*[^_.]$/,
       "Invalid Username"
     )
-    .required(),
-  email: yup.string().trim().email("Enter a valid email!").required(),
+    .required("Required!"),
+  email: yup.string().trim().email("Enter a valid email!").required("Required!"),
   password: yup
     .string()
     .min(8, "Too short! Enter at leas 8 characters")
     .max(20, "Too long! Keep it less than 20 characters")
-    .required(),
+    .required("Required!"),
 });
 //#endregion
 

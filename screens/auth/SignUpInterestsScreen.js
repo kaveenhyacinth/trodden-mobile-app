@@ -26,7 +26,7 @@ const InterestScreen = (props) => {
 
   useEffect(() => {
     handleLoadInterests();
-    // console.log("userData", userStore);
+    console.log("userData", userStore);
     // console.log("Interests", interetsStore);
   }, []);
 
@@ -107,7 +107,7 @@ const InterestScreen = (props) => {
           "Something went wrong while saving the profile picture! Please try again later..."
         );
 
-      return response.data.result;
+      return response.data.result.filename;
     } catch (error) {
       throw error;
     }
@@ -119,6 +119,7 @@ const InterestScreen = (props) => {
    */
   const handleUpdateUserProfile = async (body) => {
     try {
+      console.log("Inside HandleUpdateUseProfile");
       const response = await api.updateProfile(body);
 
       if (!response.data.success)
@@ -126,6 +127,7 @@ const InterestScreen = (props) => {
           "Something went wrong while updating the information! Please try again later..."
         );
 
+      console.log("Saved Data", response.data.result);
       return response.data.success;
     } catch (error) {
       console.log("Error =>", error.response);

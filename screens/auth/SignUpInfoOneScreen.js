@@ -289,7 +289,6 @@ const SignupInfoOneScreen = (props) => {
         <DatePickerModel
           isVisible={isDatePickerVisible}
           mode="date"
-          display="spinner"
           onConfirm={(date) => handleInput(date, "birthdate")}
           onCancel={handleHideDatePicker}
         />
