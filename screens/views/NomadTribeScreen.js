@@ -1,36 +1,31 @@
 import React, { useState, useEffect } from "react";
-import { Text, View, SafeAreaView, FlatList, Alert } from "react-native";
-import { useSelector, useDispatch } from "react-redux";
-import { useIsFocused } from "@react-navigation/native";
+import { SafeAreaView, FlatList, Alert } from "react-native";
 import { Fetch } from "../../services/deviceStorage";
-import { nomadSuggestions } from "../../store/actions/getSuggestions";
-import ScreenView from "../../components/ScreenView";
+import api from "../../api/api";
 import EmptyScreen from "../extra/EmptyScreen";
-import LoadingScreen from "../extra/LoadingScreen";
-import EmptyLoadingScreen from "../extra/EmptyLoadingScreen";
 import Colors from "../../theme/Colors";
 import NomadRequestTile from "../../components/NomadRequestTile";
 
-const NomadsExploreScreen = (props) => {
+const InboxScreen = (props) => {
   const [loading, setLoading] = useState(true);
-
-  const dispatch = useDispatch();
+  const [bondsList, setBondsList] = useState([]);
 
   useEffect(() => {
-    loadSuggestions();
+    loadBondList();
   }, []);
 
-  const suggestionsStore = useSelector((state) => state.suggestionsStore);
-
   useEffect(() => {
-    console.log("Nomad Suggestions", suggestionsStore.nomads);
-  }, [suggestionsStore]);
+    console.log("Bond List", bondsList);
+  }, [bondsList]);
 
-  const loadSuggestions = async () => {
+  const loadBondList = async () => {
     try {
       setLoading(true);
       const nomadId = await Fetch("nomadId");
-      await nomadSuggestions(nomadId)(dispatch);
+      const response = await api.getBondsList(nomadId);
+      if (!response.data.success)
+        throw new Error("Something went wrong! Please try again later...");
+      setBondsList((prevState) => response.data.result);
     } catch (error) {
       Alert.alert(
         "Oh My trod!",
@@ -50,25 +45,21 @@ const NomadsExploreScreen = (props) => {
   };
 
   const renderNomads = ({ item }) => (
-    <NomadRequestTile
-      onRefresh={loadSuggestions}
-      type="suggestion"
-      data={item}
-    />
+    <NomadRequestTile onRefresh={loadBondList} data={item} />
   );
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: Colors.accent }}>
       <FlatList
-        data={suggestionsStore.nomads}
+        data={bondsList.tribe}
         renderItem={renderNomads}
         keyExtractor={(item) => item._id}
         ListEmptyComponent={<EmptyScreen />}
         refreshing={loading}
-        onRefresh={() => loadSuggestions()}
+        onRefresh={() => loadBondList()}
       />
     </SafeAreaView>
   );
 };
 
-export default NomadsExploreScreen;
+export default InboxScreen;

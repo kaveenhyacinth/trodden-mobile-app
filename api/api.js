@@ -48,18 +48,24 @@ const api = {
   refreshToken: (body) => Http.post("/api/auth/refresh-token", body),
   activateProfile: (body) => Http.post("/api/auth/activate", body),
   createMemo: (body) => Http.post("/api/memories/new", body),
+  requestBond: (body) => Http.put("/api/profile/req/new", body),
   // Get
   getInterests: () => Http.get("/api/interests"),
   getCurrentUser: (userId) => Http.get(`/api/profile/my/${userId}`),
   getOwnMemories: (userId) => Http.get(`/api/memories/fetch/${userId}`),
   getNomadSuggestions: (userId) => Http.get(`/api/sug/i/nomads/${userId}`),
   getCaravanSuggestions: (userId) => Http.get(`/api/sug/i/caravans/${userId}`),
+  getIncomingBonds: (userId) => Http.get(`/api/profile/req/in/${userId}`),
+  getOutgoingBonds: (userId) => Http.get(`/api/profile/req/out/${userId}`),
+  getBondsList: (userId) => Http.get(`/api/profile/tribe/bonds/${userId}`),
   // PUT
   updateProfile: (body) => Http.put("/api/profile/setup", body),
   // Patch
   postComment: (body) => Http.patch("/api/memories/comment", body),
   postHeat: (body) => Http.patch("/api/memories/heat", body),
+  acceptBond: (body) => Http.patch("/api/profile/req/confirm", body),
   // Delete
+  rejectBond: (requestId) => Http.delete(`/api/profile/req/rm/${requestId}`),
 };
 
 export default api;

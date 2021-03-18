@@ -18,6 +18,9 @@ const initialState = {
   occupation: "",
   prof_img: "",
   interests: [],
+  memories: [],
+  trips: [],
+  tribe: [],
 };
 
 const storeNomadReducer = (state = initialState, action) => {

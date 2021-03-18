@@ -3,9 +3,9 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import Colors from "../theme/Colors";
 import Typography from "../theme/Typography";
+import NomadsExplore from "../screens/views/NomadsExploreScreen";
 import CaravansExplore from "../screens/views/CaravansExploreScreen";
-import BlazeScreen from "../screens/views/BlazesScreen";
-import NomadTribeScreen from "../screens/views/NomadTribeScreen";
+import InboxScreen from "../screens/core/InboxScreen";
 
 const Stack = createStackNavigator();
 const Tab = createMaterialTopTabNavigator();
@@ -30,7 +30,7 @@ const defaultTabOptions = {
   tabStyle: { backgroundColor: Colors.accent },
 };
 
-const ExploreNavigator = (props) => {
+const InboxNavigator = (props) => {
   return (
     <Tab.Navigator
       tabBarOptions={{
@@ -38,36 +38,29 @@ const ExploreNavigator = (props) => {
       }}
     >
       <Tab.Screen
-        name="blazes"
-        component={BlazeScreen}
+        name="nomadsExplore"
+        component={InboxScreen}
         options={{
-          title: "Blazes",
+          title: "Invitations",
         }}
       />
       <Tab.Screen
-        name="caravans"
+        name="caravansExplore"
         component={CaravansExplore}
         options={{
           title: "Caravans",
-        }}
-      />
-      <Tab.Screen
-        name="nomads"
-        component={NomadTribeScreen}
-        options={{
-          title: "Nomads",
         }}
       />
     </Tab.Navigator>
   );
 };
 
-const ExploreStack = (props) => {
+const InboxStack = (props) => {
   return (
     <Stack.Navigator screenOptions={{ ...defaultStackNavOptions }}>
-      <Stack.Screen name="Tribe" component={ExploreNavigator} />
+      <Stack.Screen name="Inbox" component={InboxNavigator} />
     </Stack.Navigator>
   );
 };
 
-export default ExploreStack;
+export default InboxStack;
