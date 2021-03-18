@@ -46,16 +46,34 @@ const ProfileHeader = (props) => {
       <View style={styles.bottomSection}>
         <View style={styles.infoContainer}>
           <View style={styles.info}>
-            <BodyText style={styles.infoText}>{24}</BodyText>
-            <BodyText style={styles.infoText}>Memos</BodyText>
+            <BodyText style={styles.infoText}>
+              {nomadStore.memories.length < 10
+                ? `0${nomadStore.memories.length}`
+                : nomadStore.memories.length}
+            </BodyText>
+            <BodyText style={styles.infoText}>
+              {nomadStore.memories.length === 1 ? "Memo" : "Memos"}
+            </BodyText>
           </View>
           <View style={styles.info}>
-            <BodyText style={styles.infoText}>{10}</BodyText>
-            <BodyText style={styles.infoText}>Trips</BodyText>
+            <BodyText style={styles.infoText}>
+              {nomadStore.trips.length < 10
+                ? `0${nomadStore.trips.length}`
+                : nomadStore.trips.length}
+            </BodyText>
+            <BodyText style={styles.infoText}>
+              {nomadStore.trips.length === 1 ? "Trip" : "Trips"}
+            </BodyText>
           </View>
           <View style={styles.info}>
-            <BodyText style={styles.infoText}>{112}</BodyText>
-            <BodyText style={styles.infoText}>Dots</BodyText>
+            <BodyText style={styles.infoText}>
+              {nomadStore.tribe.length < 10
+                ? `0${nomadStore.tribe.length}`
+                : nomadStore.tribe.length}
+            </BodyText>
+            <BodyText style={styles.infoText}>
+              {nomadStore.tribe.length === 1 ? "Bond" : "Bonds"}
+            </BodyText>
           </View>
         </View>
         <View style={styles.bio}>
