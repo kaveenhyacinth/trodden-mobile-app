@@ -9,6 +9,8 @@ const Stack = createStackNavigator();
 const defaultStackNavOptions = {
   headerStyle: {
     backgroundColor: Colors.accent,
+    elevation: 0,
+    shadowOpacity: 0,
   },
   headerTitleStyle: {
     fontFamily: Typography.displayHeavy.fontFamily,
@@ -20,7 +22,10 @@ const defaultStackNavOptions = {
 const ProfilekNavigation = (props) => {
   return (
     <Stack.Navigator screenOptions={{ ...defaultStackNavOptions }}>
-      <Stack.Screen name="Profile" component={ProfileScreen} />
+      <Stack.Screen
+        name="Profile"
+        component={ProfileScreen}
+      />
     </Stack.Navigator>
   );
 };

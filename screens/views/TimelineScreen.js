@@ -17,17 +17,12 @@ const TimelineScreen = (props) => {
 
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
-  const ownMemoriesStore = useSelector((state) => state.ownMemoriesStore);
-
-  // ownMemoriesStore.memories = [];
 
   useEffect(() => {
     loadOwnMemories();
   }, [props]);
 
-  // useEffect(() => {
-  //   console.log("Memories:", ownMemoriesStore);
-  // }, [ownMemoriesStore, isFocused]);
+  const ownMemoriesStore = useSelector((state) => state.ownMemoriesStore);
 
   const loadOwnMemories = async () => {
     try {

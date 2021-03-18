@@ -25,41 +25,41 @@ const defaultTabOptions = {
 
 //#region Timeline component
 const ProfileScreen = (props) => {
+  const renderProfile = () => (
+    <ProfileHeader navigation={props.navigation} />
+  );
+
   return (
-    <ScrollView>
-      <ProfileHeader />
-      <Tab.Navigator
-        tabBarOptions={{
-          ...defaultTabOptions,
+    <Tab.Navigator
+      tabBarOptions={{
+        ...defaultTabOptions,
+      }}
+    >
+      <Tab.Screen
+        name="nomads"
+        component={renderProfile}
+        options={{
+          title: "Settings",
+          tabBarIcon: (tabInfo) => renderFaIcons(tabInfo)("user-alt", 20),
         }}
-        swipeEnabled={false}
-      >
-        <Tab.Screen
-          name="timeline"
-          component={TimelineScreen}
-          options={{
-            title: "Timeline",
-            tabBarIcon: (tabInfo) => renderFaIcons(tabInfo)("stream", 20),
-          }}
-        />
-        <Tab.Screen
-          name="caravans"
-          component={CaravansExplore}
-          options={{
-            title: "Trips",
-            tabBarIcon: (tabInfo) => renderFaIcons(tabInfo)("briefcase", 20),
-          }}
-        />
-        {/* <Tab.Screen
-            name="nomads"
-            component={NomadsExplore}
-            options={{
-              title: "Settings",
-              tabBarIcon: (tabInfo) => renderFaIcons(tabInfo)("cog", 20),
-            }}
-          /> */}
-      </Tab.Navigator>
-    </ScrollView>
+      />
+      <Tab.Screen
+        name="timeline"
+        component={TimelineScreen}
+        options={{
+          title: "Timeline",
+          tabBarIcon: (tabInfo) => renderFaIcons(tabInfo)("stream", 20),
+        }}
+      />
+      <Tab.Screen
+        name="caravans"
+        component={CaravansExplore}
+        options={{
+          title: "Trips",
+          tabBarIcon: (tabInfo) => renderFaIcons(tabInfo)("briefcase", 20),
+        }}
+      />
+    </Tab.Navigator>
   );
 };
 //#endregion

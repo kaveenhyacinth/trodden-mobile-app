@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { View, Image, StyleSheet, Dimensions } from "react-native";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { useSelector } from "react-redux";
@@ -6,14 +6,19 @@ import Constants from "expo-constants";
 import Colors from "../theme/Colors";
 import Typography from "../theme/Typography";
 import BodyText from "../components/BodyText";
+import ScreenView from "../components/ScreenView";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("screen");
 
 const ProfileHeader = (props) => {
   const nomadStore = useSelector((state) => state.nomadStore);
 
+  useEffect(() => {
+    props.navigation.setOptions({ title: `@${nomadStore.username}` });
+  });
+
   return (
-    <View style={styles.container}>
+    <ScreenView style={styles.container}>
       <View style={styles.topSection}>
         <View style={styles.leftSection}>
           <View style={styles.imageWrapper}>
@@ -26,43 +31,44 @@ const ProfileHeader = (props) => {
           </View>
         </View>
         <View style={styles.rightSection}>
-          <View style={styles.infoContainer}>
-            <View style={styles.info}>
-              <BodyText style={styles.infoText}>{24}</BodyText>
-              <BodyText style={styles.infoText}>Memos</BodyText>
-            </View>
-            <View style={styles.info}>
-              <BodyText style={styles.infoText}>{10}</BodyText>
-              <BodyText style={styles.infoText}>Trips</BodyText>
-            </View>
-            <View style={styles.info}>
-              <BodyText style={styles.infoText}>{112}</BodyText>
-              <BodyText style={styles.infoText}>Dots</BodyText>
-            </View>
-          </View>
+          <BodyText style={styles.name} numberOfLines={2}>
+            {`${nomadStore.first_name} ${nomadStore.last_name}`}
+          </BodyText>
+          <BodyText
+            style={styles.username}
+          >{`@${nomadStore.username}`}</BodyText>
+          <BodyText style={styles.country}>
+            <FontAwesome5 name="map-marker-alt" />{" "}
+            {`${nomadStore.city}, ${nomadStore.country}`}
+          </BodyText>
         </View>
       </View>
       <View style={styles.bottomSection}>
-        <BodyText style={styles.name} numberOfLines={2}>
-          {`${nomadStore.first_name} ${nomadStore.last_name}`}
-        </BodyText>
-        <BodyText style={styles.username}>{`@${nomadStore.username}`}</BodyText>
-        <BodyText style={styles.country}>
-          <FontAwesome5 name="map-marker-alt" />{" "}
-          {`${nomadStore.city}, ${nomadStore.country}`}
-        </BodyText>
+        <View style={styles.infoContainer}>
+          <View style={styles.info}>
+            <BodyText style={styles.infoText}>{24}</BodyText>
+            <BodyText style={styles.infoText}>Memos</BodyText>
+          </View>
+          <View style={styles.info}>
+            <BodyText style={styles.infoText}>{10}</BodyText>
+            <BodyText style={styles.infoText}>Trips</BodyText>
+          </View>
+          <View style={styles.info}>
+            <BodyText style={styles.infoText}>{112}</BodyText>
+            <BodyText style={styles.infoText}>Dots</BodyText>
+          </View>
+        </View>
         <View style={styles.bio}>
           <BodyText style={styles.bioText}>{nomadStore.prof_bio}</BodyText>
         </View>
       </View>
-    </View>
+    </ScreenView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    maxHeight: SCREEN_HEIGHT * 0.4,
-    width: SCREEN_WIDTH,
+    flex: 1,
     backgroundColor: Colors.accent,
   },
   topSection: {
@@ -70,10 +76,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   bottomSection: {
-    paddingHorizontal: SCREEN_WIDTH * 0.05,
+    paddingHorizontal: 10,
     paddingVertical: 5,
     justifyContent: "flex-start",
-    alignItems: "stretch",
+    alignItems: "center",
   },
   leftSection: {
     width: SCREEN_WIDTH * 0.4,
@@ -84,8 +90,8 @@ const styles = StyleSheet.create({
   rightSection: {
     flex: 1,
     justifyContent: "center",
-    paddingVertical: SCREEN_WIDTH * 0.05,
-    paddingHorizontal: SCREEN_WIDTH * 0.05,
+    paddingVertical: 5,
+    paddingHorizontal: 5,
   },
   imageWrapper: {
     width: SCREEN_WIDTH * 0.28,
@@ -100,9 +106,11 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   infoContainer: {
+    width: SCREEN_WIDTH,
     flexDirection: "row",
-    marginTop: 10,
     justifyContent: "space-evenly",
+    backgroundColor: Colors.background,
+    paddingVertical: 10,
   },
   info: {
     marginRight: SCREEN_WIDTH * 0.05,
@@ -126,11 +134,15 @@ const styles = StyleSheet.create({
     color: Colors.info,
   },
   bio: {
-    width: SCREEN_WIDTH * 0.8,
-    marginVertical: 5,
+    width: SCREEN_WIDTH,
+    paddingVertical: 15,
+    paddingHorizontal: SCREEN_WIDTH * 0.1,
+    alignItems: "center",
+    justifyContent: "center",
   },
   bioText: {
     color: Colors.info,
+    textAlign: "center",
   },
 });
 
