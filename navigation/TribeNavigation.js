@@ -13,6 +13,8 @@ const Tab = createMaterialTopTabNavigator();
 const defaultStackNavOptions = {
   headerStyle: {
     backgroundColor: Colors.accent,
+    elevation: 0,
+    shadowOpacity: 0,
   },
   headerTitleStyle: {
     fontFamily: Typography.displayHeavy.fontFamily,

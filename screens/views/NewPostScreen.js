@@ -14,9 +14,8 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { Video } from "expo-av";
-import { useDispatch } from "react-redux";
-import { getOwnMemories } from "../../store/actions/getOwnMemories";
-import { Fetch } from "../../services/deviceStorage"
+import { useSelector } from "react-redux";
+import { Fetch } from "../../services/deviceStorage";
 import api from "../../api/api";
 import Colors from "../../theme/Colors";
 import Typography from "../../theme/Typography";
@@ -25,6 +24,7 @@ import BodyText from "../../components/BodyText";
 import InputBox from "../../components/InputBox";
 import MemoImagePreview from "../../components/MemoImagePreview";
 import PlaceSearch from "../../components/PlaceSearchBottomSheet";
+import { downloadImage } from "../../services/mediaService"
 //#endregion
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
@@ -42,11 +42,11 @@ const NewPostScreen = (props) => {
     types: [],
   });
 
-  const dispatch = useDispatch();
-
   useEffect(() => {
     checkIsPostReady();
   }, [images, video, content]);
+
+  const nomadStore = useSelector(state => state.nomadStore)
 
   const checkIsPostReady = () => {
     if ((images.length !== 0 || video.length !== 0) && content.length >= 5)
@@ -492,8 +492,6 @@ const NewPostScreen = (props) => {
         );
 
       console.log("8. Response:", response.data.result);
-
-      await getOwnMemories(userId)(dispatch);
       props.navigation.replace("core", { screen: "Profile" });
     } catch (error) {
       console.log(
@@ -511,13 +509,13 @@ const NewPostScreen = (props) => {
         <View style={styles.imageContainer}>
           <View style={styles.imageWrapper}>
             <Image
-              source={{ uri: "https://bit.ly/3rbZYXf" }}
+              source={{ uri: downloadImage(nomadStore.prof_img) }}
               style={styles.headerImage}
             />
           </View>
         </View>
         <View style={styles.sharePrefWrapper}>
-          <BodyText style={styles.NomadName}>{"Kaveen Hyacinth"}</BodyText>
+          <BodyText style={styles.NomadName}>{`${nomadStore.first_name} ${nomadStore.last_name}`}</BodyText>
           <BodyText style={styles.NomadLocation}>
             {location.name ?? "Tag a location below..."}
           </BodyText>
