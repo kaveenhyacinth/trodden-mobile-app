@@ -74,7 +74,9 @@ const Memory = (props) => {
       if (typeof item !== "string") {
         return item;
       } else {
-        return <BodyText>{item}</BodyText>;
+        return (
+          <BodyText key={result.indexOf(item) + Math.random()}>{item}</BodyText>
+        );
       }
     });
 
