@@ -49,8 +49,13 @@ const NomadsExploreScreen = (props) => {
     }
   };
 
+  const handleNavigation = () => {
+    props.navigation.navigate("Profile");
+  };
+
   const renderNomads = ({ item }) => (
     <NomadRequestTile
+      onNavigate={handleNavigation}
       onRefresh={loadSuggestions}
       type="suggestion"
       data={item}

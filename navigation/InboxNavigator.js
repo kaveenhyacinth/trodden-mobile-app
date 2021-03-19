@@ -6,6 +6,7 @@ import Typography from "../theme/Typography";
 import NomadsExplore from "../screens/views/NomadsExploreScreen";
 import CaravansExplore from "../screens/views/CaravansExploreScreen";
 import InboxScreen from "../screens/core/InboxScreen";
+import NomadProfileNavigation from "./NomadProfileNavigation";
 
 const Stack = createStackNavigator();
 const Tab = createMaterialTopTabNavigator();
@@ -59,6 +60,7 @@ const InboxStack = (props) => {
   return (
     <Stack.Navigator screenOptions={{ ...defaultStackNavOptions }}>
       <Stack.Screen name="Inbox" component={InboxNavigator} />
+      <Stack.Screen name="Profile" component={NomadProfileNavigation} options={{title: "..."}} />
     </Stack.Navigator>
   );
 };

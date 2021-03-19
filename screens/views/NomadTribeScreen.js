@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { SafeAreaView, FlatList, Alert } from "react-native";
+import { SafeAreaView, FlatList, Alert, BackHandler } from "react-native";
 import { Fetch } from "../../services/deviceStorage";
 import api from "../../api/api";
 import EmptyScreen from "../extra/EmptyScreen";
@@ -45,8 +45,16 @@ const InboxScreen = (props) => {
   };
 
   const renderNomads = ({ item }) => (
-    <NomadRequestTile onRefresh={loadBondList} data={item} />
+    <NomadRequestTile
+      onNavigate={handleNavigation}
+      onRefresh={loadBondList}
+      data={item}
+    />
   );
+
+  const handleNavigation = () => {
+    props.navigation.navigate("Profile");
+  };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: Colors.accent }}>

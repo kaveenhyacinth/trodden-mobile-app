@@ -52,7 +52,9 @@ const api = {
   // Get
   getInterests: () => Http.get("/api/interests"),
   getCurrentUser: (userId) => Http.get(`/api/profile/my/${userId}`),
-  getOwnMemories: (userId) => Http.get(`/api/memories/fetch/${userId}`),
+  getNomad: (userId) => Http.get(`/api/profile/user/${userId}`),
+  getOwnMemories: (userId) => Http.get(`/api/memories/my/${userId}`),
+  getNomadMemories: (userId) => Http.get(`/api/memories/fetch/${userId}`),
   getNomadSuggestions: (userId) => Http.get(`/api/sug/i/nomads/${userId}`),
   getCaravanSuggestions: (userId) => Http.get(`/api/sug/i/caravans/${userId}`),
   getIncomingBonds: (userId) => Http.get(`/api/profile/req/in/${userId}`),

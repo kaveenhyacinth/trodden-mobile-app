@@ -1,13 +1,14 @@
-import React, { useState, useEffect } from "react";
-import { ScrollView, View } from "react-native";
-import { FontAwesome5 } from "@expo/vector-icons";
+import React from "react";
+import { createStackNavigator } from "@react-navigation/stack";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import Colors from "../../theme/Colors";
-import Typography from "../../theme/Typography";
-import ProfileHeader from "../../components/ProfileHeader";
-import TimelineScreen from "../views/TimelineScreen";
-import CaravansExplore from "../views/CaravansExploreScreen";
+import { FontAwesome5 } from "@expo/vector-icons";
+import Colors from "../theme/Colors";
+import Typography from "../theme/Typography";
+import NomadProfAboutView from "../screens/views/NomadProfAboutView";
+import CaravansExplore from "../screens/views/CaravansExploreScreen";
+import TimelineScreen from "../screens/views/TimelineScreen";
 
+const Stack = createStackNavigator();
 const Tab = createMaterialTopTabNavigator();
 
 const renderFaIcons = (tabInfo) => (name, size) => (
@@ -23,17 +24,32 @@ const defaultTabOptions = {
   showLabel: false,
 };
 
-//#region Timeline component
-const ProfileScreen = (props) => {
+const defaultStackNavOptions = {
+  headerStyle: {
+    backgroundColor: Colors.accent,
+    elevation: 0,
+    shadowOpacity: 0,
+  },
+  headerTitleStyle: {
+    fontFamily: Typography.displayHeavy.fontFamily,
+    letterSpacing: Typography.displayHeavy.letterSpacing,
+  },
+  headerTintColor: Colors.info,
+};
+
+const nomadProfileNavigation = (props) => {
   const renderProfile = () => (
-    <ProfileHeader navigation={props.navigation} />
+    <NomadProfAboutView navigation={props.navigation} type="non-self" />
   );
+
+  const renderTimeline = () => <TimelineScreen type="non-self" />;
 
   return (
     <Tab.Navigator
       tabBarOptions={{
         ...defaultTabOptions,
       }}
+      swipeEnabled={false}
     >
       <Tab.Screen
         name="nomads"
@@ -45,7 +61,7 @@ const ProfileScreen = (props) => {
       />
       <Tab.Screen
         name="timeline"
-        component={TimelineScreen}
+        component={renderTimeline}
         options={{
           title: "Timeline",
           tabBarIcon: (tabInfo) => renderFaIcons(tabInfo)("stream", 20),
@@ -62,6 +78,5 @@ const ProfileScreen = (props) => {
     </Tab.Navigator>
   );
 };
-//#endregion
 
-export default ProfileScreen;
+export default nomadProfileNavigation;

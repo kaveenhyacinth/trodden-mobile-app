@@ -40,8 +40,13 @@ const InboxScreen = (props) => {
     }
   };
 
+  const handleNavigation = () => {
+    props.navigation.navigate("Profile");
+  };
+
   const renderNomads = ({ item }) => (
     <NomadRequestTile
+      onNavigate={handleNavigation}
       onRefresh={loadIncomingBonds}
       type="confirm"
       data={item}

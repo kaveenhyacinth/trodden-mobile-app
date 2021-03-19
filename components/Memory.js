@@ -12,9 +12,9 @@ import {
 import { Video } from "expo-av";
 import Constants from "expo-constants";
 import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import regexifyString from "regexify-string";
-import { getOwnMemories } from "../store/actions/getOwnMemories";
+import { getOwnMemories, getNomadMemories } from "../store/actions/getMemories";
 import { Fetch } from "../services/deviceStorage";
 import api from "../api/api";
 import Colors from "../theme/Colors";
@@ -49,6 +49,7 @@ const Memory = (props) => {
   }, [props]);
 
   const dispatch = useDispatch();
+  const tempNomadStore = useSelector((state) => state.tempNomadStore);
 
   const renderHashTags = (content) => {
     const regexp = new RegExp(/(^|\s)#[a-zA-Z0-9][\w-]*\b/g);
@@ -184,7 +185,13 @@ const Memory = (props) => {
       if (!response.data.result)
         throw new Error("Something went wrong! Please try again!");
 
-      await getOwnMemories(userId)(dispatch);
+      if (props.type === "self") {
+        await getOwnMemories(userId)(dispatch);
+      }
+
+      if (!props.type || props.type === "non-self") {
+        await getNomadMemories(tempNomadStore.nomadId)(dispatch);
+      }
     } catch (error) {
       Alert.alert(
         "Oh My trod!",
@@ -214,7 +221,14 @@ const Memory = (props) => {
       if (!response.data.result)
         throw new Error("Something went wrong! Please try again!");
       setNewComment("");
-      await getOwnMemories(nomadId)(dispatch);
+
+      if (props.type === "self") {
+        await getOwnMemories(nomadId)(dispatch);
+      }
+
+      if (!props.type || props.type === "non-self") {
+        await getNomadMemories(tempNomadStore.nomadId)(dispatch);
+      }
     } catch (error) {
       Alert.alert(
         "Oh My trod!",

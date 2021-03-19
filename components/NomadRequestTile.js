@@ -10,6 +10,8 @@ import {
   Dimensions,
 } from "react-native";
 import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
+import { useDispatch } from "react-redux";
+import { storeTempNomad } from "../store/actions/storeTempNomad";
 import { downloadImage } from "../services/mediaService";
 import { Fetch } from "../services/deviceStorage";
 import api from "../api/api";
@@ -24,6 +26,8 @@ const tileHeight = 90;
 
 const nomadRequestTile = (props) => {
   const owner = props.data.owner ?? props.data;
+
+  const dispatch = useDispatch();
 
   const renderButtons = (type = "regular") => {
     if (type === "suggestion")
@@ -142,7 +146,8 @@ const nomadRequestTile = (props) => {
 
   // TODO:
   const handleViewProfile = (userId) => {
-    alert(userId);
+    dispatch(storeTempNomad(userId));
+    props.onNavigate();
   };
 
   return (
