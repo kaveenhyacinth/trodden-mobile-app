@@ -1,3 +1,4 @@
+//#region Imports
 import React, { useEffect, useState } from "react";
 import { View, Image, StyleSheet, Alert, Dimensions } from "react-native";
 import { FontAwesome5 } from "@expo/vector-icons";
@@ -10,6 +11,7 @@ import Typography from "../../theme/Typography";
 import BodyText from "../../components/BodyText";
 import ScreenView from "../../components/ScreenView";
 import LoadingScreen from "../../screens/extra/LoadingScreen";
+//#endregion
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("screen");
 
@@ -30,87 +32,101 @@ const NomadAboutProfileView = (props) => {
   const nomadStore = useSelector((state) => state.nomadStore);
 
   useEffect(() => {
+    let didCancel = false;
+
     if (props.type === "self") {
+      const handleGetSelfNomad = async () => {
+        try {
+          setLoading(true);
+          // Set navigation header to username
+          props.navigation.setOptions({
+            title: `@${nomadStore.username}`,
+          });
+
+          // Set isOwner if owner
+          let nomadId;
+          if (!didCancel) {
+            nomadId = await Fetch("nomadId");
+          }
+          if (nomadId === nomadStore._id) {
+            setIsOwner(true);
+          }
+
+          // Set temp nomad
+          setNomad((prevState) => ({ ...prevState, ...nomadStore }));
+        } catch (error) {
+          Alert.alert(
+            "Oh My trod!",
+            error.message ?? "Something went wrong. Please try again later",
+            [
+              {
+                text: "I Will",
+                style: "destructive",
+              },
+            ],
+            { cancelable: false }
+          );
+          console.log("Error Happen", error);
+        } finally {
+          setLoading(false);
+        }
+      };
       handleGetSelfNomad();
     }
 
     if (!props.type || props.type === "non-self") {
+      const handleGetNonSelfNomad = async () => {
+        try {
+          setLoading(true);
+
+          let response;
+          if (!didCancel) {
+            response = await api.getNomad(tempNomadStore.nomadId);
+          }
+          if (!response.data.success) throw new Error(response.data.msg);
+
+          // Set navigation header to username
+          props.navigation.setOptions({
+            title: `@${response.data.result.username}`,
+          });
+
+          // Set isOwner if owner
+          let nomadId;
+          if (!didCancel) {
+            nomadId = await Fetch("nomadId");
+          }
+          if (nomadId == response.data.result._id) {
+            setIsOwner(true);
+          }
+
+          // Set temp nomad
+          setNomad((prevState) => ({ ...prevState, ...response.data.result }));
+        } catch (error) {
+          Alert.alert(
+            "Oh My trod!",
+            error.message ?? "Something went wrong. Please try again later",
+            [
+              {
+                text: "I Will",
+                style: "destructive",
+              },
+            ],
+            { cancelable: false }
+          );
+          console.log("Error Happen", error);
+        } finally {
+          setLoading(false);
+        }
+      };
       handleGetNonSelfNomad();
     }
 
     console.log("Called in NomadProfAboutView");
-  }, [nomadStore]);
 
-  const handleGetSelfNomad = async () => {
-    try {
-      setLoading(true);
-      // Set navigation header to username
-      props.navigation.setOptions({
-        title: `@${nomadStore.username}`,
-      });
-
-      // Set isOwner if owner
-      const nomadId = await Fetch("nomadId");
-      if (nomadId === nomadStore._id) {
-        setIsOwner(true);
-      }
-
-      // Set temp nomad
-      setNomad((prevState) => ({ ...prevState, ...nomadStore }));
-    } catch (error) {
-      Alert.alert(
-        "Oh My trod!",
-        error.message ?? "Something went wrong. Please try again later",
-        [
-          {
-            text: "I Will",
-            style: "destructive",
-          },
-        ],
-        { cancelable: false }
-      );
-      console.log("Error Happen", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleGetNonSelfNomad = async () => {
-    try {
-      setLoading(true);
-      const response = await api.getNomad(tempNomadStore.nomadId);
-      if (!response.data.success) throw new Error(response.data.msg);
-
-      // Set navigation header to username
-      props.navigation.setOptions({
-        title: `@${response.data.result.username}`,
-      });
-
-      // Set isOwner if owner
-      const nomadId = await Fetch("nomadId");
-      if (nomadId == response.data.result._id) {
-        setIsOwner(true);
-      }
-
-      // Set temp nomad
-      setNomad((prevState) => ({ ...prevState, ...response.data.result }));
-    } catch (error) {
-      Alert.alert(
-        "Oh My trod!",
-        error.message ?? "Something went wrong. Please try again later",
-        [
-          {
-            text: "I Will",
-            style: "destructive",
-          },
-        ],
-        { cancelable: false }
-      );
-      console.log("Error Happen", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    return () => {
+      didCancel = true;
+    };
+  }, [nomadStore, tempNomadStore]);
 
   if (loading) return <LoadingScreen />;
 
