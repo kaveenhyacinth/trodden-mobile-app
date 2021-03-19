@@ -1,3 +1,4 @@
+//#region Imports
 import React, { useEffect } from "react";
 import {
   Text,
@@ -16,14 +17,13 @@ import Colors from "../theme/Colors";
 import BodyText from "./BodyText";
 import Typography from "../theme/Typography";
 import BigButton from "../components/BigButton";
+//#endregion
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("screen");
 const tileHeight = 90;
 
 const nomadRequestTile = (props) => {
   const owner = props.data.owner ?? props.data;
-
-  useEffect(() => console.log("Name", owner.first_name));
 
   const renderButtons = (type = "regular") => {
     if (type === "suggestion")
@@ -33,7 +33,7 @@ const nomadRequestTile = (props) => {
             Bond
           </BigButton>
           <BigButton
-            onPress={handleViewProfile}
+            onPress={() => handleViewProfile(owner._id)}
             style={{ ...styles.button, ...styles.lite }}
             textStyle={{ color: Colors.info }}
           >
@@ -58,7 +58,10 @@ const nomadRequestTile = (props) => {
       );
     return (
       <View style={styles.lowerDiv}>
-        <BigButton style={styles.button} onPress={handleViewProfile}>
+        <BigButton
+          style={styles.button}
+          onPress={() => handleViewProfile(owner._id)}
+        >
           View
         </BigButton>
         <BigButton
@@ -127,32 +130,38 @@ const nomadRequestTile = (props) => {
     }
   };
 
+  // TODO:
   const handleBondReject = async () => {
     alert("Reject");
   };
 
+  //TODO:
   const handleBondBreak = async () => {
     alert("Break");
   };
 
-  const handleViewProfile = () => {
-    alert("View");
+  // TODO:
+  const handleViewProfile = (userId) => {
+    alert(userId);
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.leftSection}>
         <View style={styles.imageWrapper}>
-          <Image
-            style={styles.image}
-            source={{ uri: downloadImage(owner.prof_img) }}
-          />
+          <Pressable onPress={() => handleViewProfile(owner._id)}>
+            <Image
+              style={styles.image}
+              source={{ uri: downloadImage(owner.prof_img) }}
+            />
+          </Pressable>
         </View>
       </View>
       <View style={styles.rightSection}>
         <View style={styles.upperDiv}>
           <BodyText
             style={styles.upperDivText}
+            onPress={() => handleViewProfile(owner._id)}
           >{`${owner.first_name} ${owner.last_name}`}</BodyText>
         </View>
         {renderButtons(props.type)}
