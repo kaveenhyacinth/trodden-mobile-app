@@ -1,5 +1,5 @@
 //#region Imports
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { View, Image, StyleSheet, Alert, Dimensions } from "react-native";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { useSelector } from "react-redux";

@@ -24,7 +24,7 @@ import BodyText from "../../components/BodyText";
 import InputBox from "../../components/InputBox";
 import MemoImagePreview from "../../components/MemoImagePreview";
 import PlaceSearch from "../../components/PlaceSearchBottomSheet";
-import { downloadImage } from "../../services/mediaService"
+import { downloadImage } from "../../services/mediaService";
 //#endregion
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
@@ -46,7 +46,7 @@ const NewPostScreen = (props) => {
     checkIsPostReady();
   }, [images, video, content]);
 
-  const nomadStore = useSelector(state => state.nomadStore)
+  const nomadStore = useSelector((state) => state.nomadStore);
 
   const checkIsPostReady = () => {
     if ((images.length !== 0 || video.length !== 0) && content.length >= 5)
@@ -515,7 +515,9 @@ const NewPostScreen = (props) => {
           </View>
         </View>
         <View style={styles.sharePrefWrapper}>
-          <BodyText style={styles.NomadName}>{`${nomadStore.first_name} ${nomadStore.last_name}`}</BodyText>
+          <BodyText
+            style={styles.NomadName}
+          >{`${nomadStore.first_name} ${nomadStore.last_name}`}</BodyText>
           <BodyText style={styles.NomadLocation}>
             {location.name ?? "Tag a location below..."}
           </BodyText>

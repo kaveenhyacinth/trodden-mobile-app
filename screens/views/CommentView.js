@@ -1,3 +1,4 @@
+//#region Imports
 import React from "react";
 import {
   View,
@@ -9,16 +10,15 @@ import {
   Image,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import Constants from "expo-constants";
+import { downloadImage } from "../../services/mediaService";
 import EmptyScreen from "../extra/EmptyScreen";
 import BodyText from "../../components/BodyText";
 import InputBox from "../../components/InputBox";
 import Colors from "../../theme/Colors";
 import Typography from "../../theme/Typography";
+//#endregion
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("screen");
-
-const imageUrl = (uri) => `${Constants.manifest.extra.BASE_URL}/image/${uri}`;
 
 const CommentsView = (props) => {
   const comments = props.comments;
@@ -31,7 +31,7 @@ const CommentsView = (props) => {
         <View style={styles.commentImageContainer}>
           <Image
             style={styles.commentImage}
-            source={{ uri: imageUrl(commentor.prof_img) }}
+            source={{ uri: downloadImage(commentor.prof_img) }}
           />
         </View>
         <View style={styles.commentContentWrapper}>
@@ -47,9 +47,7 @@ const CommentsView = (props) => {
   const renderComments = () => {
     if (!comments || comments.length === 0) return <EmptyScreen />;
 
-    return comments.map((comment) =>
-      renderCommentBubble(comment)
-    );
+    return comments.map((comment) => renderCommentBubble(comment));
   };
 
   return (
