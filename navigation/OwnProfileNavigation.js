@@ -8,6 +8,7 @@ import NomadAboutProfileView from "../screens/views/NomadProfAboutView";
 import Colors from "../theme/Colors";
 import Typography from "../theme/Typography";
 import NomadProfileNavigation from "./NomadProfileNavigation";
+import NomadProfile from "../screens/views/NomadProfile"
 
 const Stack = createStackNavigator();
 const Tab = createMaterialTopTabNavigator();
@@ -83,7 +84,7 @@ const OwnProfileTabNavigation = (props) => {
 const OwnProfileStackNavigation = (props) => {
   return (
     <Stack.Navigator screenOptions={{ ...defaultStackNavOptions }}>
-      <Stack.Screen name="Nomad" component={OwnProfileTabNavigation} />
+      <Stack.Screen name="Nomad" component={NomadProfile} />
       <Stack.Screen
         name="Profile"
         component={NomadProfileNavigation}
