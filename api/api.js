@@ -52,6 +52,7 @@ const api = {
   // Get
   getInterests: () => Http.get("/api/interests"),
   getCurrentUser: (userId) => Http.get(`/api/profile/my/${userId}`),
+  getFeed: (userId) => Http.get(`/api/feed/${userId}`),
   getNomad: (userId) => Http.get(`/api/profile/user/${userId}`),
   getOwnMemories: (userId) => Http.get(`/api/memories/my/${userId}`),
   getNomadMemories: (userId) => Http.get(`/api/memories/fetch/${userId}`),

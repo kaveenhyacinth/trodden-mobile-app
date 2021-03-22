@@ -3,30 +3,27 @@ import { View, Image, StyleSheet, Dimensions } from "react-native";
 import Colors from "../../theme/Colors";
 import BodyText from "../../components/BodyText";
 
+const { width: WINDOW_WIDTH, height: WINDOW_HEIGHT } = Dimensions.get("window");
+
 const EmptyScreen = (props) => {
   return (
-    // <ScreenView style={styles.container}>
     <View style={styles.container}>
       <Image source={require("../../assets/empty.png")} style={styles.image} />
       <BodyText style={styles.msg}>Nothing to show right now!</BodyText>
     </View>
-    // </ScreenView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    height: Dimensions.get("screen").width,
-    width: Dimensions.get("screen").width,
-    minWidth: 300,
-    maxWidth: "90%",
+    flex: 1,
     marginBottom: 20,
     alignItems: "center",
     justifyContent: "center",
   },
   image: {
-    width: "50%",
-    height: "50%",
+    width: WINDOW_WIDTH * 0.5,
+    height: WINDOW_WIDTH * 0.5,
     resizeMode: "contain",
   },
   msg: {

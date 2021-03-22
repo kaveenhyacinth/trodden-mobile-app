@@ -1,5 +1,5 @@
 //#region Imports
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
   Image,
@@ -15,6 +15,7 @@ import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
 import regexifyString from "regexify-string";
 import { getOwnMemories, getNomadMemories } from "../store/actions/getMemories";
+import { getFeed } from "../store/actions/getFeed";
 import { Fetch } from "../services/deviceStorage";
 import api from "../api/api";
 import Colors from "../theme/Colors";
@@ -29,6 +30,12 @@ const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("screen");
 const imageUrl = (uri) => `${Constants.manifest.extra.BASE_URL}/image/${uri}`;
 const videoUrl = (uri) => `${Constants.manifest.extra.BASE_URL}/video/${uri}`;
 
+/**
+ *
+ * @param {Object} props
+ * @requires type prop
+ * @requires data prop
+ */
 const Memory = (props) => {
   const postId = props.data._id;
   const content = props.data.content;
@@ -42,11 +49,36 @@ const Memory = (props) => {
   const [isOpenSettings, setIsOpenSettings] = useState(false);
   const [isOpenComments, setisOpenComments] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(heats.length);
   const [newComment, setNewComment] = useState("");
 
+  const handleMarkLike = useCallback(async () => {
+    try {
+      const userId = await Fetch("nomadId");
+      const isHeated = heats.find((heat) => heat._id === userId);
+      if (isHeated) return setIsLiked(true);
+      return setIsLiked(false);
+    } catch (error) {
+      Alert.alert(
+        "Oh My trod!",
+        error.message ?? "Something went wrong. Please try again later",
+        [
+          {
+            text: "I Will",
+            style: "destructive",
+          },
+        ],
+        { cancelable: false }
+      );
+      console.log("Error Happen @handleLike", error);
+    }
+  }, [props.data.heats]);
+
   useEffect(() => {
+    console.log("Call for likes", postId);
     handleMarkLike();
-  }, [props]);
+    setLikeCount(props.data.heats.length);
+  }, [handleMarkLike, props.data.heats]);
 
   const dispatch = useDispatch();
   const tempNomadStore = useSelector((state) => state.tempNomadStore);
@@ -152,30 +184,15 @@ const Memory = (props) => {
     }
   };
 
-  const handleMarkLike = async () => {
-    try {
-      const userId = await Fetch("nomadId");
-      const isHeated = heats.find((heat) => heat._id === userId);
-      if (isHeated) return setIsLiked(true);
-      return setIsLiked(false);
-    } catch (error) {
-      Alert.alert(
-        "Oh My trod!",
-        error.message ?? "Something went wrong. Please try again later",
-        [
-          {
-            text: "I Will",
-            style: "destructive",
-          },
-        ],
-        { cancelable: false }
-      );
-      console.log("Error Happen @handleLike", error);
-    }
-  };
-
   const handleLike = async () => {
     try {
+      // Start mocking like dislike before real function to reduce delay
+      isLiked
+        ? setLikeCount((prevState) => prevState - 1)
+        : setLikeCount((prevState) => prevState + 1);
+      setIsLiked((prevState) => !prevState);
+      // End mocking
+
       const userId = await Fetch("nomadId");
       const heatBody = {
         userId,
@@ -185,13 +202,10 @@ const Memory = (props) => {
       if (!response.data.result)
         throw new Error("Something went wrong! Please try again!");
 
-      if (props.type === "self") {
-        await getOwnMemories(userId)(dispatch);
-      }
-
-      if (!props.type || props.type === "non-self") {
-        await getNomadMemories(tempNomadStore.nomadId)(dispatch);
-      }
+      // if (props.type === "self") await getOwnMemories(userId)(dispatch);
+      // if (props.type === "feed") await getFeed(userId)(dispatch);
+      // if (!props.type || props.type === "non-self")
+      //   await getNomadMemories(tempNomadStore.nomadId)(dispatch);
     } catch (error) {
       Alert.alert(
         "Oh My trod!",
@@ -222,13 +236,10 @@ const Memory = (props) => {
         throw new Error("Something went wrong! Please try again!");
       setNewComment("");
 
-      if (props.type === "self") {
-        await getOwnMemories(nomadId)(dispatch);
-      }
-
-      if (!props.type || props.type === "non-self") {
+      if (props.type === "self") await getOwnMemories(nomadId)(dispatch);
+      if (props.type === "feed") await getFeed(nomadId)(dispatch);
+      if (!props.type || props.type === "non-self")
         await getNomadMemories(tempNomadStore.nomadId)(dispatch);
-      }
     } catch (error) {
       Alert.alert(
         "Oh My trod!",
@@ -311,8 +322,8 @@ const Memory = (props) => {
           <BodyText style={styles.statusText}>
             <Pressable>
               <BodyText style={styles.statusText}>
-                {heats.length}
-                {heats.length === 1 ? ` heart` : ` hearts`}
+                {likeCount}
+                {likeCount === 1 ? ` heart` : ` hearts`}
               </BodyText>
             </Pressable>
             {"  "}

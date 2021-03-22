@@ -6,10 +6,12 @@ import StoreNomadReducer from "./storeNomadReducer";
 import StoreMemoriesReducer from "./storeMemoriesReducer";
 import StoreSuggestionsReducer from "./storeSuggestionsReducer";
 import StoreTempNomadReducer from "./storeTempNomadReducer";
+import StoreFeedReducer from "./storeFeedReducer";
 
 const rootReducer = combineReducers({
   tokenStore: StoreTokenReducer,
   userStore: StoreUserReducer,
+  feedStore: StoreFeedReducer,
   nomadStore: StoreNomadReducer,
   tempNomadStore: StoreTempNomadReducer,
   interestsStore: StoreInterestsReducer,
