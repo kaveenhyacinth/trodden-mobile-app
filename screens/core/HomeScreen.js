@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { StyleSheet, Alert } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { Fetch } from "../../services/deviceStorage";
@@ -16,31 +16,32 @@ const HomeScreen = (props) => {
 
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    const handleLoadNomad = async () => {
-      try {
-        setLoading(true);
-        const nomadId = await Fetch("nomadId");
-        await getNomads(nomadId)(dispatch);
-      } catch (error) {
-        Alert.alert(
-          "Oh My trod!",
-          error.message ?? "Something went wrong. Please try again later",
-          [
-            {
-              text: "I Will",
-              style: "destructive",
-            },
-          ],
-          { cancelable: false }
-        );
-        console.log("Error Happen", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    handleLoadNomad();
+  const fetchOwner = useCallback(async () => {
+    try {
+      setLoading(true);
+      const nomadId = await Fetch("nomadId");
+      await getNomads(nomadId)(dispatch);
+    } catch (error) {
+      Alert.alert(
+        "Oh My trod!",
+        error.message ?? "Something went wrong. Please try again later",
+        [
+          {
+            text: "I Will",
+            style: "destructive",
+          },
+        ],
+        { cancelable: false }
+      );
+      console.log("Error Happen", error);
+    } finally {
+      setLoading(false);
+    }
   }, []);
+
+  useEffect(() => {
+    fetchOwner();
+  }, [fetchOwner]);
 
   const nomadStore = useSelector((state) => state.nomadStore);
 
