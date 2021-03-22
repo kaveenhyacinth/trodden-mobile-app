@@ -1,34 +1,37 @@
 import React, { useState, useEffect } from "react";
-import { View, Image, Alert, FlatList, Dimensions } from "react-native";
-import Constants from "expo-constants";
+import { Alert, Dimensions, Animated } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { Fetch } from "../../services/deviceStorage";
 import {
   getOwnMemories,
   getNomadMemories,
 } from "../../store/actions/getMemories";
-import api from "../../api/api";
-import Colors from "../../theme/Colors";
-import Typography from "../../theme/Typography";
 import Memory from "../../components/Memory";
 import EmptyScreen from "../extra/EmptyScreen";
 
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("screen");
+const { width: WINDOW_WIDTH, height: WINDOW_HEIGHT } = Dimensions.get("window");
 
-const TimelineScreen = (props) => {
+const TimelineScreen = ({
+  authType,
+  HeaderHeight,
+  TabBarHeight,
+  onGetRef,
+  scrollY,
+  onScrollEndDrag,
+  onMomentumScrollEnd,
+  onMomentumScrollBegin,
+}) => {
   const [loading, setLoading] = useState(false);
-  const [nomadMemos, setNomadMemos] = useState([]);
   const [isOwner, setIsOwner] = useState(false);
 
   const dispatch = useDispatch();
   const tempNomadStore = useSelector((state) => state.tempNomadStore);
+  const memoriesStore = useSelector((state) => state.memoriesStore);
 
   useEffect(() => {
-    if (props.type === "self") loadOwnMemories();
-    if (!props.type || props.type === "non-self") loadNomadMemories();
-  }, [memoriesStore]);
-
-  const memoriesStore = useSelector((state) => state.memoriesStore);
+    if (authType === "self") loadOwnMemories();
+    if (!authType || authType === "non-self") loadNomadMemories();
+  }, []);
 
   const loadNomadMemories = async () => {
     try {
@@ -80,31 +83,45 @@ const TimelineScreen = (props) => {
   };
 
   const handleRefresh = () =>
-    props.type === "self" ? loadOwnMemories() : loadNomadMemories();
+    authType === "self" ? loadOwnMemories() : loadNomadMemories();
 
   const renderProfileTimeline = ({ item }) =>
-    props.type === "self" ? (
+    authType === "self" ? (
       <Memory type="self" data={item} />
     ) : (
       <Memory type="non-self" data={item} />
     );
 
   return (
-    <View style={{ flex: 1 }}>
-      <FlatList
-        style={{ flex: 1 }}
-        data={
-          props.type === "self"
-            ? memoriesStore.ownMemories
-            : memoriesStore.nomadMemories
-        }
-        renderItem={renderProfileTimeline}
-        keyExtractor={(item) => item._id}
-        ListEmptyComponent={<EmptyScreen />}
-        refreshing={loading}
-        onRefresh={handleRefresh}
-      />
-    </View>
+    <Animated.FlatList
+      style={{ flex: 1 }}
+      data={
+        authType === "self"
+          ? memoriesStore.ownMemories
+          : memoriesStore.nomadMemories
+      }
+      renderItem={renderProfileTimeline}
+      ListEmptyComponent={<EmptyScreen />}
+      refreshing={loading}
+      onRefresh={handleRefresh}
+      scrollToOverflowEnabled={true}
+      ref={onGetRef}
+      scrollEventThrottle={16}
+      onScroll={Animated.event(
+        [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+        { useNativeDriver: true }
+      )}
+      onMomentumScrollBegin={onMomentumScrollBegin}
+      onScrollEndDrag={onScrollEndDrag}
+      onMomentumScrollEnd={onMomentumScrollEnd}
+      contentContainerStyle={{
+        paddingTop: HeaderHeight + TabBarHeight,
+        minHeight: WINDOW_HEIGHT - TabBarHeight,
+      }}
+      showsHorizontalScrollIndicator={false}
+      showsVerticalScrollIndicator={false}
+      keyExtractor={(item, index) => index.toString()}
+    />
   );
 };
 

@@ -1,45 +1,37 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { View, Image, StyleSheet, Dimensions } from "react-native";
 import { FontAwesome5 } from "@expo/vector-icons";
-import { useSelector } from "react-redux";
-import Constants from "expo-constants";
+import { downloadImage } from "../services/mediaService";
 import Colors from "../theme/Colors";
 import Typography from "../theme/Typography";
 import BodyText from "../components/BodyText";
-import ScreenView from "../components/ScreenView";
 
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("screen");
+const { width: WINDOW_WIDTH, height: WINDOW_HEIGHT } = Dimensions.get("window");
 
 const ProfileHeader = (props) => {
-  const nomadStore = useSelector((state) => state.nomadStore);
-
-  useEffect(() => {
-    props.navigation.setOptions({ title: `@${nomadStore.username}` });
-  });
-
   return (
-    <ScreenView style={styles.container}>
+    <View>
       <View style={styles.topSection}>
         <View style={styles.leftSection}>
           <View style={styles.imageWrapper}>
             <Image
               style={styles.image}
               source={{
-                uri: `${Constants.manifest.extra.BASE_URL}/image/${nomadStore.prof_img}`,
+                uri: downloadImage(props.nomad.prof_img),
               }}
             />
           </View>
         </View>
         <View style={styles.rightSection}>
           <BodyText style={styles.name} numberOfLines={2}>
-            {`${nomadStore.first_name} ${nomadStore.last_name}`}
+            {`${props.nomad.first_name} ${props.nomad.last_name}`}
           </BodyText>
           <BodyText
             style={styles.username}
-          >{`@${nomadStore.username}`}</BodyText>
+          >{`@${props.nomad.username}`}</BodyText>
           <BodyText style={styles.country}>
             <FontAwesome5 name="map-marker-alt" />{" "}
-            {`${nomadStore.city}, ${nomadStore.country}`}
+            {`${props.nomad.city}, ${props.nomad.country}`}
           </BodyText>
         </View>
       </View>
@@ -47,40 +39,40 @@ const ProfileHeader = (props) => {
         <View style={styles.infoContainer}>
           <View style={styles.info}>
             <BodyText style={styles.infoText}>
-              {nomadStore.memories.length < 10
-                ? `0${nomadStore.memories.length}`
-                : nomadStore.memories.length}
+              {props.nomad.memories.length < 10
+                ? `0${props.nomad.memories.length}`
+                : props.nomad.memories.length}
             </BodyText>
             <BodyText style={styles.infoText}>
-              {nomadStore.memories.length === 1 ? "Memo" : "Memos"}
-            </BodyText>
-          </View>
-          <View style={styles.info}>
-            <BodyText style={styles.infoText}>
-              {nomadStore.trips.length < 10
-                ? `0${nomadStore.trips.length}`
-                : nomadStore.trips.length}
-            </BodyText>
-            <BodyText style={styles.infoText}>
-              {nomadStore.trips.length === 1 ? "Trip" : "Trips"}
+              {props.nomad.memories.length === 1 ? "Memo" : "Memos"}
             </BodyText>
           </View>
           <View style={styles.info}>
             <BodyText style={styles.infoText}>
-              {nomadStore.tribe.length < 10
-                ? `0${nomadStore.tribe.length}`
-                : nomadStore.tribe.length}
+              {props.nomad.trips.length < 10
+                ? `0${props.nomad.trips.length}`
+                : props.nomad.trips.length}
             </BodyText>
             <BodyText style={styles.infoText}>
-              {nomadStore.tribe.length === 1 ? "Bond" : "Bonds"}
+              {props.nomad.trips.length === 1 ? "Trip" : "Trips"}
+            </BodyText>
+          </View>
+          <View style={styles.info}>
+            <BodyText style={styles.infoText}>
+              {props.nomad.tribe.length < 10
+                ? `0${props.nomad.tribe.length}`
+                : props.nomad.tribe.length}
+            </BodyText>
+            <BodyText style={styles.infoText}>
+              {props.nomad.tribe.length === 1 ? "Bond" : "Bonds"}
             </BodyText>
           </View>
         </View>
         <View style={styles.bio}>
-          <BodyText style={styles.bioText}>{nomadStore.prof_bio}</BodyText>
+          <BodyText style={styles.bioText}>{props.nomad.prof_bio}</BodyText>
         </View>
       </View>
-    </ScreenView>
+    </View>
   );
 };
 
@@ -90,7 +82,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.accent,
   },
   topSection: {
-    height: SCREEN_HEIGHT * 0.2,
+    height: WINDOW_HEIGHT * 0.2,
     flexDirection: "row",
   },
   bottomSection: {
@@ -100,10 +92,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   leftSection: {
-    width: SCREEN_WIDTH * 0.4,
+    width: WINDOW_WIDTH * 0.4,
     justifyContent: "center",
     alignItems: "center",
-    paddingVertical: SCREEN_WIDTH * 0.05,
+    paddingVertical: WINDOW_WIDTH * 0.05,
   },
   rightSection: {
     flex: 1,
@@ -112,11 +104,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
   },
   imageWrapper: {
-    width: SCREEN_WIDTH * 0.28,
-    height: SCREEN_WIDTH * 0.28,
+    width: WINDOW_WIDTH * 0.28,
+    height: WINDOW_WIDTH * 0.28,
     borderWidth: 4,
     borderColor: Colors.primary,
-    borderRadius: SCREEN_WIDTH * 0.15,
+    borderRadius: WINDOW_WIDTH * 0.15,
     overflow: "hidden",
   },
   image: {
@@ -124,14 +116,14 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   infoContainer: {
-    width: SCREEN_WIDTH,
+    width: WINDOW_WIDTH,
     flexDirection: "row",
     justifyContent: "space-evenly",
     backgroundColor: Colors.background,
     paddingVertical: 10,
   },
   info: {
-    marginRight: SCREEN_WIDTH * 0.05,
+    marginRight: WINDOW_WIDTH * 0.05,
     marginBottom: 10,
   },
   infoText: {
@@ -152,9 +144,9 @@ const styles = StyleSheet.create({
     color: Colors.info,
   },
   bio: {
-    width: SCREEN_WIDTH,
+    width: WINDOW_WIDTH,
     paddingVertical: 15,
-    paddingHorizontal: SCREEN_WIDTH * 0.1,
+    paddingHorizontal: WINDOW_WIDTH * 0.1,
     alignItems: "center",
     justifyContent: "center",
   },

@@ -1,76 +1,42 @@
-import React, { useState, useEffect, useRef } from "react";
-import {
-  SafeAreaView,
-  StyleSheet,
-  View,
-  Text,
-  Dimensions,
-  Animated,
-} from "react-native";
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import { StyleSheet, View, Text, Dimensions, Animated } from "react-native";
 import { TabView, TabBar } from "react-native-tab-view";
+import { useSelector } from "react-redux";
 import Colors from "../../theme/Colors";
 import Typography from "../../theme/Typography";
+import BodyText from "../../components/BodyText";
+import ProfileHeader from "../../components/ProfileHeader";
+import TimelineScreen from "./TimelineScreen";
+import BlazesScreen from "./BlazesScreen";
 
 const { width: WINDOW_WIDTH, height: WINDOW_HEIGHT } = Dimensions.get("window");
 
 const TabBarHeight = 50;
 const HeaderHeight = WINDOW_HEIGHT * 0.4;
-// can ignore later
-const tab1ItemSize = WINDOW_WIDTH - 30;
-const tab2ItemSize = WINDOW_WIDTH - 30;
 
-const TabScene = ({
-  numCols,
-  data,
-  renderItem,
-  onGetRef,
-  scrollY,
-  onScrollEndDrag,
-  onMomentumScrollEnd,
-  onMomentumScrollBegin,
-}) => {
-  const windowHeight = WINDOW_HEIGHT;
-
-  return (
-    <Animated.FlatList
-      scrollToOverflowEnabled={true}
-      ref={onGetRef}
-      scrollEventThrottle={16}
-      onScroll={Animated.event(
-        [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-        { useNativeDriver: true }
-      )}
-      onMomentumScrollBegin={onMomentumScrollBegin}
-      onScrollEndDrag={onScrollEndDrag}
-      onMomentumScrollEnd={onMomentumScrollEnd}
-      ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
-      ListHeaderComponent={() => <View style={{ height: 10 }} />}
-      contentContainerStyle={{
-        paddingTop: HeaderHeight + TabBarHeight,
-        paddingHorizontal: 10,
-        minHeight: windowHeight - TabBarHeight,
-      }}
-      showsHorizontalScrollIndicator={false}
-      data={data}
-      renderItem={renderItem}
-      showsVerticalScrollIndicator={false}
-      keyExtractor={(item, index) => index.toString()}
-    />
-  );
-};
-
-const CollapsibleTabView = (props) => {
+const OwnerProfileView = (props) => {
+  const [loading, setLoading] = useState(true);
   const [tabIndex, setIndex] = useState(0);
   const [routes] = useState([
     { key: "tab1", title: "Timeline" },
     { key: "tab2", title: "Trips" },
   ]);
-  const [tab1Data] = useState(Array(40).fill(0));
-  const [tab2Data] = useState(Array(30).fill(0));
   const scrollY = useRef(new Animated.Value(0)).current;
   let listRefArr = useRef([]);
   let listOffset = useRef({});
   let isListGliding = useRef(false);
+
+  const nomadStore = useSelector((state) => state.nomadStore);
+
+  const updateHeaderTitle = useCallback(() => {
+    props.navigation.setOptions({
+      title: `@${nomadStore.username ?? "..."}`,
+    });
+  }, [props.navigation, nomadStore.username]);
+
+  useEffect(() => {
+    updateHeaderTitle();
+  }, [updateHeaderTitle]);
 
   useEffect(() => {
     scrollY.addListener(({ value }) => {
@@ -135,99 +101,56 @@ const CollapsibleTabView = (props) => {
       <Animated.View
         style={[styles.header, { transform: [{ translateY: y }] }]}
       >
-        {/* TODO: Add header styles here */}
-        <Text>{"Header"}</Text>
+        <ProfileHeader nomad={nomadStore} />
       </Animated.View>
-    );
-  };
-
-  // TODO: Memory comes here
-  const rednerTab1Item = ({ item, index }) => {
-    return (
-      <View
-        style={{
-          borderRadius: 16,
-          marginLeft: index % 2 === 0 ? 0 : 10,
-          width: tab1ItemSize,
-          height: tab1ItemSize,
-          backgroundColor: "#aaa",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Text>{index}</Text>
-      </View>
-    );
-  };
-
-  // TODO: Trip comes here
-  const rednerTab2Item = ({ item, index }) => {
-    return (
-      <View
-        style={{
-          marginLeft: index % 3 === 0 ? 0 : 10,
-          borderRadius: 16,
-          width: tab2ItemSize,
-          height: tab2ItemSize,
-          backgroundColor: "#aaa",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Text>{index}</Text>
-      </View>
     );
   };
 
   const renderLabel = ({ route, focused }) => {
     return (
-      <Text style={[styles.label, { opacity: focused ? 1 : 0.5 }]}>
+      <BodyText
+        style={{
+          ...styles.label,
+          color: focused ? Colors.primary : Colors.outline,
+        }}
+      >
         {route.title}
-      </Text>
+      </BodyText>
     );
   };
 
   const renderScene = ({ route }) => {
-    const focused = route.key === routes[tabIndex].key;
-    let numCols;
-    let data;
-    let renderItem;
     switch (route.key) {
       case "tab1":
-        numCols = 1;
-        data = tab1Data;
-        renderItem = rednerTab1Item;
-        break;
+        return (
+          <TimelineScreen
+            authType="self"
+            HeaderHeight={HeaderHeight}
+            TabBarHeight={TabBarHeight}
+            scrollY={scrollY}
+            onMomentumScrollBegin={onMomentumScrollBegin}
+            onScrollEndDrag={onScrollEndDrag}
+            onMomentumScrollEnd={onMomentumScrollEnd}
+            onGetRef={(ref) => {
+              if (ref) {
+                const found = listRefArr.current.find(
+                  (e) => e.key === route.key
+                );
+                if (!found) {
+                  listRefArr.current.push({
+                    key: route.key,
+                    value: ref,
+                  });
+                }
+              }
+            }}
+          />
+        );
       case "tab2":
-        numCols = 1;
-        data = tab2Data;
-        renderItem = rednerTab2Item;
-        break;
+        return <BlazesScreen />;
       default:
         return null;
     }
-    return (
-      <TabScene
-        numCols={numCols}
-        data={data}
-        renderItem={renderItem}
-        scrollY={scrollY}
-        onMomentumScrollBegin={onMomentumScrollBegin}
-        onScrollEndDrag={onScrollEndDrag}
-        onMomentumScrollEnd={onMomentumScrollEnd}
-        onGetRef={(ref) => {
-          if (ref) {
-            const found = listRefArr.current.find((e) => e.key === route.key);
-            if (!found) {
-              listRefArr.current.push({
-                key: route.key,
-                value: ref,
-              });
-            }
-          }
-        }}
-      />
-    );
   };
 
   const renderTabBar = (props) => {
@@ -294,9 +217,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     position: "absolute",
   },
-  label: { ...Typography.bodyText, fontSize: 16, color: Colors.primary },
-  tab: { elevation: 0, shadowOpacity: 0, backgroundColor: Colors.accent },
+  label: { ...Typography.bodyText, color: Colors.primary },
+  tab: { elevation: 2, shadowOpacity: 2, backgroundColor: Colors.accent },
   indicator: { backgroundColor: Colors.primary },
 });
 
-export default CollapsibleTabView;
+export default OwnerProfileView;
