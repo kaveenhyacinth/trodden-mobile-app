@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Alert, Dimensions, Animated } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { Fetch } from "../../services/deviceStorage";
@@ -31,9 +31,9 @@ const TimelineScreen = ({
   useEffect(() => {
     if (authType === "self") loadOwnMemories();
     if (!authType || authType === "non-self") loadNomadMemories();
-  }, []);
+  }, [loadNomadMemories, loadOwnMemories]);
 
-  const loadNomadMemories = async () => {
+  const loadNomadMemories = useCallback(async () => {
     try {
       setLoading(true);
       const nomadId = await Fetch("nomadId");
@@ -56,9 +56,9 @@ const TimelineScreen = ({
     } finally {
       setLoading(false);
     }
-  };
+  }, [tempNomadStore.nomadId]);
 
-  const loadOwnMemories = async () => {
+  const loadOwnMemories = useCallback(async () => {
     try {
       setLoading(true);
       const nomadId = await Fetch("nomadId");
@@ -80,7 +80,7 @@ const TimelineScreen = ({
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   const handleRefresh = () =>
     authType === "self" ? loadOwnMemories() : loadNomadMemories();
