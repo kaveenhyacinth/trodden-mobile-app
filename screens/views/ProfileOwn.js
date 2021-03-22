@@ -18,7 +18,7 @@ const OwnerProfileView = (props) => {
   const [loading, setLoading] = useState(true);
   const [tabIndex, setIndex] = useState(0);
   const [routes] = useState([
-    { key: "tab1", title: "Timeline" },
+    { key: "tab1", title: "Memories" },
     { key: "tab2", title: "Trips" },
   ]);
   const scrollY = useRef(new Animated.Value(0)).current;
@@ -191,6 +191,7 @@ const OwnerProfileView = (props) => {
         navigationState={{ index: tabIndex, routes }}
         renderScene={renderScene}
         renderTabBar={renderTabBar}
+        swipeEnabled={false}
         initialLayout={{
           height: 0,
           width: Dimensions.get("window").width,

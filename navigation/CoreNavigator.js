@@ -4,7 +4,7 @@ import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
 import Colors from "../theme/Colors";
 import ExploreNavigation from "./ExploreNavigation";
 import TribeNavigation from "./TribeNavigation";
-import OwnProfileNavigation from "./OwnProfileNavigation";
+import ProfileNavigation from "./ProfileNavigation";
 import HomeNavigation from "./HomeNavigation";
 import InboxNavigator from "./InboxNavigator";
 
@@ -46,7 +46,7 @@ const CoreNavigator = (props) => {
       />
       <Tab.Screen
         name={"Profile"}
-        component={OwnProfileNavigation}
+        component={ProfileNavigation}
         options={{
           tabBarIcon: (tabInfo) =>
             renderIcIcons(tabInfo)("person-circle-sharp", 35),

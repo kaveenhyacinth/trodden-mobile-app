@@ -5,7 +5,7 @@ import Colors from "../theme/Colors";
 import Typography from "../theme/Typography";
 import NomadsExplore from "../screens/views/NomadsExploreScreen";
 import CaravansExplore from "../screens/views/CaravansExploreScreen";
-import NomadProfileNavigation from "./NomadProfileNavigation";
+import ProfileUser from "../screens/views/ProfileUser";
 
 const Stack = createStackNavigator();
 const Tab = createMaterialTopTabNavigator();
@@ -59,7 +59,11 @@ const ExploreStack = (props) => {
   return (
     <Stack.Navigator screenOptions={{ ...defaultStackNavOptions }}>
       <Stack.Screen name="Explore" component={ExploreNavigator} />
-      <Stack.Screen name="Profile" component={NomadProfileNavigation} options={{title: "..."}} />
+      <Stack.Screen
+        name="Profile"
+        component={ProfileUser}
+        options={{ title: "..." }}
+      />
     </Stack.Navigator>
   );
 };
