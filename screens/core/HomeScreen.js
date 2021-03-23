@@ -67,12 +67,14 @@ const HomeScreen = (props) => {
     fetchOwner();
   }, [fetchOwner]);
 
-  useEffect(() => {}, [fetchFeed]);
+  useEffect(() => {
+    fetchFeed();
+  }, [fetchFeed]);
 
-  const nomadStore = useSelector((state) => state.nomadStore);
+  // const nomadStore = useSelector((state) => state.nomadStore);
   const feedStore = useSelector((state) => state.feedStore);
 
-  useEffect(() => console.log("Current user Data: " + nomadStore), []);
+  // useEffect(() => console.log("Current user Data: " + nomadStore), []);
 
   const renderListHeader = () => (
     <NewPost onPress={() => props.navigation.navigate("newMemo")} />
@@ -81,6 +83,8 @@ const HomeScreen = (props) => {
   const renderFeed = ({ item }) => <Memory type="feed" data={item} />;
 
   const handleRefresh = () => fetchFeed();
+
+  if (loading) return <LoadingScreen />;
 
   return (
     <FlatList

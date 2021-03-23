@@ -37,27 +37,27 @@ const videoUrl = (uri) => `${Constants.manifest.extra.BASE_URL}/video/${uri}`;
  * @requires data prop
  */
 const Memory = (props) => {
-  const postId = props.data._id;
-  const content = props.data.content;
-  const media = props.data.media;
-  const user = props.data.owner;
-  const destination = props.data.destination;
-  const heats = props.data.heats;
-  const comments = props.data.comments;
-
+  const [postId] = useState(props.data._id);
+  const [content] = useState(props.data.content);
+  const [media] = useState(props.data.media);
+  const [user] = useState(props.data.owner);
+  const [destination] = useState(props.data.destination);
+  const [comments] = useState(props.data.comments);
+  const [heats] = useState(props.data.heats);
+  const [heatCount, setHeatCount] = useState(heats.length);
   const [isReadMore, setIsReadMore] = useState(false);
   const [isOpenSettings, setIsOpenSettings] = useState(false);
   const [isOpenComments, setisOpenComments] = useState(false);
-  const [isLiked, setIsLiked] = useState(false);
-  const [likeCount, setLikeCount] = useState(heats.length);
+  const [isHeated, setIsHeated] = useState(false);
   const [newComment, setNewComment] = useState("");
 
   const handleMarkLike = useCallback(async () => {
     try {
       const userId = await Fetch("nomadId");
+      console.log("heats state", heats);
       const isHeated = heats.find((heat) => heat._id === userId);
-      if (isHeated) return setIsLiked(true);
-      return setIsLiked(false);
+      if (isHeated) return setIsHeated(true);
+      return setIsHeated(false);
     } catch (error) {
       Alert.alert(
         "Oh My trod!",
@@ -77,7 +77,7 @@ const Memory = (props) => {
   useEffect(() => {
     console.log("Call for likes", postId);
     handleMarkLike();
-    setLikeCount(props.data.heats.length);
+    setHeatCount(props.data.heats.length);
   }, [handleMarkLike, props.data.heats]);
 
   const dispatch = useDispatch();
@@ -187,10 +187,10 @@ const Memory = (props) => {
   const handleLike = async () => {
     try {
       // Start mocking like dislike before real function to reduce delay
-      isLiked
-        ? setLikeCount((prevState) => prevState - 1)
-        : setLikeCount((prevState) => prevState + 1);
-      setIsLiked((prevState) => !prevState);
+      isHeated
+        ? setHeatCount((prevState) => prevState - 1)
+        : setHeatCount((prevState) => prevState + 1);
+      setIsHeated((prevState) => !prevState);
       // End mocking
 
       const userId = await Fetch("nomadId");
@@ -201,6 +201,8 @@ const Memory = (props) => {
       const response = await api.postHeat(heatBody);
       if (!response.data.result)
         throw new Error("Something went wrong! Please try again!");
+
+      console.log("new heat", response.data.result);
 
       // if (props.type === "self") await getOwnMemories(userId)(dispatch);
       // if (props.type === "feed") await getFeed(userId)(dispatch);
@@ -293,7 +295,7 @@ const Memory = (props) => {
       <View style={styles.statusBar}>
         <View style={styles.statusIconContainer}>
           <Pressable onPress={handleLike}>
-            {isLiked ? (
+            {isHeated ? (
               <Ionicons
                 style={styles.statusIcon}
                 size={30}
@@ -322,8 +324,8 @@ const Memory = (props) => {
           <BodyText style={styles.statusText}>
             <Pressable>
               <BodyText style={styles.statusText}>
-                {likeCount}
-                {likeCount === 1 ? ` heart` : ` hearts`}
+                {heatCount}
+                {heatCount === 1 ? ` heart` : ` hearts`}
               </BodyText>
             </Pressable>
             {"  "}
