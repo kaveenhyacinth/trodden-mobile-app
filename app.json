@@ -27,7 +27,7 @@
       "favicon": "./assets/favicon.png"
     },
     "extra": {
-      "BASE_URL": "http://192.168.8.102:8000",
+      "BASE_URL": "http://192.168.8.100:8000",
       "PLACE_API_KEY": "AIzaSyCOR9TirjkqbmxLSuwTtJrCIK1nAyR2IZQ"
     }
   }

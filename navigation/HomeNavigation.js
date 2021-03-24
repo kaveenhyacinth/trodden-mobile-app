@@ -9,6 +9,7 @@ import Typography from "../theme/Typography";
 import HomeScreen from "../screens/core/HomeScreen";
 import NewPostScreen from "../screens/views/NewPostScreen";
 import ProfileUser from "../screens/views/ProfileUser";
+import { Text } from "react-native";
 
 const Stack = createStackNavigator();
 

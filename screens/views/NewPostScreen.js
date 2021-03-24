@@ -1,5 +1,5 @@
 //#region Imports
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
   Image,
@@ -15,16 +15,18 @@ import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { Video } from "expo-av";
 import { useSelector } from "react-redux";
+import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import { Fetch } from "../../services/deviceStorage";
+import { downloadImage } from "../../services/mediaService";
 import api from "../../api/api";
 import Colors from "../../theme/Colors";
 import Typography from "../../theme/Typography";
 import ScreenView from "../../components/ScreenView";
 import BodyText from "../../components/BodyText";
 import InputBox from "../../components/InputBox";
+import HeaderButton from "../../components/HeaderButton";
 import MemoImagePreview from "../../components/MemoImagePreview";
 import PlaceSearch from "../../components/PlaceSearchBottomSheet";
-import { downloadImage } from "../../services/mediaService";
 //#endregion
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
@@ -41,6 +43,26 @@ const NewPostScreen = (props) => {
     id: undefined,
     types: [],
   });
+
+  const renderHeaderButton = useCallback(() => {
+    props.navigation.setOptions({
+      headerRight: () => (
+        <HeaderButtons HeaderButtonComponent={HeaderButton}>
+          <Item
+            title="POST"
+            IconComponent={Ionicons}
+            iconName="send"
+            color={isPostReady ? Colors.primary : Colors.outline}
+            onPress={isPostReady ? handleSubmit : null}
+          />
+        </HeaderButtons>
+      ),
+    });
+  }, [isPostReady]);
+
+  useEffect(() => {
+    renderHeaderButton();
+  }, [renderHeaderButton]);
 
   useEffect(() => {
     checkIsPostReady();
@@ -422,6 +444,8 @@ const NewPostScreen = (props) => {
       let mediaBody = new FormData();
       let mediaArray = [];
 
+      if (images.length === 0 || video.length === 0 || !content) return;
+
       // Upload media only if media files exist
       if (images.length !== 0 || video.length !== 0) {
         const isImage =
@@ -518,8 +542,11 @@ const NewPostScreen = (props) => {
           <BodyText
             style={styles.NomadName}
           >{`${nomadStore.first_name} ${nomadStore.last_name}`}</BodyText>
-          <BodyText style={styles.NomadLocation}>
-            {location.name ?? "Tag a location below..."}
+          <BodyText
+            style={styles.NomadLocation}
+            onPress={() => setIsLocationModelOpen(true)}
+          >
+            {location.name ?? "Tag a location..."}
           </BodyText>
         </View>
       </View>
@@ -539,7 +566,7 @@ const NewPostScreen = (props) => {
       </View>
       <View style={styles.actionAreaContainer}>
         <View style={styles.actionUploadWrapper}>{renderActionButtons()}</View>
-        <View style={styles.actionSendWrapper}>{renderSendButton()}</View>
+        {/* <View style={styles.actionSendWrapper}>{renderSendButton()}</View> */}
       </View>
       <Modal
         visible={isLocationModelOpen}
@@ -668,7 +695,7 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
   },
   actionUploadWrapper: {
-    flex: 1,
+    width: SCREEN_WIDTH * 0.5,
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "center",
