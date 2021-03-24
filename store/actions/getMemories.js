@@ -1,4 +1,8 @@
-import { GET_OWN_MEMORIES, GET_NOMAD_MEMORIES } from "../actionTypes";
+import {
+  GET_OWN_MEMORIES,
+  GET_NOMAD_MEMORIES,
+  RESET_NOMAD_MEMORIES,
+} from "../actionTypes";
 import api from "../../api/api";
 
 export const getOwnMemories = (userId) => async (dispatch) => {
@@ -27,4 +31,11 @@ export const getNomadMemories = (userId) => async (dispatch) => {
   } catch (error) {
     throw error;
   }
+};
+
+export const resetMomeries = () => {
+  return {
+    type: RESET_NOMAD_MEMORIES,
+    payload: {},
+  };
 };

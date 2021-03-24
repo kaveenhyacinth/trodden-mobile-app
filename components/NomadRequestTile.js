@@ -34,7 +34,7 @@ const nomadRequestTile = (props) => {
       return (
         <View style={styles.lowerDiv}>
           <BigButton style={styles.button} onPress={handleBondRequest}>
-            Bond
+            Add
           </BigButton>
           <BigButton
             onPress={() => handleViewProfile(owner._id)}
@@ -56,7 +56,7 @@ const nomadRequestTile = (props) => {
             textStyle={{ color: Colors.info }}
             onPress={handleBondReject}
           >
-            Reject
+            Cancel
           </BigButton>
         </View>
       );
@@ -73,7 +73,7 @@ const nomadRequestTile = (props) => {
           textStyle={{ color: Colors.info }}
           onPress={handleBondBreak}
         >
-          Break
+          Remove
         </BigButton>
       </View>
     );

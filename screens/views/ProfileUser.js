@@ -2,12 +2,15 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import { StyleSheet, View, Alert, Dimensions, Animated } from "react-native";
 import { TabView, TabBar } from "react-native-tab-view";
 import { useSelector } from "react-redux";
-import { Fetch } from "../../services/deviceStorage"
+import { Ionicons } from "@expo/vector-icons";
+import { HeaderButtons, Item } from "react-navigation-header-buttons";
+import { Fetch } from "../../services/deviceStorage";
 import api from "../../api/api";
 import Colors from "../../theme/Colors";
 import Typography from "../../theme/Typography";
 import BodyText from "../../components/BodyText";
 import ProfileHeader from "../../components/ProfileHeader";
+import HeaderButton from "../../components/HeaderButton";
 import TimelineScreen from "./TimelineScreen";
 import BlazesScreen from "./BlazesScreen";
 import LoadingScreen from "../extra/LoadingScreen";
@@ -35,6 +38,22 @@ const NomadProfileView = (props) => {
   let isListGliding = useRef(false);
 
   const tempNomadStore = useSelector((state) => state.tempNomadStore);
+
+  // const renderHeaderButton = useCallback(() => {
+  //   props.navigation.setOptions({
+  //     headerRight: () => (
+  //       <HeaderButtons HeaderButtonComponent={HeaderButton}>
+  //         <Item
+  //           title="BOND"
+  //           IconComponent={Ionicons}
+  //           iconName="person-add"
+  //           color={Colors.primary}
+  //           onPress={() => {}}
+  //         />
+  //       </HeaderButtons>
+  //     ),
+  //   });
+  // }, []);
 
   const fetchNomad = useCallback(async () => {
     try {
@@ -73,6 +92,10 @@ const NomadProfileView = (props) => {
       setLoading(false);
     }
   }, [tempNomadStore.nomadId]);
+
+  // useEffect(() => {
+  //   renderHeaderButton();
+  // }, [renderHeaderButton]);
 
   useEffect(() => {
     fetchNomad();

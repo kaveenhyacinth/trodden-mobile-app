@@ -1,11 +1,18 @@
 import React from "react";
-import { createStackNavigator } from "@react-navigation/stack";
+import {
+  createStackNavigator,
+  TransitionPresets,
+} from "@react-navigation/stack";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
+import { Ionicons } from "@expo/vector-icons";
+import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import Colors from "../theme/Colors";
 import Typography from "../theme/Typography";
+import HeaderButton from "../components/HeaderButton";
 import NomadsExplore from "../screens/views/NomadsExploreScreen";
 import CaravansExplore from "../screens/views/CaravansExploreScreen";
 import ProfileUser from "../screens/views/ProfileUser";
+import SearchView from "../screens/views/SearchView";
 
 const Stack = createStackNavigator();
 const Tab = createMaterialTopTabNavigator();
@@ -58,11 +65,35 @@ const ExploreNavigator = (props) => {
 const ExploreStack = (props) => {
   return (
     <Stack.Navigator screenOptions={{ ...defaultStackNavOptions }}>
-      <Stack.Screen name="Explore" component={ExploreNavigator} />
+      <Stack.Screen
+        name="Explore"
+        component={ExploreNavigator}
+        options={{
+          headerRight: () => (
+            <HeaderButtons HeaderButtonComponent={HeaderButton}>
+              <Item
+                title="POST"
+                IconComponent={Ionicons}
+                iconName="search"
+                color={Colors.primary}
+                onPress={() => props.navigation.navigate("Search")}
+              />
+            </HeaderButtons>
+          ),
+        }}
+      />
       <Stack.Screen
         name="Profile"
         component={ProfileUser}
         options={{ title: "..." }}
+      />
+      <Stack.Screen
+        name="Search"
+        component={SearchView}
+        options={{
+          title: "Search",
+          ...TransitionPresets.ModalSlideFromBottomIOS,
+        }}
       />
     </Stack.Navigator>
   );

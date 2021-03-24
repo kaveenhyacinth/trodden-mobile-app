@@ -1,7 +1,6 @@
 import React from "react";
 import {
   createStackNavigator,
-  TransitionPreset,
   TransitionPresets,
 } from "@react-navigation/stack";
 import Colors from "../theme/Colors";

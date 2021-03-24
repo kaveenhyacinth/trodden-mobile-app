@@ -1,11 +1,17 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import { StyleSheet, View, Text, Dimensions, Animated } from "react-native";
+import { StyleSheet, View, Alert, Dimensions, Animated } from "react-native";
 import { TabView, TabBar } from "react-native-tab-view";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { Ionicons } from "@expo/vector-icons";
+import { HeaderButtons, Item } from "react-navigation-header-buttons";
+import { useNavigation } from "@react-navigation/native";
+import { resetMomeries } from "../../store/actions/getMemories";
+import { Delete } from "../../services/deviceStorage";
 import Colors from "../../theme/Colors";
 import Typography from "../../theme/Typography";
 import BodyText from "../../components/BodyText";
 import ProfileHeader from "../../components/ProfileHeader";
+import HeaderButton from "../../components/HeaderButton";
 import TimelineScreen from "./TimelineScreen";
 import BlazesScreen from "./BlazesScreen";
 
@@ -26,13 +32,42 @@ const OwnerProfileView = (props) => {
   let listOffset = useRef({});
   let isListGliding = useRef(false);
 
+  const dispatch = useDispatch();
   const nomadStore = useSelector((state) => state.nomadStore);
+  const navigatorProps = useNavigation();
+
+  const renderHeaderButton = useCallback(() => {
+    props.navigation.setOptions({
+      headerRight: () => (
+        <HeaderButtons HeaderButtonComponent={HeaderButton}>
+          <Item
+            title="Settings"
+            IconComponent={Ionicons}
+            iconName="settings-outline"
+            color={Colors.primary}
+            onPress={() => {}}
+          />
+          <Item
+            title="Log Out"
+            IconComponent={Ionicons}
+            iconName="log-out-outline"
+            color={Colors.primary}
+            onPress={handleSignOut}
+          />
+        </HeaderButtons>
+      ),
+    });
+  }, []);
 
   const updateHeaderTitle = useCallback(() => {
     props.navigation.setOptions({
       title: `@${nomadStore.username ?? "..."}`,
     });
   }, [props.navigation, nomadStore.username]);
+
+  useEffect(() => {
+    renderHeaderButton();
+  }, [renderHeaderButton]);
 
   useEffect(() => {
     updateHeaderTitle();
@@ -47,6 +82,29 @@ const OwnerProfileView = (props) => {
       scrollY.removeAllListeners();
     };
   }, [routes, tabIndex]);
+
+  const handleSignOut = async () => {
+    try {
+      await Delete("refToken");
+      await Delete("signToken");
+      await Delete("nomadId");
+      dispatch(resetMomeries());
+      navigatorProps.dangerouslyGetParent().replace("auth");
+    } catch (error) {
+      Alert.alert(
+        "Oh My trod!",
+        error.message ?? "Something went wrong. Please try again later",
+        [
+          {
+            text: "I Will",
+            style: "destructive",
+          },
+        ],
+        { cancelable: false }
+      );
+      console.log("Error Happen", error);
+    }
+  };
 
   const syncScrollOffset = () => {
     const curRouteKey = routes[tabIndex].key;

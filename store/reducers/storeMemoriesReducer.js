@@ -1,4 +1,8 @@
-import { GET_OWN_MEMORIES, GET_NOMAD_MEMORIES } from "../actionTypes";
+import {
+  GET_OWN_MEMORIES,
+  GET_NOMAD_MEMORIES,
+  RESET_NOMAD_MEMORIES,
+} from "../actionTypes";
 
 const initialState = {
   ownMemories: [],
@@ -16,6 +20,11 @@ const storeMemoriesReducer = (state = initialState, action) => {
       return {
         ...state,
         nomadMemories: action.payload,
+      };
+    case RESET_NOMAD_MEMORIES:
+      return {
+        ownMemories: [],
+        nomadMemories: [],
       };
     default:
       return state;

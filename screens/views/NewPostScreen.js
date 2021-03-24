@@ -29,7 +29,7 @@ import MemoImagePreview from "../../components/MemoImagePreview";
 import PlaceSearch from "../../components/PlaceSearchBottomSheet";
 //#endregion
 
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
+const { width: WINDOW_WIDTH, height: WINDOW_HEIGHT } = Dimensions.get("window");
 
 const NewPostScreen = (props) => {
   const [loading, setLoading] = useState(false);
@@ -594,8 +594,8 @@ const styles = StyleSheet.create({
   //#region Header styles
   header: {
     flexDirection: "row",
-    height: SCREEN_HEIGHT * 0.1,
-    width: SCREEN_WIDTH,
+    height: WINDOW_HEIGHT * 0.1,
+    width: WINDOW_WIDTH,
     alignItems: "center",
   },
   //#endregion
@@ -603,7 +603,7 @@ const styles = StyleSheet.create({
   //#region Header image styles
   imageContainer: {
     height: "100%",
-    width: SCREEN_WIDTH * 0.2,
+    width: WINDOW_WIDTH * 0.2,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -626,7 +626,7 @@ const styles = StyleSheet.create({
 
   //#region Header share preference styles
   sharePrefWrapper: {
-    width: SCREEN_WIDTH * 0.8,
+    width: WINDOW_WIDTH * 0.8,
   },
   NomadName: {
     ...Typography.bodyTextBold,
@@ -638,11 +638,11 @@ const styles = StyleSheet.create({
 
   //#region Input area styles
   inputAreaContainer: {
-    height: SCREEN_HEIGHT * 0.45,
-    width: SCREEN_WIDTH,
+    height: WINDOW_HEIGHT * 0.45,
+    width: WINDOW_WIDTH,
   },
   inputArea: {
-    height: SCREEN_HEIGHT * 0.4,
+    height: WINDOW_HEIGHT * 0.4,
     textAlignVertical: "top",
     paddingVertical: 10,
     borderWidth: 0,
@@ -651,8 +651,8 @@ const styles = StyleSheet.create({
 
   //#region Selected items styles
   selectedItemsAreaContainer: {
-    height: SCREEN_HEIGHT * 0.2,
-    width: SCREEN_WIDTH,
+    height: WINDOW_HEIGHT * 0.2,
+    width: WINDOW_WIDTH,
   },
   scroll: {
     flexGrow: 1,
@@ -667,8 +667,8 @@ const styles = StyleSheet.create({
   },
   video: {
     alignSelf: "flex-start",
-    width: SCREEN_HEIGHT * 0.25,
-    height: SCREEN_HEIGHT * 0.18,
+    width: WINDOW_HEIGHT * 0.25,
+    height: WINDOW_HEIGHT * 0.18,
   },
   videoTrashWrapper: {
     alignItems: "center",
@@ -681,21 +681,21 @@ const styles = StyleSheet.create({
     borderRadius: 30,
   },
   selectedImage: {
-    height: SCREEN_HEIGHT * 0.15,
-    width: SCREEN_HEIGHT * 0.15,
+    height: WINDOW_HEIGHT * 0.15,
+    width: WINDOW_HEIGHT * 0.15,
   },
   //#endregion
 
   //#region  Action bar styles
   actionAreaContainer: {
     flexDirection: "row",
-    height: SCREEN_HEIGHT * 0.1,
-    width: SCREEN_WIDTH,
+    height: WINDOW_HEIGHT * 0.1,
+    width: WINDOW_WIDTH,
     borderTopColor: Colors.outline,
     borderTopWidth: 1,
   },
   actionUploadWrapper: {
-    width: SCREEN_WIDTH * 0.5,
+    width: WINDOW_WIDTH * 0.5,
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "center",

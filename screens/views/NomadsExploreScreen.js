@@ -1,13 +1,9 @@
-import React, { useState, useEffect } from "react";
-import { Text, View, SafeAreaView, FlatList, Alert } from "react-native";
+import React, { useState, useEffect, useCallback } from "react";
+import { SafeAreaView, FlatList, Alert } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
-import { useIsFocused } from "@react-navigation/native";
 import { Fetch } from "../../services/deviceStorage";
 import { nomadSuggestions } from "../../store/actions/getSuggestions";
-import ScreenView from "../../components/ScreenView";
 import EmptyScreen from "../extra/EmptyScreen";
-import LoadingScreen from "../extra/LoadingScreen";
-import EmptyLoadingScreen from "../extra/EmptyLoadingScreen";
 import Colors from "../../theme/Colors";
 import NomadRequestTile from "../../components/NomadRequestTile";
 
@@ -16,17 +12,7 @@ const NomadsExploreScreen = (props) => {
 
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    loadSuggestions();
-  }, []);
-
-  const suggestionsStore = useSelector((state) => state.suggestionsStore);
-
-  useEffect(() => {
-    console.log("Nomad Suggestions", suggestionsStore.nomads);
-  }, [suggestionsStore]);
-
-  const loadSuggestions = async () => {
+  const loadSuggestions = useCallback(async () => {
     try {
       setLoading(true);
       const nomadId = await Fetch("nomadId");
@@ -47,7 +33,13 @@ const NomadsExploreScreen = (props) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    loadSuggestions();
+  }, [loadSuggestions]);
+
+  const suggestionsStore = useSelector((state) => state.suggestionsStore);
 
   const handleNavigation = () => {
     props.navigation.navigate("Profile");

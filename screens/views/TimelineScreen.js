@@ -26,6 +26,7 @@ const TimelineScreen = ({
 
   const dispatch = useDispatch();
   const tempNomadStore = useSelector((state) => state.tempNomadStore);
+  const nomadStore = useSelector((state) => state.nomadStore);
   const memoriesStore = useSelector((state) => state.memoriesStore);
 
   useEffect(() => {
@@ -39,7 +40,7 @@ const TimelineScreen = ({
       const nomadId = await Fetch("nomadId");
       if (nomadId == tempNomadStore.nomadId) setIsOwner(true);
 
-      getNomadMemories(tempNomadStore.nomadId)(dispatch);
+      await getNomadMemories(tempNomadStore.nomadId)(dispatch);
     } catch (error) {
       Alert.alert(
         "Oh My trod!",
@@ -62,8 +63,8 @@ const TimelineScreen = ({
     try {
       setLoading(true);
       const nomadId = await Fetch("nomadId");
-      await getOwnMemories(nomadId)(dispatch);
-      setIsOwner(true);
+      if (nomadId == nomadStore._id) setIsOwner(true);
+      await getOwnMemories(nomadStore._id)(dispatch);
     } catch (error) {
       Alert.alert(
         "Oh My trod!",
@@ -80,10 +81,10 @@ const TimelineScreen = ({
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [nomadStore._id]);
 
-  const handleRefresh = () =>
-    authType === "self" ? loadOwnMemories() : loadNomadMemories();
+  const handleRefresh = async () =>
+    authType === "self" ? await loadOwnMemories() : await loadNomadMemories();
 
   const renderProfileTimeline = ({ item }) =>
     authType === "self" ? (
