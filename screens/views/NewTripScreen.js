@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useReducer } from "react";
 import {
   View,
   Image,
@@ -26,63 +26,233 @@ import InputBox from "../../components/InputBox";
 import HeaderButton from "../../components/HeaderButton";
 import MemoImagePreview from "../../components/MemoImagePreview";
 import PlaceSearch from "../../components/PlaceSearchBottomSheet";
+import DatePickerModel from "react-native-modal-datetime-picker";
+import BigButton from "../../components/BigButton";
 
 const { width: WINDOW_WIDTH, height: WINDOW_HEIGHT } = Dimensions.get("window");
+const _MS_PER_DAY = 1000 * 60 * 60 * 24;
+const _MAXIMUM_DAYS_ALLOWED_TO_PLAN = 3;
+const FIELD_WIDTH = WINDOW_WIDTH - 20;
+const FORM_UPDATE_INPUT = "FORM_UPDATE_INPUT";
+const FORM_UPDATE_OUTPUT = "FORM_UPDATE_OUTPUT";
+
+const formReducer = (state, action) => {
+  if (action.type === FORM_UPDATE_INPUT) {
+    updatedInputValues = {
+      ...state.inputValues,
+      [action.payload.key]: action.payload.value,
+    };
+
+    return {
+      ...state,
+      inputValues: updatedInputValues,
+    };
+  }
+
+  if (action.type === FORM_UPDATE_OUTPUT) {
+    updatedOutputValues = {
+      ...state.outputValues,
+      [action.payload.key]: action.payload.value,
+    };
+
+    return {
+      ...state,
+      outputValues: updatedOutputValues,
+    };
+  }
+  return state;
+};
 
 const NewTripScreen = (props) => {
-  const nomadStore = useSelector((state) => state.nomadStore);
+  const [isStartDateVisible, setIsStartDateVisible] = useState(false);
+  const [isEndDateVisible, setIsEndDateVisible] = useState(false);
+  const [tripDuration, setTripDuration] = useState(0);
+  const [isPostReady, setIsPostReady] = useState(false);
+  const [formState, dispatchFormState] = useReducer(formReducer, {
+    inputValues: {
+      tripTitle: undefined,
+      starDate: undefined,
+      endDate: undefined,
+      content: undefined,
+    },
+    outputValues: {
+      startDate: undefined,
+      endDate: undefined,
+    },
+  });
+
+  useEffect(
+    () =>
+      handleSetTripDuration(
+        formState.inputValues.startDate,
+        formState.inputValues.endDate
+      ),
+    [formState.inputValues.startDate, formState.inputValues.endDate]
+  );
+
+  useEffect(() => {
+    renderHeaderButton();
+  }, [renderHeaderButton]);
+
+  const renderHeaderButton = useCallback(() => {
+    props.navigation.setOptions({
+      headerRight: () => (
+        <HeaderButtons HeaderButtonComponent={HeaderButton}>
+          <Item
+            title="Save"
+            color={isPostReady ? Colors.primary : Colors.outline}
+            onPress={isPostReady ? null : null}
+          />
+        </HeaderButtons>
+      ),
+    });
+  }, []);
+
+  const renderDayPlanners = (days) => {
+    if (days > _MAXIMUM_DAYS_ALLOWED_TO_PLAN)
+      days = _MAXIMUM_DAYS_ALLOWED_TO_PLAN;
+    let list = [];
+    for (let i = 0; i < days; i++) {
+      list.push(
+        <View style={styles.container}>
+          <View style={styles.row}>
+            <View style={styles.colLeft}>
+              <Ionicons
+                onPress={() => handleDayPlannerNavigation(i + 1)}
+                name="add-outline"
+                size={23}
+                color={Colors.primary}
+              />
+            </View>
+            <View style={styles.colMid}>
+              <BodyText
+                onPress={() => handleDayPlannerNavigation(i + 1)}
+                style={styles.postText}
+              >
+                {`Plan day ${i + 1} of your trip...`}
+              </BodyText>
+            </View>
+            <View style={styles.colRight}>
+              <Ionicons
+                onPress={() => handleDayPlannerNavigation(i + 1)}
+                name="chevron-forward-outline"
+                size={20}
+                color={Colors.primary}
+              />
+            </View>
+          </View>
+        </View>
+      );
+    }
+
+    return list;
+  };
+
+  const handleSetTripDuration = (startDate, endDate) => {
+    if (!startDate || !endDate) return;
+    const utcStart = Date.UTC(
+      startDate.getFullYear(),
+      startDate.getMonth(),
+      startDate.getDate()
+    );
+    const utcEnd = Date.UTC(
+      endDate.getFullYear(),
+      endDate.getMonth(),
+      endDate.getDate()
+    );
+    const tripDuration = Math.floor((utcEnd - utcStart) / _MS_PER_DAY);
+    setTripDuration(tripDuration);
+  };
+
+  const handleInput = (value) => (key) => {
+    if (key === "startDate" || key === "endDate") {
+      const stringDate = `${value.getDate()}/${
+        value.getMonth() + 1
+      }/${value.getFullYear()}`;
+
+      dispatchFormState({
+        type: FORM_UPDATE_OUTPUT,
+        payload: {
+          key,
+          value: stringDate,
+        },
+      });
+      handleHideEndDate();
+      handleHideStartDate();
+    }
+
+    dispatchFormState({
+      type: FORM_UPDATE_INPUT,
+      payload: {
+        key,
+        value,
+      },
+    });
+  };
+
+  const handleDayPlannerNavigation = (day) =>
+    props.navigation.navigate("DayTrip", {
+      day,
+      title: formState.inputValues.tripTitle,
+    });
+
+  const handleShowStartDate = () => setIsStartDateVisible(true);
+
+  const handleHideStartDate = () => setIsStartDateVisible(false);
+
+  const handleShowEndDate = () => setIsEndDateVisible(true);
+
+  const handleHideEndDate = () => setIsEndDateVisible(false);
 
   return (
     <ScreenView style={styles.screen}>
-      <View style={styles.header}>
-        <View style={styles.imageContainer}>
-          <View style={styles.imageWrapper}>
-            <Image
-              source={{ uri: downloadImage(nomadStore.prof_img) }}
-              style={styles.headerImage}
-            />
-          </View>
-        </View>
-        <View style={styles.sharePrefWrapper}>
-          <BodyText
-            style={styles.NomadName}
-          >{`${nomadStore.first_name} ${nomadStore.last_name}`}</BodyText>
-          <BodyText style={styles.NomadLocation} onPress={() => {}}>
-            {"Tag a location..."}
-          </BodyText>
-        </View>
-      </View>
       <InputBox
-        style={styles.inputArea}
-        containerStyle={styles.inputAreaContainer}
-        onChangeText={(value) => {}}
-        value={"HI"}
-        placeholder="Share your memories with Trodden..."
-        multiline={true}
-        returnKeyType="none"
+        style={styles.tripTitleInput}
+        value={formState.inputValues.tripTitle}
+        placeholder="Trip title"
+        onChangeText={(text) => handleInput(text)("tripTitle")}
       />
-      <View style={styles.selectedItemsAreaContainer}>
-        <ScrollView
-          contentContainerStyle={styles.scroll}
-          horizontal
-        ></ScrollView>
+      <InputBox
+        multiline={true}
+        style={styles.contentInput}
+        placeholder="Tell us about your trip..."
+        value={formState.inputValues.content}
+        returnKeyType="none"
+        onChangeText={(inputText) => handleInput(inputText)("content")}
+      />
+      <View style={styles.dateContainer}>
+        <BigButton
+          style={styles.dateInputContainer}
+          textStyle={styles.dateInput}
+          onPress={handleShowStartDate}
+        >
+          {formState.outputValues.startDate
+            ? `Start Date: ${formState.outputValues.startDate}`
+            : "Start Date"}
+        </BigButton>
+        <DatePickerModel
+          isVisible={isStartDateVisible}
+          mode="date"
+          onConfirm={(date) => handleInput(date)("startDate")}
+          onCancel={handleHideStartDate}
+        />
+        <BigButton
+          style={styles.dateInputContainer}
+          textStyle={styles.dateInput}
+          onPress={handleShowEndDate}
+        >
+          {formState.outputValues.endDate
+            ? `End Date: ${formState.outputValues.endDate}`
+            : "End Date"}
+        </BigButton>
+        <DatePickerModel
+          isVisible={isEndDateVisible}
+          mode="date"
+          onConfirm={(date) => handleInput(date)("endDate")}
+          onCancel={handleHideEndDate}
+        />
       </View>
-      <View style={styles.actionAreaContainer}>
-        <View style={styles.actionUploadWrapper}></View>
-        {/* <View style={styles.actionSendWrapper}>{renderSendButton()}</View> */}
-      </View>
-      <Modal
-        visible={false}
-        transparent={true}
-        animationType="slide"
-        onRequestClose={() => {}}
-      >
-        <Pressable
-          onPress={() => {}}
-          style={{ flex: 1, backgroundColor: Colors.backgroundOverlay }}
-        ></Pressable>
-        <PlaceSearch onPress={() => {}} />
-      </Modal>
+      {renderDayPlanners(tripDuration)}
     </ScreenView>
   );
 };
@@ -92,123 +262,68 @@ export default NewTripScreen;
 const styles = StyleSheet.create({
   screen: {
     backgroundColor: Colors.accent,
+    paddingTop: 30,
+    paddingHorizontal: 10,
+    alignItems: "flex-start",
   },
 
-  //#region Header styles
-  header: {
-    flexDirection: "row",
-    height: WINDOW_HEIGHT * 0.1,
-    width: WINDOW_WIDTH,
-    alignItems: "center",
+  tripTitleInput: {
+    width: FIELD_WIDTH,
   },
-  //#endregion
-
-  //#region Header image styles
-  imageContainer: {
-    height: "100%",
-    width: WINDOW_WIDTH * 0.2,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  imageWrapper: {
-    height: 50,
-    width: 50,
-    borderRadius: 25,
-    overflow: "hidden",
-    shadowColor: Colors.text,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.5,
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  headerImage: {
-    width: 50,
-    height: "100%",
-  },
-  //#endregion
-
-  //#region Header share preference styles
-  sharePrefWrapper: {
-    width: WINDOW_WIDTH * 0.8,
-  },
-  NomadName: {
-    ...Typography.bodyTextBold,
-  },
-  NomadLocation: {
-    fontSize: 14,
-  },
-  //#endregion
-
-  //#region Input area styles
-  inputAreaContainer: {
-    height: WINDOW_HEIGHT * 0.45,
-    width: WINDOW_WIDTH,
-  },
-  inputArea: {
-    height: WINDOW_HEIGHT * 0.4,
+  contentInput: {
+    height: 200,
     textAlignVertical: "top",
     paddingVertical: 10,
-    borderWidth: 0,
   },
-  //#endregion
 
-  //#region Selected items styles
-  selectedItemsAreaContainer: {
-    height: WINDOW_HEIGHT * 0.2,
-    width: WINDOW_WIDTH,
-  },
-  scroll: {
-    flexGrow: 1,
-    overflow: "hidden",
+  dateContainer: {
+    flexDirection: "row",
+    width: FIELD_WIDTH,
     alignItems: "center",
-    paddingHorizontal: 5,
+    justifyContent: "space-between",
   },
-  videoContainer: {
+  dateInputContainer: {
+    width: (FIELD_WIDTH - 10) / 2,
+    height: 50,
+    backgroundColor: Colors.accent,
+    borderColor: Colors.outline,
+    borderRadius: 5,
+    borderWidth: 1,
+    paddingHorizontal: 10,
+    marginBottom: 20,
+  },
+  dateInput: {
+    ...Typography.placeholderText,
+    textAlign: "left",
+  },
+
+  container: {
+    width: FIELD_WIDTH,
+    height: 50,
+    backgroundColor: Colors.accent,
+  },
+  row: {
     flex: 1,
     flexDirection: "row",
-    marginHorizontal: 5,
-  },
-  video: {
-    alignSelf: "flex-start",
-    width: WINDOW_HEIGHT * 0.25,
-    height: WINDOW_HEIGHT * 0.18,
-  },
-  videoTrashWrapper: {
     alignItems: "center",
-    justifyContent: "flex-start",
-    marginLeft: -25,
-    marginTop: 5,
+    borderWidth: 1,
+    borderColor: Colors.outline,
+    marginVertical: 5,
+    borderRadius: 5,
   },
-  videoTrash: {
-    backgroundColor: Colors.info,
-    borderRadius: 30,
-  },
-  selectedImage: {
-    height: WINDOW_HEIGHT * 0.15,
-    width: WINDOW_HEIGHT * 0.15,
-  },
-  //#endregion
-
-  //#region  Action bar styles
-  actionAreaContainer: {
-    flexDirection: "row",
-    height: WINDOW_HEIGHT * 0.1,
-    width: WINDOW_WIDTH,
-    borderTopColor: Colors.outline,
-    borderTopWidth: 1,
-  },
-  actionUploadWrapper: {
-    width: WINDOW_WIDTH * 0.5,
-    flexDirection: "row",
-    justifyContent: "space-around",
-    alignItems: "center",
-    paddingHorizontal: 5,
-  },
-  actionSendWrapper: {
+  colLeft: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "flex-end",
-    paddingHorizontal: 20,
+    alignItems: "center",
   },
-  //#endregion
+  colMid: {
+    flex: 5,
+  },
+  colRight: {
+    flex: 1,
+    alignItems: "center",
+  },
+  postText: {
+    ...Typography.bodyText,
+    paddingVertical: 10,
+  },
 });

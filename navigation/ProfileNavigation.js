@@ -7,6 +7,7 @@ import Colors from "../theme/Colors";
 import Typography from "../theme/Typography";
 import ProfileOwn from "../screens/views/ProfileOwn";
 import NewTripScreen from "../screens/views/NewTripScreen";
+import TripDayPlannerScreen from "../screens/views/TripDayPlannerScreen";
 
 const Stack = createStackNavigator();
 
@@ -38,6 +39,14 @@ const OwnProfileStackNavigation = (props) => {
         component={NewTripScreen}
         options={{
           title: "Create New Trip",
+          ...TransitionPresets.SlideFromRightIOS,
+        }}
+      />
+      <Stack.Screen
+        name="DayTrip"
+        component={TripDayPlannerScreen}
+        options={{
+          title: "Plan Your Trip",
           ...TransitionPresets.SlideFromRightIOS,
         }}
       />
