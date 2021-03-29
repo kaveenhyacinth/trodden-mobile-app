@@ -1,9 +1,13 @@
 import React from "react";
-import { createStackNavigator } from "@react-navigation/stack";
+import {
+  createStackNavigator,
+  TransitionPresets,
+} from "@react-navigation/stack";
 import Colors from "../theme/Colors";
 import Typography from "../theme/Typography";
 import ProfileOwn from "../screens/views/ProfileOwn";
 import AuthNavigator from "./AuthNavigator";
+import NewTripScreen from "../screens/views/NewTripScreen";
 
 const Stack = createStackNavigator();
 
@@ -29,6 +33,14 @@ const OwnProfileStackNavigation = (props) => {
         name="Profile"
         component={ProfileOwn}
         options={{ title: "..." }}
+      />
+      <Stack.Screen
+        name="NewTrip"
+        component={NewTripScreen}
+        options={{
+          title: "Create New Trip",
+          ...TransitionPresets.SlideFromRightIOS,
+        }}
       />
     </Stack.Navigator>
   );

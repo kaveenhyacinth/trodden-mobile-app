@@ -1,6 +1,6 @@
 import React from "react";
 import { View, StyleSheet, Pressable, Dimensions } from "react-native";
-import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import Colors from "../theme/Colors";
 import BodyText from "./BodyText";
 import Typography from "../theme/Typography";
@@ -19,7 +19,7 @@ const NewPostHome = (props) => {
         <View style={styles.topColRgt}>
           <Pressable onPress={props.onPress}>
             <BodyText style={styles.postText}>
-              Share your memories with Trodden...
+              Share your recent trips with Trodden...
             </BodyText>
           </Pressable>
         </View>

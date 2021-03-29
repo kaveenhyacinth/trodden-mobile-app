@@ -14,6 +14,7 @@ import HeaderButton from "../../components/HeaderButton";
 import TimelineScreen from "./TimelineScreen";
 import BlazesScreen from "./BlazesScreen";
 import LoadingScreen from "../extra/LoadingScreen";
+import TripsScreen from "./TripsScreen";
 
 const { width: WINDOW_WIDTH, height: WINDOW_HEIGHT } = Dimensions.get("window");
 const TabBarHeight = 50;
@@ -210,7 +211,7 @@ const NomadProfileView = (props) => {
           />
         );
       case "tab2":
-        return <BlazesScreen />;
+        return <TripsScreen />;
       default:
         return null;
     }

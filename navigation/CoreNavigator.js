@@ -34,14 +34,14 @@ const CoreNavigator = (props) => {
         name={"Home"}
         component={HomeNavigation}
         options={{
-          tabBarIcon: (tabInfo) => renderIcIcons(tabInfo)("home", 30),
+          tabBarIcon: (tabInfo) => renderIcIcons(tabInfo)("home", 25),
         }}
       />
       <Tab.Screen
         name={"Explore"}
         component={ExploreNavigation}
         options={{
-          tabBarIcon: (tabInfo) => renderFaIcons(tabInfo)("search", 25),
+          tabBarIcon: (tabInfo) => renderIcIcons(tabInfo)("search", 25),
         }}
       />
       <Tab.Screen
@@ -49,21 +49,21 @@ const CoreNavigator = (props) => {
         component={ProfileNavigation}
         options={{
           tabBarIcon: (tabInfo) =>
-            renderIcIcons(tabInfo)("person-circle-sharp", 35),
+            renderIcIcons(tabInfo)("person-circle-sharp", 30),
         }}
       />
       <Tab.Screen
         name={"Tribe"}
         component={TribeNavigation}
         options={{
-          tabBarIcon: (tabInfo) => renderFaIcons(tabInfo)("leaf", 25),
+          tabBarIcon: (tabInfo) => renderIcIcons(tabInfo)("leaf", 25),
         }}
       />
       <Tab.Screen
         name={"NewPost"}
         component={InboxNavigator}
         options={{
-          tabBarIcon: (tabInfo) => renderFaIcons(tabInfo)("inbox", 25),
+          tabBarIcon: (tabInfo) => renderIcIcons(tabInfo)("notifications", 25),
         }}
       />
     </Tab.Navigator>

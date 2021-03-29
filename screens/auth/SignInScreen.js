@@ -136,7 +136,7 @@ const SignInScreen = (props) => {
       if (!error.response)
         return Alert.alert(
           "Something went wrong",
-          "Sorry, it's our fault! Please try again later...",
+          error.message ?? "Sorry, it's our fault! Please try again later...",
           [
             {
               text: "Okay",
