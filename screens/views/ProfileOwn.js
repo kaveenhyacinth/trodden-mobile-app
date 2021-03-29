@@ -52,7 +52,7 @@ const OwnerProfileView = (props) => {
             IconComponent={Ionicons}
             iconName="log-out-outline"
             color={Colors.primary}
-            onPress={handleSignOut}
+            onPress={handleConfirmSignOut}
           />
         </HeaderButtons>
       ),
@@ -82,6 +82,25 @@ const OwnerProfileView = (props) => {
       scrollY.removeAllListeners();
     };
   }, [routes, tabIndex]);
+
+  const handleConfirmSignOut = () => {
+    Alert.alert(
+      "Do you want to log-out?",
+      `We are going to miss you ${nomadStore.first_name}!`,
+      [
+        {
+          text: "Yes",
+          style: "default",
+          onPress: () => handleSignOut(),
+        },
+        {
+          text: "No",
+          style: "cancel",
+        },
+      ],
+      { cancelable: false }
+    );
+  };
 
   const handleSignOut = async () => {
     try {

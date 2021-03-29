@@ -444,7 +444,7 @@ const NewPostScreen = (props) => {
       let mediaBody = new FormData();
       let mediaArray = [];
 
-      if (images.length === 0 || video.length === 0 || !content) return;
+      if ((images.length === 0 && video.length === 0) || !content) return;
 
       // Upload media only if media files exist
       if (images.length !== 0 || video.length !== 0) {
