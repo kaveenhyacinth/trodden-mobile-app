@@ -15,7 +15,7 @@ import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
 import regexifyString from "regexify-string";
 import { getOwnMemories, getNomadMemories } from "../store/actions/getMemories";
-import { getFeed } from "../store/actions/getFeed";
+import { getFeed } from "../store/actions/userFeed";
 import { Fetch } from "../services/deviceStorage";
 import api from "../api/api";
 import Colors from "../theme/Colors";
