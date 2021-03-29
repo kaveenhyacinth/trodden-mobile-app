@@ -10,35 +10,27 @@ const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("screen");
 const NewPostHome = (props) => {
   return (
     <View style={styles.container}>
-      <View style={styles.topRow}>
-        <View style={styles.topColLft}>
-          <Pressable onPress={props.onPress}>
-            <Ionicons name="create-outline" size={25} color={Colors.primary} />
-          </Pressable>
+      <View style={styles.row}>
+        <View style={styles.colLeft}>
+          <Ionicons
+            onPress={props.onPress}
+            name="create-outline"
+            size={25}
+            color={Colors.primary}
+          />
         </View>
-        <View style={styles.topColRgt}>
-          <Pressable onPress={props.onPress}>
-            <BodyText style={styles.postText}>
-              Share your recent trips with Trodden...
-            </BodyText>
-          </Pressable>
-        </View>
-      </View>
-      <View style={styles.bottomRow}>
-        <View style={styles.bottomCol}>
-          <BodyText onPress={props.onPress}>
-            <Ionicons name="image" size={23} color={"blue"} />
+        <View style={styles.colMid}>
+          <BodyText style={styles.postText} onPress={props.onPress}>
+            Share your recent trips with Trodden...
           </BodyText>
         </View>
-        <View style={styles.bottomCol}>
-          <BodyText onPress={props.onPress}>
-            <Ionicons name="camera" size={23} color={"purple"} />
-          </BodyText>
-        </View>
-        <View style={styles.bottomCol}>
-          <BodyText onPress={props.onPress}>
-            <Ionicons name="videocam" size={23} color={Colors.red} />
-          </BodyText>
+        <View style={styles.colRight}>
+          <Ionicons
+            onPress={props.onPress}
+            name="chevron-forward-outline"
+            size={20}
+            color={Colors.primary}
+          />
         </View>
       </View>
     </View>
@@ -48,39 +40,30 @@ const NewPostHome = (props) => {
 const styles = StyleSheet.create({
   container: {
     width: SCREEN_WIDTH,
-    height: 100,
+    height: 50,
     backgroundColor: Colors.accent,
   },
-  topRow: {
+  row: {
     flex: 1,
     flexDirection: "row",
     alignItems: "center",
     borderBottomWidth: 1,
     borderBottomColor: Colors.outline,
   },
-  topColLft: {
+  colLeft: {
     flex: 1,
     alignItems: "center",
   },
-  topColRgt: {
+  colMid: {
     flex: 5,
+  },
+  colRight: {
+    flex: 1,
+    alignItems: "center",
   },
   postText: {
     ...Typography.bodyText,
     paddingVertical: 10,
-  },
-  bottomRow: {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  bottomCol: {
-    flex: 1,
-    alignItems: "center",
-    padding: 5,
-    backgroundColor: Colors.background,
-    borderRadius: 10,
-    marginHorizontal: 10,
   },
 });
 

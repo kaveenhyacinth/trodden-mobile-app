@@ -6,7 +6,6 @@ import {
 import Colors from "../theme/Colors";
 import Typography from "../theme/Typography";
 import ProfileOwn from "../screens/views/ProfileOwn";
-import AuthNavigator from "./AuthNavigator";
 import NewTripScreen from "../screens/views/NewTripScreen";
 
 const Stack = createStackNavigator();
