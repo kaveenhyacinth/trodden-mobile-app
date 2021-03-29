@@ -160,7 +160,7 @@ const NewTripScreen = (props) => {
       endDate.getMonth(),
       endDate.getDate()
     );
-    const tripDuration = Math.floor((utcEnd - utcStart) / _MS_PER_DAY);
+    const tripDuration = Math.floor((utcEnd - utcStart) / _MS_PER_DAY) + 1;
     setTripDuration(tripDuration);
   };
 
@@ -264,13 +264,13 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.accent,
     paddingTop: 30,
     paddingHorizontal: 10,
-    alignItems: "flex-start",
   },
 
   tripTitleInput: {
     width: FIELD_WIDTH,
   },
   contentInput: {
+    width: FIELD_WIDTH,
     height: 200,
     textAlignVertical: "top",
     paddingVertical: 10,

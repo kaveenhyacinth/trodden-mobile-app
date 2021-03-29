@@ -38,7 +38,7 @@ const OwnProfileStackNavigation = (props) => {
         name="NewTrip"
         component={NewTripScreen}
         options={{
-          title: "Create New Trip",
+          title: "Plan New Trip",
           ...TransitionPresets.SlideFromRightIOS,
         }}
       />

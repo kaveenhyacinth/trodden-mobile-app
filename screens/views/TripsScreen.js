@@ -9,7 +9,6 @@ const TripsScreen = (props) => {
     <View style={{ flex: 1, paddingTop: 50, alignItems: "center" }}>
       <CreateNewTripHeader
         onPress={() => {
-          console.log("Presses");
           navigation.navigate("NewTrip");
         }}
       />

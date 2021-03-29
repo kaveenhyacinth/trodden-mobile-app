@@ -21,7 +21,7 @@ const NewPostHome = (props) => {
         </View>
         <View style={styles.colMid}>
           <BodyText style={styles.postText} onPress={props.onPress}>
-            Share your recent trips with Trodden...
+            Plan a trip with Trodden...
           </BodyText>
         </View>
         <View style={styles.colRight}>
