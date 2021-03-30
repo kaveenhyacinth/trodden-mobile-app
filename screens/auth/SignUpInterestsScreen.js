@@ -26,17 +26,6 @@ const InterestScreen = (props) => {
     fetchInterests();
   }, [fetchInterests]);
 
-  useEffect(() => {
-    let cleanup = false;
-    if (!cleanup) {
-      if (interetsStore.error) {
-      }
-    }
-    return () => {
-      cleanup = true;
-    };
-  }, [input]);
-
   const fetchInterests = useCallback(async () => {
     try {
       setLoading(true);
