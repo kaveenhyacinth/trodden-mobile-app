@@ -1,21 +1,30 @@
-import { GET_INTERESTS } from "../actionTypes";
+import { GET_INTERESTS, INTERESTS_ERROR } from "../actionTypes";
 
 const initialState = {
-  interests: [],
   loading: true,
+  data: [],
+  error: {},
 };
 
-const storeUserReducer = (state = initialState, action) => {
+const storeInterestsReducer = (state = initialState, action) => {
   switch (action.type) {
     case GET_INTERESTS:
       return {
         ...state,
-        interests: action.payload,
         loading: false,
+        data: action.payload,
+        error: {},
+      };
+    case INTERESTS_ERROR:
+      return {
+        ...state,
+        loading: false,
+        data: [],
+        error: action.payload,
       };
     default:
       return state;
   }
 };
 
-export default storeUserReducer;
+export default storeInterestsReducer;

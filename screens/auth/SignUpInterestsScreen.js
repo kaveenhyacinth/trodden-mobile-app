@@ -1,58 +1,58 @@
 //#region Imports
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { View, StyleSheet, FlatList, Alert, Dimensions } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
-import { Save } from "../../services/deviceStorage";
-import { getInterests } from "../../store/actions/getInterests";
+import { getInterests } from "../../store/actions/interests";
 import api from "../../api/api";
 import Colors from "../../theme/Colors";
 import Typography from "../../theme/Typography";
 import BodyText from "../../components/BodyText";
 import InterestGridTile from "../../components/InterestGridTile";
 import BigButton from "../../components/BigButton";
+import LoadingScreen from "../extra/LoadingScreen";
+import ErrorAlert from "../../components/ErrorAlert";
 //#endregion
 
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("screen");
+const { width: WINDOW_WIDTH, height: WINDOW_HEIGHT } = Dimensions.get("window");
 
 const InterestScreen = (props) => {
-  const dispatch = useDispatch();
-
-  const userStore = useSelector((state) => state.userStore);
-  const tokenStore = useSelector((state) => state.tokenStore);
-  const interetsStore = useSelector((state) => state.interestsStore);
-
   const [loading, setLoading] = useState(false);
   const [selectedInterests, setSelectedInterests] = useState([]);
+  const userStore = useSelector((state) => state.userStore);
+  const interetsStore = useSelector((state) => state.interestsStore);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    handleLoadInterests();
-    console.log("userData", userStore);
-    // console.log("Interests", interetsStore);
-  }, []);
+    fetchInterests();
+  }, [fetchInterests]);
+
+  useEffect(() => {
+    let cleanup = false;
+    if (!cleanup) {
+      if (interetsStore.error) {
+      }
+    }
+    return () => {
+      cleanup = true;
+    };
+  }, [input]);
+
+  const fetchInterests = useCallback(async () => {
+    try {
+      setLoading(true);
+      await getInterests()(dispatch);
+    } catch (error) {
+      <ErrorAlert message={error.message} />;
+      console.log("Error Happen", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [dispatch]);
 
   const checkIsValidSelection = () => {
     const selectionCount = selectedInterests.length;
     if (selectionCount < 3) return false;
     return true;
-  };
-
-  const handleLoadInterests = async () => {
-    try {
-      await getInterests()(dispatch);
-    } catch (error) {
-      Alert.alert(
-        "Oh My trod!",
-        error.message ?? "Something went wrong. Please try again later",
-        [
-          {
-            text: "I Will",
-            style: "destructive",
-          },
-        ],
-        { cancelable: false }
-      );
-      console.log("Error Happen", error);
-    }
   };
 
   const handlePrepareUserData = (userStore, interests) => {
@@ -199,28 +199,21 @@ const InterestScreen = (props) => {
         screen: "Home",
       });
     } catch (error) {
-      Alert.alert(
-        "Select more Interests",
-        error.message ?? "Something went wrong! Please try again later...",
-        [
-          {
-            text: "I Will",
-            style: "destructive",
-          },
-        ],
-        { cancelable: false }
-      );
+      <ErrorAlert message={error.message} />;
+      console.log("error", error);
     } finally {
       setLoading(false);
     }
   };
+
+  if (loading) return <LoadingScreen />;
 
   return (
     <View style={styles.screen}>
       <View style={{ width: "100%", marginBottom: 80 }}>
         <FlatList
           style={styles.list}
-          data={interetsStore.interests}
+          data={interetsStore.data}
           renderItem={handleRenderInterests}
           keyExtractor={(item) => item._id}
           numColumns={2}
@@ -251,7 +244,7 @@ const InterestScreen = (props) => {
 //#region Styles
 const styles = StyleSheet.create({
   screen: {
-    width: SCREEN_WIDTH,
+    width: WINDOW_WIDTH,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: Colors.accent,
@@ -261,7 +254,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     position: "absolute",
-    width: SCREEN_WIDTH,
+    width: WINDOW_WIDTH,
     bottom: 0,
     backgroundColor: Colors.accent,
   },

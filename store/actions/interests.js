@@ -10,10 +10,10 @@ export const getInterests = () => async (dispatch) => {
       payload: response.data.result,
     });
   } catch (error) {
-    // dispatch({
-    //   type: INTERESTS_ERROR,
-    //   payload: console.log("Error at Get Interests action", error),
-    // });
+    dispatch({
+      type: INTERESTS_ERROR,
+      payload: error,
+    });
     throw error;
   }
 };
