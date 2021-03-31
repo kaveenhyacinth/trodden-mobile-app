@@ -1,5 +1,5 @@
 import { GET_INTERESTS, INTERESTS_ERROR } from "../actionTypes";
-import api from "../../api/api";
+import api from "../../api";
 
 export const getInterests = () => async (dispatch) => {
   try {

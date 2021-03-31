@@ -2,9 +2,9 @@
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet, FlatList, Alert, Dimensions } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
-import { Save } from "../../services/deviceStorage";
+import { Save } from "../../helpers/deviceStorageHandler";
 import { getInterests } from "../../store/actions/getInterests";
-import api from "../../api/api";
+import api from "../../api";
 import Colors from "../../theme/Colors";
 import Typography from "../../theme/Typography";
 import BodyText from "../../components/BodyText";

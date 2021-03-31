@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Formik } from "formik";
 import * as yup from "yup";
 import { Text, StyleSheet, Pressable, Alert } from "react-native";
-import api from "../../api/api";
+import api from "../../api";
 import Colors from "../../theme/Colors";
 import Typography from "../../theme/Typography";
 import ScreenView from "../../components/ScreenView";
@@ -40,7 +40,11 @@ const ValidationSchema = yup.object().shape({
       "Invalid Username"
     )
     .required("Required!"),
-  email: yup.string().trim().email("Enter a valid email!").required("Required!"),
+  email: yup
+    .string()
+    .trim()
+    .email("Enter a valid email!")
+    .required("Required!"),
   password: yup
     .string()
     .min(8, "Too short! Enter at leas 8 characters")

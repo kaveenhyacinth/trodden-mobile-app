@@ -2,9 +2,9 @@
 import React, { useState, useReducer } from "react";
 import { Text, StyleSheet, Pressable, Alert } from "react-native";
 import { useDispatch } from "react-redux";
-import { Save } from "../../services/deviceStorage";
+import { Save } from "../../helpers/deviceStorageHandler";
 import { storeToken } from "../../store/actions/storeToken";
-import api from "../../api/api";
+import api from "../../api";
 import Colors from "../../theme/Colors";
 import Typography from "../../theme/Typography";
 import ScreenView from "../../components/ScreenView";
