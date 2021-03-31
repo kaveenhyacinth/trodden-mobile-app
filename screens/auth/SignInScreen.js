@@ -107,10 +107,8 @@ const SignInScreen = (props) => {
         email: formState.inputValues.email,
         password: formState.inputValues.password,
       };
-      const response = await api.signin(signinBody);
+      const response = await api.post.signin(signinBody);
       if (!response) throw new Error("Something went wrong on our side");
-
-      // console.log("Response taken:", response.data);
 
       const signToken = response.data.result.signToken;
       const refToken = response.data.result.refToken;
