@@ -1,7 +1,7 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import CreateNewTripHeader from "../../components/CreateNewTripHeader";
+import CreateNewTripHeader from "../../components/headers/CreateNewTripHeader";
 
 const TripsScreen = (props) => {
   const navigation = useNavigation();

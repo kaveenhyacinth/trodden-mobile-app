@@ -1,15 +1,16 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Alert, Dimensions, Animated } from "react-native";
+import { Dimensions, Animated } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
-import { Fetch } from "../../services/deviceStorage";
+import { Fetch } from "../../helpers/deviceStorageHandler";
 import {
   getOwnMemories,
   getNomadMemories,
 } from "../../store/actions/getMemories";
-import Memory from "../../components/Memory";
-import EmptyScreen from "../extra/EmptyScreen";
+import EmptyScreen from "../info/EmptyScreen";
+import Memory from "../../components/modals/MemoryModal";
+import ErrorAlertModal from "../../components/modals/ErrorAlertModal";
 
-const { width: WINDOW_WIDTH, height: WINDOW_HEIGHT } = Dimensions.get("window");
+const { height: WINDOW_HEIGHT } = Dimensions.get("window");
 
 const TimelineScreen = ({
   authType,
@@ -30,11 +31,11 @@ const TimelineScreen = ({
   const memoriesStore = useSelector((state) => state.memoriesStore);
 
   useEffect(() => {
-    if (authType === "self") loadOwnMemories();
-    if (!authType || authType === "non-self") loadNomadMemories();
-  }, [loadNomadMemories, loadOwnMemories]);
+    if (authType === "self") fatchOwnMemories();
+    if (!authType || authType === "non-self") fetchMemoriesOfUser();
+  }, [fetchMemoriesOfUser, fatchOwnMemories]);
 
-  const loadNomadMemories = useCallback(async () => {
+  const fetchMemoriesOfUser = useCallback(async () => {
     try {
       setLoading(true);
       const nomadId = await Fetch("nomadId");
@@ -42,49 +43,29 @@ const TimelineScreen = ({
 
       await getNomadMemories(tempNomadStore.nomadId)(dispatch);
     } catch (error) {
-      Alert.alert(
-        "Oh My trod!",
-        error.message ?? "Something went wrong. Please try again later",
-        [
-          {
-            text: "I Will",
-            style: "destructive",
-          },
-        ],
-        { cancelable: false }
-      );
-      console.log("Error Happen", error);
+      ErrorAlertModal(error, message, error);
     } finally {
       setLoading(false);
     }
   }, [tempNomadStore.nomadId]);
 
-  const loadOwnMemories = useCallback(async () => {
+  const fatchOwnMemories = useCallback(async () => {
     try {
       setLoading(true);
       const nomadId = await Fetch("nomadId");
       if (nomadId == nomadStore._id) setIsOwner(true);
       await getOwnMemories(nomadStore._id)(dispatch);
     } catch (error) {
-      Alert.alert(
-        "Oh My trod!",
-        error.message ?? "Something went wrong. Please try again later",
-        [
-          {
-            text: "I Will",
-            style: "destructive",
-          },
-        ],
-        { cancelable: false }
-      );
-      console.log("Error Happen", error);
+      ErrorAlertModal(error.message, error);
     } finally {
       setLoading(false);
     }
   }, [nomadStore._id]);
 
   const handleRefresh = async () =>
-    authType === "self" ? await loadOwnMemories() : await loadNomadMemories();
+    authType === "self"
+      ? await fatchOwnMemories()
+      : await fetchMemoriesOfUser();
 
   const renderProfileTimeline = ({ item }) =>
     authType === "self" ? (

@@ -6,20 +6,20 @@ import { Ionicons } from "@expo/vector-icons";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import { useNavigation } from "@react-navigation/native";
 import { resetMomeries } from "../../store/actions/getMemories";
-import { Delete } from "../../services/deviceStorage";
+import { Delete } from "../../helpers/deviceStorageHandler";
+import TimelineScreen from "./TimelineScreen";
+import TripsScreen from "./TripsScreen";
 import Colors from "../../theme/Colors";
 import Typography from "../../theme/Typography";
-import BodyText from "../../components/BodyText";
-import ProfileHeader from "../../components/ProfileHeader";
-import HeaderButton from "../../components/HeaderButton";
-import TimelineScreen from "../views/TimelineScreen";
-import BlazesScreen from "../tribe/BlazesScreen";
-import TripsScreen from "../views/TripsScreen";
+import ProfileHeader from "../../components/headers/ProfileHeader";
+import BodyText from "../../components/ui/BodyText";
+import HeaderButton from "../../components/ui/CustomHeaderButton";
+import ErrorAlertModal from "../../components/modals/ErrorAlertModal";
 
-const { width: WINDOW_WIDTH, height: WINDOW_HEIGHT } = Dimensions.get("window");
+const { height: WINDOW_HEIGHT } = Dimensions.get("window");
 
-const TabBarHeight = 50;
-const HeaderHeight = WINDOW_HEIGHT * 0.4;
+const TAB_BAR_HEIGHT = 50;
+const HEADER_HEIGHT = WINDOW_HEIGHT * 0.4;
 
 const OwnerProfileView = (props) => {
   const [loading, setLoading] = useState(true);
@@ -28,16 +28,32 @@ const OwnerProfileView = (props) => {
     { key: "tab1", title: "Memories" },
     { key: "tab2", title: "Trips" },
   ]);
+
   const scrollY = useRef(new Animated.Value(0)).current;
+  const dispatch = useDispatch();
+  const navigatorProps = useNavigation();
+  const nomadStore = useSelector((state) => state.nomadStore);
+
   let listRefArr = useRef([]);
   let listOffset = useRef({});
   let isListGliding = useRef(false);
 
-  const dispatch = useDispatch();
-  const nomadStore = useSelector((state) => state.nomadStore);
-  const navigatorProps = useNavigation();
+  useEffect(() => {
+    repaintHeaderButtons();
+    repaintHeaderTitle();
+  }, [repaintHeaderButtons, repaintHeaderTitle]);
 
-  const renderHeaderButton = useCallback(() => {
+  useEffect(() => {
+    scrollY.addListener(({ value }) => {
+      const curRoute = routes[tabIndex].key;
+      listOffset.current[curRoute] = value;
+    });
+    return () => {
+      scrollY.removeAllListeners();
+    };
+  }, [routes, tabIndex]);
+
+  const repaintHeaderButtons = useCallback(() => {
     props.navigation.setOptions({
       headerRight: () => (
         <HeaderButtons HeaderButtonComponent={HeaderButton}>
@@ -60,29 +76,11 @@ const OwnerProfileView = (props) => {
     });
   }, []);
 
-  const updateHeaderTitle = useCallback(() => {
+  const repaintHeaderTitle = useCallback(() => {
     props.navigation.setOptions({
       title: `@${nomadStore.username ?? "..."}`,
     });
-  }, [props.navigation, nomadStore.username]);
-
-  useEffect(() => {
-    renderHeaderButton();
-  }, [renderHeaderButton]);
-
-  useEffect(() => {
-    updateHeaderTitle();
-  }, [updateHeaderTitle]);
-
-  useEffect(() => {
-    scrollY.addListener(({ value }) => {
-      const curRoute = routes[tabIndex].key;
-      listOffset.current[curRoute] = value;
-    });
-    return () => {
-      scrollY.removeAllListeners();
-    };
-  }, [routes, tabIndex]);
+  }, [nomadStore.username]);
 
   const handleConfirmSignOut = () => {
     Alert.alert(
@@ -111,18 +109,7 @@ const OwnerProfileView = (props) => {
       dispatch(resetMomeries());
       navigatorProps.dangerouslyGetParent().replace("auth");
     } catch (error) {
-      Alert.alert(
-        "Oh My trod!",
-        error.message ?? "Something went wrong. Please try again later",
-        [
-          {
-            text: "I Will",
-            style: "destructive",
-          },
-        ],
-        { cancelable: false }
-      );
-      console.log("Error Happen", error);
+      ErrorAlertModal(error.message, error);
     }
   };
 
@@ -130,7 +117,7 @@ const OwnerProfileView = (props) => {
     const curRouteKey = routes[tabIndex].key;
     listRefArr.current.forEach((item) => {
       if (item.key !== curRouteKey) {
-        if (scrollY._value < HeaderHeight && scrollY._value >= 0) {
+        if (scrollY._value < HEADER_HEIGHT && scrollY._value >= 0) {
           if (item.value) {
             item.value.scrollToOffset({
               offset: scrollY._value,
@@ -138,17 +125,17 @@ const OwnerProfileView = (props) => {
             });
             listOffset.current[item.key] = scrollY._value;
           }
-        } else if (scrollY._value >= HeaderHeight) {
+        } else if (scrollY._value >= HEADER_HEIGHT) {
           if (
-            listOffset.current[item.key] < HeaderHeight ||
+            listOffset.current[item.key] < HEADER_HEIGHT ||
             listOffset.current[item.key] == null
           ) {
             if (item.value) {
               item.value.scrollToOffset({
-                offset: HeaderHeight,
+                offset: HEADER_HEIGHT,
                 animated: false,
               });
-              listOffset.current[item.key] = HeaderHeight;
+              listOffset.current[item.key] = HEADER_HEIGHT;
             }
           }
         }
@@ -171,8 +158,8 @@ const OwnerProfileView = (props) => {
 
   const renderHeader = () => {
     const y = scrollY.interpolate({
-      inputRange: [0, HeaderHeight],
-      outputRange: [0, -HeaderHeight],
+      inputRange: [0, HEADER_HEIGHT],
+      outputRange: [0, -HEADER_HEIGHT],
       extrapolateRight: "clamp",
     });
     return (
@@ -203,8 +190,8 @@ const OwnerProfileView = (props) => {
         return (
           <TimelineScreen
             authType="self"
-            HeaderHeight={HeaderHeight}
-            TabBarHeight={TabBarHeight}
+            HEADER_HEIGHT={HEADER_HEIGHT}
+            TAB_BAR_HEIGHT={TAB_BAR_HEIGHT}
             scrollY={scrollY}
             onMomentumScrollBegin={onMomentumScrollBegin}
             onScrollEndDrag={onScrollEndDrag}
@@ -233,8 +220,8 @@ const OwnerProfileView = (props) => {
 
   const renderTabBar = (props) => {
     const y = scrollY.interpolate({
-      inputRange: [0, HeaderHeight],
-      outputRange: [HeaderHeight, 0],
+      inputRange: [0, HEADER_HEIGHT],
+      outputRange: [HEADER_HEIGHT, 0],
       extrapolateRight: "clamp",
     });
     return (
@@ -289,7 +276,7 @@ const OwnerProfileView = (props) => {
 const styles = StyleSheet.create({
   header: {
     top: 0,
-    height: HeaderHeight,
+    height: HEADER_HEIGHT,
     width: "100%",
     backgroundColor: Colors.accent,
     alignItems: "center",

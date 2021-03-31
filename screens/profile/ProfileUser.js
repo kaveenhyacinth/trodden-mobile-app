@@ -2,22 +2,20 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import { StyleSheet, View, Alert, Dimensions, Animated } from "react-native";
 import { TabView, TabBar } from "react-native-tab-view";
 import { useSelector } from "react-redux";
-import { Ionicons } from "@expo/vector-icons";
-import { HeaderButtons, Item } from "react-navigation-header-buttons";
-import { Fetch } from "../../services/deviceStorage";
-import api from "../../api/api";
+import { Fetch } from "../../helpers/deviceStorageHandler";
+import api from "../../api";
+import TimelineScreen from "./TimelineScreen";
+import TripsScreen from "./TripsScreen";
+import LoadingScreen from "../info/LoadingScreen";
 import Colors from "../../theme/Colors";
 import Typography from "../../theme/Typography";
-import BodyText from "../../components/BodyText";
-import ProfileHeader from "../../components/ProfileHeader";
-import HeaderButton from "../../components/HeaderButton";
-import TimelineScreen from "./TimelineScreen";
-import LoadingScreen from "../extra/LoadingScreen";
-import TripsScreen from "./TripsScreen";
+import BodyText from "../../components/ui/BodyText";
+import ProfileHeader from "../../components/headers/ProfileHeader";
+import ErrorAlertModal from "../../components/modals/ErrorAlertModal";
 
-const { width: WINDOW_WIDTH, height: WINDOW_HEIGHT } = Dimensions.get("window");
-const TabBarHeight = 50;
-const HeaderHeight = WINDOW_HEIGHT * 0.4;
+const { height: WINDOW_HEIGHT } = Dimensions.get("window");
+const TAB_BAR_HEIGHT = 50;
+const HEADER_HEIGHT = WINDOW_HEIGHT * 0.4;
 
 const NomadProfileView = (props) => {
   const [loading, setLoading] = useState(true);
@@ -32,70 +30,13 @@ const NomadProfileView = (props) => {
     { key: "tab1", title: "Memories" },
     { key: "tab2", title: "Trips" },
   ]);
+
   const scrollY = useRef(new Animated.Value(0)).current;
+  const tempNomadStore = useSelector((state) => state.tempNomadStore);
+
   let listRefArr = useRef([]);
   let listOffset = useRef({});
   let isListGliding = useRef(false);
-
-  const tempNomadStore = useSelector((state) => state.tempNomadStore);
-
-  // const renderHeaderButton = useCallback(() => {
-  //   props.navigation.setOptions({
-  //     headerRight: () => (
-  //       <HeaderButtons HeaderButtonComponent={HeaderButton}>
-  //         <Item
-  //           title="BOND"
-  //           IconComponent={Ionicons}
-  //           iconName="person-add"
-  //           color={Colors.primary}
-  //           onPress={() => {}}
-  //         />
-  //       </HeaderButtons>
-  //     ),
-  //   });
-  // }, []);
-
-  const fetchNomad = useCallback(async () => {
-    try {
-      setLoading(true);
-
-      const response = await api.getNomad(tempNomadStore.nomadId);
-      if (!response.data.success) throw new Error(response.data.msg);
-
-      // Set navigation header to username
-      props.navigation.setOptions({
-        title: `@${response.data.result.username}`,
-      });
-
-      // Set isOwner if owner
-      const nomadId = await Fetch("nomadId");
-      if (nomadId == response.data.result._id) {
-        setIsOwner(true);
-      }
-
-      // Set temp nomad
-      setNomadState((prevState) => ({ ...prevState, ...response.data.result }));
-    } catch (error) {
-      Alert.alert(
-        "Oh My trod!",
-        error.message ?? "Something went wrong. Please try again later",
-        [
-          {
-            text: "I Will",
-            style: "destructive",
-          },
-        ],
-        { cancelable: false }
-      );
-      console.log("Error Happen", error);
-    } finally {
-      setLoading(false);
-    }
-  }, [tempNomadStore.nomadId]);
-
-  // useEffect(() => {
-  //   renderHeaderButton();
-  // }, [renderHeaderButton]);
 
   useEffect(() => {
     fetchNomad();
@@ -111,11 +52,35 @@ const NomadProfileView = (props) => {
     };
   }, [routes, tabIndex]);
 
+  const fetchNomad = useCallback(async () => {
+    try {
+      setLoading(true);
+
+      const response = await api.get.getNomad(tempNomadStore.nomadId);
+      if (!response.data.success) throw new Error(response.data.msg);
+
+      props.navigation.setOptions({
+        title: `@${response.data.result.username}`,
+      });
+
+      const nomadId = await Fetch("nomadId");
+      if (nomadId == response.data.result._id) {
+        setIsOwner(true);
+      }
+
+      setNomadState((prevState) => ({ ...prevState, ...response.data.result }));
+    } catch (error) {
+      ErrorAlertModal(error.message, error);
+    } finally {
+      setLoading(false);
+    }
+  }, [tempNomadStore.nomadId]);
+
   const syncScrollOffset = () => {
     const curRouteKey = routes[tabIndex].key;
     listRefArr.current.forEach((item) => {
       if (item.key !== curRouteKey) {
-        if (scrollY._value < HeaderHeight && scrollY._value >= 0) {
+        if (scrollY._value < HEADER_HEIGHT && scrollY._value >= 0) {
           if (item.value) {
             item.value.scrollToOffset({
               offset: scrollY._value,
@@ -123,17 +88,17 @@ const NomadProfileView = (props) => {
             });
             listOffset.current[item.key] = scrollY._value;
           }
-        } else if (scrollY._value >= HeaderHeight) {
+        } else if (scrollY._value >= HEADER_HEIGHT) {
           if (
-            listOffset.current[item.key] < HeaderHeight ||
+            listOffset.current[item.key] < HEADER_HEIGHT ||
             listOffset.current[item.key] == null
           ) {
             if (item.value) {
               item.value.scrollToOffset({
-                offset: HeaderHeight,
+                offset: HEADER_HEIGHT,
                 animated: false,
               });
-              listOffset.current[item.key] = HeaderHeight;
+              listOffset.current[item.key] = HEADER_HEIGHT;
             }
           }
         }
@@ -156,8 +121,8 @@ const NomadProfileView = (props) => {
 
   const renderHeader = () => {
     const y = scrollY.interpolate({
-      inputRange: [0, HeaderHeight],
-      outputRange: [0, -HeaderHeight],
+      inputRange: [0, HEADER_HEIGHT],
+      outputRange: [0, -HEADER_HEIGHT],
       extrapolateRight: "clamp",
     });
     return (
@@ -188,8 +153,8 @@ const NomadProfileView = (props) => {
         return (
           <TimelineScreen
             authType="non-self"
-            HeaderHeight={HeaderHeight}
-            TabBarHeight={TabBarHeight}
+            HEADER_HEIGHT={HEADER_HEIGHT}
+            TAB_BAR_HEIGHT={TAB_BAR_HEIGHT}
             scrollY={scrollY}
             onMomentumScrollBegin={onMomentumScrollBegin}
             onScrollEndDrag={onScrollEndDrag}
@@ -218,8 +183,8 @@ const NomadProfileView = (props) => {
 
   const renderTabBar = (props) => {
     const y = scrollY.interpolate({
-      inputRange: [0, HeaderHeight],
-      outputRange: [HeaderHeight, 0],
+      inputRange: [0, HEADER_HEIGHT],
+      outputRange: [HEADER_HEIGHT, 0],
       extrapolateRight: "clamp",
     });
     return (
@@ -276,7 +241,7 @@ const NomadProfileView = (props) => {
 const styles = StyleSheet.create({
   header: {
     top: 0,
-    height: HeaderHeight,
+    height: HEADER_HEIGHT,
     width: "100%",
     backgroundColor: Colors.accent,
     alignItems: "center",
