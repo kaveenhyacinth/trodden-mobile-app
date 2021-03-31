@@ -1,28 +1,66 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { FlatList, StyleSheet, Alert } from "react-native";
+import { FlatList, StyleSheet } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
-import { useIsFocused } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
-import { Fetch } from "../../services/deviceStorage";
+import { Fetch } from "../../helpers/deviceStorageHandler";
 import { getNomads } from "../../store/actions/storeNomad";
 import { getFeed } from "../../store/actions/getFeed";
+import EmptyScreen from "../info/EmptyScreen";
+import LoadingScreen from "../info/LoadingScreen";
 import Colors from "../../theme/Colors";
-import NewPost from "../../components/NewPostHome";
-import HeaderButton from "../../components/HeaderButton";
-import EmptyScreen from "../extra/EmptyScreen";
-import LoadingScreen from "../extra/LoadingScreen";
-import Memory from "../../components/Memory";
+import CreateMemoryHeader from "../../components/headers/CreateMemoryHeader";
+import CustomHeaderButton from "../../components/ui/CustomHeaderButton";
+import Memory from "../../components/modals/MemoryModal";
+import ErrorAlertModal from "../../components/modals/ErrorAlertModal";
 
 const HomeScreen = (props) => {
   const [loading, setLoading] = useState(false);
 
   const dispatch = useDispatch();
 
-  const renderHeaderButton = useCallback(() => {
+  const feedStore = useSelector((state) => state.feedStore);
+
+  useEffect(() => {
+    repaintHeaderButton();
+  }, [repaintHeaderButton]);
+
+  useEffect(() => {
+    fetchOwner();
+  }, [fetchOwner]);
+
+  useEffect(() => {
+    setLoading(true);
+    fetchFeed();
+    setLoading(false);
+  }, [fetchFeed, setLoading]);
+
+  const fetchOwner = useCallback(async () => {
+    try {
+      setLoading(true);
+      const nomadId = await Fetch("nomadId");
+      await getNomads(nomadId)(dispatch);
+    } catch (error) {
+      ErrorAlertModal(error.message, error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const fetchFeed = useCallback(async () => {
+    try {
+      const nomadId = await Fetch("nomadId");
+      await getFeed(nomadId)(dispatch);
+      console.log("Fetching feed");
+    } catch (error) {
+      ErrorAlertModal(error.message, error);
+    }
+  }, []);
+
+  const repaintHeaderButton = useCallback(() => {
     props.navigation.setOptions({
       headerRight: () => (
-        <HeaderButtons HeaderButtonComponent={HeaderButton}>
+        <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
           <Item
             title="Map"
             IconComponent={Ionicons}
@@ -35,77 +73,13 @@ const HomeScreen = (props) => {
     });
   }, []);
 
-  useEffect(() => {
-    renderHeaderButton();
-  }, [renderHeaderButton]);
-
-  const fetchOwner = useCallback(async () => {
-    try {
-      setLoading(true);
-      const nomadId = await Fetch("nomadId");
-      await getNomads(nomadId)(dispatch);
-    } catch (error) {
-      Alert.alert(
-        "Oh My trod!",
-        error.message ?? "Something went wrong. Please try again later",
-        [
-          {
-            text: "I Will",
-            style: "destructive",
-          },
-        ],
-        { cancelable: false }
-      );
-      console.log("Error Happen", error);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  const fetchFeed = useCallback(async () => {
-    try {
-      setLoading(true);
-      const nomadId = await Fetch("nomadId");
-      await getFeed(nomadId)(dispatch);
-      console.log("Fetching feed");
-    } catch (error) {
-      Alert.alert(
-        "Oh My trod!",
-        error.message ?? "Something went wrong. Please try again later",
-        [
-          {
-            text: "I Will",
-            style: "destructive",
-          },
-        ],
-        { cancelable: false }
-      );
-      console.log("Error Happen", error);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchOwner();
-  }, [fetchOwner]);
-
-  useEffect(() => {
-    fetchFeed();
-  }, [fetchFeed]);
-
-  // const nomadStore = useSelector((state) => state.nomadStore);
-  const feedStore = useSelector((state) => state.feedStore);
-
-  // useEffect(() => console.log("Current user Data: " + nomadStore), []);
-
   const renderListHeader = () => (
-    <NewPost onPress={() => props.navigation.navigate("newMemo")} />
+    <CreateMemoryHeader onPress={() => props.navigation.navigate("newMemo")} />
   );
 
   const renderFeed = ({ item }) => <Memory type="feed" data={item} />;
 
-  const handleRefresh = () => fetchFeed();
+  const handleRefresh = async () => await fetchFeed();
 
   if (loading) return <LoadingScreen />;
 
