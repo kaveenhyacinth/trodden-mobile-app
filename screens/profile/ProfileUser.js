@@ -153,8 +153,8 @@ const NomadProfileView = (props) => {
         return (
           <TimelineScreen
             authType="non-self"
-            HEADER_HEIGHT={HEADER_HEIGHT}
-            TAB_BAR_HEIGHT={TAB_BAR_HEIGHT}
+            HeaderHeight={HEADER_HEIGHT}
+            TabBarHeight={TAB_BAR_HEIGHT}
             scrollY={scrollY}
             onMomentumScrollBegin={onMomentumScrollBegin}
             onScrollEndDrag={onScrollEndDrag}
