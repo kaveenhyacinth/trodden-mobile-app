@@ -3,11 +3,11 @@ import {
   GET_NOMAD_MEMORIES,
   RESET_NOMAD_MEMORIES,
 } from "../actionTypes";
-import api from "../../api/api";
+import api from "../../api";
 
 export const getOwnMemories = (userId) => async (dispatch) => {
   try {
-    const response = await api.getOwnMemories(userId);
+    const response = await api.get.getOwnMemories(userId);
     if (!response.data.result)
       throw new Error("Our servers are too busy! Please try again later...");
     dispatch({
@@ -21,7 +21,7 @@ export const getOwnMemories = (userId) => async (dispatch) => {
 
 export const getNomadMemories = (userId) => async (dispatch) => {
   try {
-    const response = await api.getNomadMemories(userId);
+    const response = await api.get.getNomadMemories(userId);
     if (!response.data.result)
       throw new Error("Our servers are too busy! Please try again later...");
     dispatch({
@@ -36,6 +36,6 @@ export const getNomadMemories = (userId) => async (dispatch) => {
 export const resetMomeries = () => {
   return {
     type: RESET_NOMAD_MEMORIES,
-    payload: {},
+    payload: [],
   };
 };

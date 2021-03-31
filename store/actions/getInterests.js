@@ -3,7 +3,7 @@ import api from "../../api";
 
 export const getInterests = () => async (dispatch) => {
   try {
-    const response = await api.getInterests();
+    const response = await api.get.getInterests();
     if (!response.data.result) throw new Error("Something went wrong");
     dispatch({
       type: GET_INTERESTS,
