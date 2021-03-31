@@ -9,7 +9,7 @@ import { createStore, applyMiddleware } from "redux";
 import thunk from "redux-thunk";
 import { Provider } from "react-redux";
 import rootReducer from "./store/reducers/rootReducer";
-import MainNavigator from "./navigation/MainNavigator";
+import MainNavigator from "./routes/MainNavigator";
 
 // useScreens();
 

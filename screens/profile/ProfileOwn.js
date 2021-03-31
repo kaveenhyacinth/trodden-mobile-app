@@ -18,12 +18,11 @@ import ErrorAlertModal from "../../components/modals/ErrorAlertModal";
 
 const { height: WINDOW_HEIGHT } = Dimensions.get("window");
 
-const TAB_BAR_HEIGHT = 50;
-const HEADER_HEIGHT = WINDOW_HEIGHT * 0.4;
-
 const OwnerProfileView = (props) => {
   const [loading, setLoading] = useState(true);
   const [tabIndex, setIndex] = useState(0);
+  const [tabBarHeight] = useState(50);
+  const [headerHeight] = useState(WINDOW_HEIGHT * 0.4);
   const [routes] = useState([
     { key: "tab1", title: "Memories" },
     { key: "tab2", title: "Trips" },
@@ -37,6 +36,12 @@ const OwnerProfileView = (props) => {
   let listRefArr = useRef([]);
   let listOffset = useRef({});
   let isListGliding = useRef(false);
+
+  useEffect(() => {
+    console.log("WIndows Height", WINDOW_HEIGHT);
+    console.log("Header Height", headerHeight);
+    console.log("Tab Height", tabBarHeight);
+  }, [WINDOW_HEIGHT, headerHeight, tabBarHeight]);
 
   useEffect(() => {
     repaintHeaderButtons();
@@ -117,7 +122,7 @@ const OwnerProfileView = (props) => {
     const curRouteKey = routes[tabIndex].key;
     listRefArr.current.forEach((item) => {
       if (item.key !== curRouteKey) {
-        if (scrollY._value < HEADER_HEIGHT && scrollY._value >= 0) {
+        if (scrollY._value < headerHeight && scrollY._value >= 0) {
           if (item.value) {
             item.value.scrollToOffset({
               offset: scrollY._value,
@@ -125,17 +130,17 @@ const OwnerProfileView = (props) => {
             });
             listOffset.current[item.key] = scrollY._value;
           }
-        } else if (scrollY._value >= HEADER_HEIGHT) {
+        } else if (scrollY._value >= headerHeight) {
           if (
-            listOffset.current[item.key] < HEADER_HEIGHT ||
+            listOffset.current[item.key] < headerHeight ||
             listOffset.current[item.key] == null
           ) {
             if (item.value) {
               item.value.scrollToOffset({
-                offset: HEADER_HEIGHT,
+                offset: headerHeight,
                 animated: false,
               });
-              listOffset.current[item.key] = HEADER_HEIGHT;
+              listOffset.current[item.key] = headerHeight;
             }
           }
         }
@@ -158,8 +163,8 @@ const OwnerProfileView = (props) => {
 
   const renderHeader = () => {
     const y = scrollY.interpolate({
-      inputRange: [0, HEADER_HEIGHT],
-      outputRange: [0, -HEADER_HEIGHT],
+      inputRange: [0, headerHeight],
+      outputRange: [0, -headerHeight],
       extrapolateRight: "clamp",
     });
     return (
@@ -190,8 +195,8 @@ const OwnerProfileView = (props) => {
         return (
           <TimelineScreen
             authType="self"
-            HEADER_HEIGHT={HEADER_HEIGHT}
-            TAB_BAR_HEIGHT={TAB_BAR_HEIGHT}
+            headerHeight={headerHeight}
+            tabBarHeight={tabBarHeight}
             scrollY={scrollY}
             onMomentumScrollBegin={onMomentumScrollBegin}
             onScrollEndDrag={onScrollEndDrag}
@@ -220,8 +225,8 @@ const OwnerProfileView = (props) => {
 
   const renderTabBar = (props) => {
     const y = scrollY.interpolate({
-      inputRange: [0, HEADER_HEIGHT],
-      outputRange: [HEADER_HEIGHT, 0],
+      inputRange: [0, headerHeight],
+      outputRange: [headerHeight, 0],
       extrapolateRight: "clamp",
     });
     return (
@@ -276,7 +281,7 @@ const OwnerProfileView = (props) => {
 const styles = StyleSheet.create({
   header: {
     top: 0,
-    height: HEADER_HEIGHT,
+    height: WINDOW_HEIGHT * 0.4,
     width: "100%",
     backgroundColor: Colors.accent,
     alignItems: "center",

@@ -22,7 +22,7 @@ import Typography from "../../theme/Typography";
 import ScreenView from "../../components/ui/ScreenView";
 import BodyText from "../../components/ui/BodyText";
 import InputBox from "../../components/ui/InputBox";
-import HeaderButton from "../../components/ui/HeaderButton";
+import HeaderButton from "../../components/ui/CustomHeaderButton";
 import MemoImagePreview from "../../components/modals/MemoImagePreviewModal";
 import PlaceSearch from "../../components/modals/PlaceSearchBottomSheet";
 import ErrorAlertModal from "../../components/modals/ErrorAlertModal";

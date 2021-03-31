@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useReducer, useCallback } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import ScreenView from "../../components/ScreenView";
-import BodyText from "../../components/BodyText";
-import InputBox from "../../components/InputBox";
+import ScreenView from "../../components/ui/ScreenView";
+import BodyText from "../../components/ui/BodyText";
+import InputBox from "../../components/ui/InputBox";
 
 const FORM_UPDATE = "FORM_UPDATE";
 

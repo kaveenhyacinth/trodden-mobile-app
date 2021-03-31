@@ -7,8 +7,8 @@ import api from "../../api";
 import Colors from "../../theme/Colors";
 import Typography from "../../theme/Typography";
 import BodyText from "../../components/ui/BodyText";
-import InterestGridTile from "../../ui/components/InterestGridTile";
 import BigButton from "../../components/ui/BigButton";
+import InterestGridTile from "../../components/modals/InterestTileModal";
 import ErrorAlertModal from "../../components/modals/ErrorAlertModal";
 import LoadingScreen from "../info/LoadingScreen";
 

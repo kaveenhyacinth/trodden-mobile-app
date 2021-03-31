@@ -14,7 +14,8 @@ const { width: WINDOW_WIDTH } = Dimensions.get("window");
 
 const ImageGallary = (props) => {
   const [media] = useState(props.media);
-  const [count, setCount] = useState(0);
+
+  let count = 0;
 
   return (
     <View style={styles.imagesWrapper}>
@@ -33,8 +34,7 @@ const ImageGallary = (props) => {
           >
             <View style={styles.counterWrapper}>
               <BodyText style={styles.counter}>
-                {count}/{media.length}
-                {setCount((prevState) => prevState + 1)}
+                {++count}/{media.length}
               </BodyText>
             </View>
           </ImageBackground>

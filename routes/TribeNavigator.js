@@ -6,7 +6,7 @@ import Typography from "../theme/Typography";
 import CaravanScreen from "../screens/tribe/CaravanScreen";
 import BlazeScreen from "../screens/tribe/BlazesScreen";
 import NomadScreen from "../screens/tribe/NomadsScreen";
-import ProfileUser from "../screens/profile/ProfileUserr";
+import ProfileUser from "../screens/profile/ProfileUser";
 
 const Stack = createStackNavigator();
 const Tab = createMaterialTopTabNavigator();

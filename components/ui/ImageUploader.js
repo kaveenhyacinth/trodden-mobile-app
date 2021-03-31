@@ -12,7 +12,7 @@ const ImgPicker = (props) => {
         ) : (
           <Image
             style={styles.image}
-            source={require("../assets/adaptive-icon.png")}
+            source={require("../../assets/adaptive-icon.png")}
           />
         )}
       </View>
