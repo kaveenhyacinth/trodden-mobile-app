@@ -1,4 +1,3 @@
-//#region Imports
 import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
@@ -6,7 +5,6 @@ import {
   Modal,
   Alert,
   Pressable,
-  ActivityIndicator,
   StyleSheet,
   ScrollView,
   Dimensions,
@@ -22,17 +20,16 @@ import api from "../../api";
 import Colors from "../../theme/Colors";
 import Typography from "../../theme/Typography";
 import ScreenView from "../../components/ui/ScreenView";
-import BodyText from "../../components/BodyText";
-import InputBox from "../../components/InputBox";
+import BodyText from "../../components/ui/BodyText";
+import InputBox from "../../components/ui/InputBox";
 import HeaderButton from "../../components/ui/HeaderButton";
 import MemoImagePreview from "../../components/modals/MemoImagePreviewModal";
 import PlaceSearch from "../../components/modals/PlaceSearchBottomSheet";
-//#endregion
+import ErrorAlertModal from "../../components/modals/ErrorAlertModal";
 
 const { width: WINDOW_WIDTH, height: WINDOW_HEIGHT } = Dimensions.get("window");
 
 const NewPostScreen = (props) => {
-  const [loading, setLoading] = useState(false);
   const [isPostReady, setIsPostReady] = useState(false);
   const [isLocationModelOpen, setIsLocationModelOpen] = useState(false);
   const [content, setContent] = useState("");
@@ -43,6 +40,16 @@ const NewPostScreen = (props) => {
     id: undefined,
     types: [],
   });
+
+  const nomadStore = useSelector((state) => state.nomadStore);
+
+  useEffect(() => {
+    renderHeaderButton();
+  }, [renderHeaderButton]);
+
+  useEffect(() => {
+    checkIsPostReady();
+  }, [images, video, content]);
 
   const renderHeaderButton = useCallback(() => {
     props.navigation.setOptions({
@@ -59,16 +66,6 @@ const NewPostScreen = (props) => {
       ),
     });
   }, [isPostReady]);
-
-  useEffect(() => {
-    renderHeaderButton();
-  }, [renderHeaderButton]);
-
-  useEffect(() => {
-    checkIsPostReady();
-  }, [images, video, content]);
-
-  const nomadStore = useSelector((state) => state.nomadStore);
 
   const checkIsPostReady = () => {
     if ((images.length !== 0 || video.length !== 0) && content.length >= 5)
@@ -226,18 +223,18 @@ const NewPostScreen = (props) => {
     }
   };
 
-  const renderSendButton = () => {
-    if (!isPostReady)
-      return <Ionicons name="send" size={30} color={Colors.outline} />;
+  // const renderSendButton = () => {
+  //   if (!isPostReady)
+  //     return <Ionicons name="send" size={30} color={Colors.outline} />;
 
-    if (loading)
-      return <ActivityIndicator size="large" color={Colors.primary} />;
-    return (
-      <Pressable onPress={handleSubmit}>
-        <Ionicons name="send" size={30} color={Colors.primary} />
-      </Pressable>
-    );
-  };
+  //   if (loading)
+  //     return <ActivityIndicator size="large" color={Colors.primary} />;
+  //   return (
+  //     <Pressable onPress={handleSubmit}>
+  //       <Ionicons name="send" size={30} color={Colors.primary} />
+  //     </Pressable>
+  //   );
+  // };
 
   const handleRequestCameraRollPermission = async () => {
     try {
@@ -470,12 +467,11 @@ const NewPostScreen = (props) => {
           },
         };
 
-        setLoading(true);
         console.log("3. Sending Request");
 
         const mediaRes = isImage
-          ? await api.uploadImages(mediaBody)(config)
-          : await api.uploadVideos(mediaBody)(config);
+          ? await api.post.uploadImages(mediaBody)(config)
+          : await api.post.uploadVideos(mediaBody)(config);
 
         if (!mediaRes.data.result)
           throw new Error("Couldn't upload images eh!");
@@ -509,7 +505,7 @@ const NewPostScreen = (props) => {
       console.log("6. Memory body:", memoBody);
 
       console.log("7. Sending request");
-      const response = await api.createMemo(memoBody);
+      const response = await api.post.createMemo(memoBody);
       if (!response.data)
         throw new Error(
           "Something went wrong while creating the memory! Please try again later..."
@@ -518,12 +514,7 @@ const NewPostScreen = (props) => {
       console.log("8. Response:", response.data.result);
       props.navigation.replace("core", { screen: "Profile" });
     } catch (error) {
-      console.log(
-        "Error Happen when creating new memory:",
-        error.message ?? error.response.data
-      );
-    } finally {
-      setLoading(false);
+      ErrorAlertModal("Error Happen when creating new memory", error);
     }
   };
 
