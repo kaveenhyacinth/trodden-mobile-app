@@ -1,7 +1,4 @@
-import { loadToken } from "../../services/deviceStorage";
 import { STORE_TOKEN } from "../actionTypes";
-
-// const token = loadToken("id_token");
 
 const initialState = {
   signToken: "",

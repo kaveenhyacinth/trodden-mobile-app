@@ -15,8 +15,6 @@ const initialState = {
   gender: "",
   bio: "",
   occupation: "",
-  // profileImage: "",
-  // interests: [],
   ImageDataUri: "",
   ImageDataName: "",
   ImageDataType: "",
