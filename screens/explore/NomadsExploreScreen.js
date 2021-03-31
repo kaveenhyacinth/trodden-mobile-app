@@ -1,45 +1,35 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { SafeAreaView, FlatList, Alert } from "react-native";
+import { SafeAreaView, FlatList } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
-import { Fetch } from "../../services/deviceStorage";
+import { Fetch } from "../../helpers/deviceStorageHandler";
 import { nomadSuggestions } from "../../store/actions/getSuggestions";
-import EmptyScreen from "../extra/EmptyScreen";
+import EmptyScreen from "../info/EmptyScreen";
 import Colors from "../../theme/Colors";
-import NomadRequestTile from "../../components/NomadRequestTile";
+import NomadRequestTile from "../../components/modals/NomadRequestTileModal";
+import ErrorAlertModal from "../../components/modals/ErrorAlertModal";
 
 const NomadsExploreScreen = (props) => {
   const [loading, setLoading] = useState(true);
 
   const dispatch = useDispatch();
 
-  const loadSuggestions = useCallback(async () => {
+  const suggestionsStore = useSelector((state) => state.suggestionsStore);
+
+  useEffect(() => {
+    fetchSuggestions();
+  }, [fetchSuggestions]);
+
+  const fetchSuggestions = useCallback(async () => {
     try {
       setLoading(true);
       const nomadId = await Fetch("nomadId");
       await nomadSuggestions(nomadId)(dispatch);
     } catch (error) {
-      Alert.alert(
-        "Oh My trod!",
-        error.message ?? "Something went wrong. Please try again later",
-        [
-          {
-            text: "I Will",
-            style: "destructive",
-          },
-        ],
-        { cancelable: false }
-      );
-      console.log("Error Happen", error);
+      ErrorAlertModal(error.message, error);
     } finally {
       setLoading(false);
     }
-  }, []);
-
-  useEffect(() => {
-    loadSuggestions();
-  }, [loadSuggestions]);
-
-  const suggestionsStore = useSelector((state) => state.suggestionsStore);
+  }, [dispatch]);
 
   const handleNavigation = () => {
     props.navigation.navigate("Profile");
@@ -48,7 +38,7 @@ const NomadsExploreScreen = (props) => {
   const renderNomads = ({ item }) => (
     <NomadRequestTile
       onNavigate={handleNavigation}
-      onRefresh={loadSuggestions}
+      onRefresh={fetchSuggestions}
       type="suggestion"
       data={item}
     />
@@ -62,7 +52,7 @@ const NomadsExploreScreen = (props) => {
         keyExtractor={(item) => item._id}
         ListEmptyComponent={<EmptyScreen />}
         refreshing={loading}
-        onRefresh={() => loadSuggestions()}
+        onRefresh={() => fetchSuggestions()}
       />
     </SafeAreaView>
   );
