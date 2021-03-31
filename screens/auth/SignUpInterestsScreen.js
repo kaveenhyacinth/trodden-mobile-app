@@ -1,58 +1,47 @@
-//#region Imports
-import React, { useState, useEffect } from "react";
-import { View, StyleSheet, FlatList, Alert, Dimensions } from "react-native";
+import React, { useState, useEffect, useCallback } from "react";
+import { View, StyleSheet, FlatList, Dimensions } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { Save } from "../../helpers/deviceStorageHandler";
 import { getInterests } from "../../store/actions/getInterests";
 import api from "../../api";
 import Colors from "../../theme/Colors";
 import Typography from "../../theme/Typography";
-import BodyText from "../../components/BodyText";
-import InterestGridTile from "../../components/InterestGridTile";
-import BigButton from "../../components/BigButton";
-//#endregion
+import BodyText from "../../components/ui/BodyText";
+import InterestGridTile from "../../ui/components/InterestGridTile";
+import BigButton from "../../components/ui/BigButton";
+import ErrorAlertModal from "../../components/modals/ErrorAlertModal";
+import LoadingScreen from "../info/LoadingScreen";
 
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("screen");
+const { width: WINDOW_WIDTH } = Dimensions.get("window");
 
-const InterestScreen = (props) => {
-  const dispatch = useDispatch();
-
-  const userStore = useSelector((state) => state.userStore);
-  const tokenStore = useSelector((state) => state.tokenStore);
-  const interetsStore = useSelector((state) => state.interestsStore);
-
+const SignUpInterestsScreen = (props) => {
   const [loading, setLoading] = useState(false);
   const [selectedInterests, setSelectedInterests] = useState([]);
 
+  const dispatch = useDispatch();
+
+  const userStore = useSelector((state) => state.userStore);
+  const interetsStore = useSelector((state) => state.interestsStore);
+
   useEffect(() => {
-    handleLoadInterests();
-    console.log("userData", userStore);
-    // console.log("Interests", interetsStore);
+    fetchInterests();
+  }, [fetchInterests]);
+
+  const fetchInterests = useCallback(async () => {
+    try {
+      setLoading(true);
+      await getInterests()(dispatch);
+    } catch (error) {
+      ErrorAlertModal(error.message, error);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   const checkIsValidSelection = () => {
     const selectionCount = selectedInterests.length;
     if (selectionCount < 3) return false;
     return true;
-  };
-
-  const handleLoadInterests = async () => {
-    try {
-      await getInterests()(dispatch);
-    } catch (error) {
-      Alert.alert(
-        "Oh My trod!",
-        error.message ?? "Something went wrong. Please try again later",
-        [
-          {
-            text: "I Will",
-            style: "destructive",
-          },
-        ],
-        { cancelable: false }
-      );
-      console.log("Error Happen", error);
-    }
   };
 
   const handlePrepareUserData = (userStore, interests) => {
@@ -76,7 +65,7 @@ const InterestScreen = (props) => {
     }
   };
 
-  const handleRenderInterests = (itemData) => {
+  const renderInterests = (itemData) => {
     return (
       <InterestGridTile
         title={itemData.item.title}
@@ -86,10 +75,6 @@ const InterestScreen = (props) => {
     );
   };
 
-  /** Upload Image
-   * @param {Object} body Image data
-   * @returns Filename
-   */
   const handleUploadImage = async (body) => {
     try {
       const config = {
@@ -98,7 +83,7 @@ const InterestScreen = (props) => {
           "Content-Type": "multipart/form-data",
         },
       };
-      const response = await api.uploadImage(body)(config);
+      const response = await api.post.uploadImage(body)(config);
       console.log("Image file path", response.data.result);
 
       // Check response success
@@ -113,14 +98,9 @@ const InterestScreen = (props) => {
     }
   };
 
-  /** Update user profile
-   * @param {Object} body userData to update
-   * @returns boolean
-   */
   const handleUpdateUserProfile = async (body) => {
     try {
-      console.log("Inside HandleUpdateUseProfile");
-      const response = await api.updateProfile(body);
+      const response = await api.put.updateProfile(body);
 
       if (!response.data.success)
         throw new Error(
@@ -130,7 +110,6 @@ const InterestScreen = (props) => {
       console.log("Saved Data", response.data.result);
       return response.data.success;
     } catch (error) {
-      console.log("Error =>", error.response);
       throw error;
     }
   };
@@ -199,21 +178,13 @@ const InterestScreen = (props) => {
         screen: "Home",
       });
     } catch (error) {
-      Alert.alert(
-        "Select more Interests",
-        error.message ?? "Something went wrong! Please try again later...",
-        [
-          {
-            text: "I Will",
-            style: "destructive",
-          },
-        ],
-        { cancelable: false }
-      );
+      ErrorAlertModal(error.message, error);
     } finally {
       setLoading(false);
     }
   };
+
+  if (loading) return <LoadingScreen />;
 
   return (
     <View style={styles.screen}>
@@ -221,7 +192,7 @@ const InterestScreen = (props) => {
         <FlatList
           style={styles.list}
           data={interetsStore.interests}
-          renderItem={handleRenderInterests}
+          renderItem={renderInterests}
           keyExtractor={(item) => item._id}
           numColumns={2}
           ListHeaderComponent={() => (
@@ -248,10 +219,9 @@ const InterestScreen = (props) => {
   );
 };
 
-//#region Styles
 const styles = StyleSheet.create({
   screen: {
-    width: SCREEN_WIDTH,
+    width: WINDOW_WIDTH,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: Colors.accent,
@@ -261,7 +231,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     position: "absolute",
-    width: SCREEN_WIDTH,
+    width: WINDOW_WIDTH,
     bottom: 0,
     backgroundColor: Colors.accent,
   },
@@ -285,6 +255,5 @@ const styles = StyleSheet.create({
     marginHorizontal: 3,
   },
 });
-//#endregion
 
-export default InterestScreen;
+export default SignUpInterestsScreen;

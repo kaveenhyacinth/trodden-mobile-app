@@ -1,20 +1,19 @@
-//#region Imports
 import React, { useState, useEffect, useReducer } from "react";
 import { View, Alert, StyleSheet } from "react-native";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import * as ImagePicker from "expo-image-picker";
 import * as yup from "yup";
 import { storeUser } from "../../store/actions/storeUser";
 import Colors from "../../theme/Colors";
 import Typography from "../../theme/Typography";
-import ScreenView from "../../components/ScreenView";
-import BigButton from "../../components/BigButton";
-import LoadingButton from "../../components/LoadingButton";
-import BodyText from "../../components/BodyText";
-import ImageUploader from "../../components/ImageUploader";
-import InputBox from "../../components/InputBox";
-import FormContainer from "../../components/FormContainer";
-//#endregion
+import ScreenView from "../../components/ui/ScreenView";
+import BigButton from "../../components/ui/BigButton";
+import LoadingButton from "../../components/ui/LoadingButton";
+import BodyText from "../../components/ui/BodyText";
+import ImageUploader from "../../components/ui/ImageUploader";
+import InputBox from "../../components/ui/InputBox";
+import FormContainer from "../../components/ui/FormContainer";
+import ErrorAlertModal from "../../components/modals/ErrorAlertModal";
 
 const INFO_TWO_FORM_UPDATE = "INFO_TWO_FORM_UPDATE";
 
@@ -52,12 +51,8 @@ const validationSchema = yup.object().shape({
 });
 
 const SignupInfoTwoScreen = (props) => {
-  //#region Local State
   const [loading, setLoading] = useState(false);
   const [imageFile, setImageFile] = useState({});
-  //#endregion
-
-  //#region Local Form State
   const [formState, dispatchFormState] = useReducer(formReducer, {
     initialValues: {
       bio: "",
@@ -72,14 +67,9 @@ const SignupInfoTwoScreen = (props) => {
       occupation: "",
     },
   });
-  //#endregion
 
   const dispatch = useDispatch();
-  const userStore = useSelector((state) => state.userStore);
 
-  useEffect(() => console.log("User Store:", userStore), [userStore]);
-
-  //#region Image Selection Flow
   const handleRequestPermission = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
@@ -116,9 +106,7 @@ const SignupInfoTwoScreen = (props) => {
       setImageFile((prevState) => ({ ...prevState, ...result }));
     }
   };
-  //#endregion
 
-  //#region Input Handle & Validation Flow
   const handleValidation = async (inputValue, inputKey) => {
     try {
       const result = await validationSchema.validate({
@@ -168,7 +156,6 @@ const SignupInfoTwoScreen = (props) => {
       await handleValidation(value, key);
     }
   };
-  //#endregion
 
   const handleUserStoreUpdate = (userData) => {
     dispatch(storeUser(userData));
@@ -212,17 +199,7 @@ const SignupInfoTwoScreen = (props) => {
       // navigate to interests
       props.navigation.replace("selectInterests");
     } catch (error) {
-      Alert.alert(
-        "Oh My Trod!",
-        error.message ?? "Something went wrong! Please try again later...",
-        [
-          {
-            text: "Sure",
-            style: "destructive",
-          },
-        ],
-        { cancelable: false }
-      );
+      ErrorAlertModal(error.message, error);
     } finally {
       setLoading(false);
     }
@@ -269,7 +246,6 @@ const SignupInfoTwoScreen = (props) => {
   );
 };
 
-//#region Styles
 const styles = StyleSheet.create({
   inputArea: {
     height: 200,
@@ -302,6 +278,5 @@ const styles = StyleSheet.create({
     marginHorizontal: 3,
   },
 });
-//#endregion
 
 export default SignupInfoTwoScreen;

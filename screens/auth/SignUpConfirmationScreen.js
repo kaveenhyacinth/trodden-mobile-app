@@ -1,6 +1,5 @@
-//#region Imports
 import React, { useState, useRef } from "react";
-import { Text, View, StyleSheet, Pressable, Alert } from "react-native";
+import { Text, View, StyleSheet, Pressable } from "react-native";
 import { useDispatch } from "react-redux";
 import { Save } from "../../helpers/deviceStorageHandler";
 import { storeUser } from "../../store/actions/storeUser";
@@ -8,23 +7,20 @@ import { storeToken } from "../../store/actions/storeToken";
 import api from "../../api";
 import Colors from "../../theme/Colors";
 import Typography from "../../theme/Typography";
-import ScreenView from "../../components/ScreenView";
-import BodyText from "../../components/BodyText";
-import InputBox from "../../components/InputBox";
-import BigButton from "../../components/BigButton";
-import LoadingButton from "../../components/LoadingButton";
-import FormContainer from "../../components/FormContainer";
-//#endregion
+import ScreenView from "../../components/ui/ScreenView";
+import BodyText from "../../components/ui/BodyText";
+import InputBox from "../../components/ui/InputBox";
+import BigButton from "../../components/ui/BigButton";
+import LoadingButton from "../../components/ui/LoadingButton";
+import FormContainer from "../../components/ui/FormContainer";
+import ErrorAlertModal from "../../components/modals/ErrorAlertModal";
 
 const ConfirmationScreen = (props) => {
-  // Store loading state
   const [loading, setLoading] = useState(false);
-  // Store navigation params
-  const [paramData, setParamData] = useState({
+  const [paramData] = useState({
     otp: props.route.params.otp,
     signupToken: props.route.params.signupToken,
   });
-  // Store OTP InputBox array input
   const [otpInput, setOtpInput] = useState({
     e1: "",
     e2: "",
@@ -34,20 +30,15 @@ const ConfirmationScreen = (props) => {
     e6: "",
   });
 
-  //#region Refs
+  const dispatch = useDispatch();
+
   const E1 = useRef();
   const E2 = useRef();
   const E3 = useRef();
   const E4 = useRef();
   const E5 = useRef();
   const E6 = useRef();
-  //#endregion
 
-  /**
-   * Handle InputBox array based on index
-   * @param {String} inputText Input field value
-   * @param {Number} index Input field index
-   */
   const handleInput = (inputText, index) => {
     switch (index) {
       case 1:
@@ -79,9 +70,6 @@ const ConfirmationScreen = (props) => {
     }
   };
 
-  /**
-   * Clear OTP field inputs
-   */
   const handleOtpInputClear = () => {
     setOtpInput((prevState) => ({
       ...prevState,
@@ -92,99 +80,48 @@ const ConfirmationScreen = (props) => {
       e5: "",
       e6: "",
     }));
-    setLoading(false);
   };
 
-  /**
-   * Match OTP with the system generated OTP
-   * @param {String} otpEntered User entered OTP
-   * @param {String} otpGenerated System Generated OTP
-   * @returns Boolean
-   */
   const isMatchOtp = (otpEntered, otpGenerated) =>
     otpGenerated === otpEntered ? true : false;
 
-  const dispatch = useDispatch();
   const handleUserStoreUpdate = (userData) => {
     dispatch(storeUser(userData));
   };
+
   const handleTokenStoreUpdate = (signToken, refToken) => {
     dispatch(storeToken(signToken, refToken));
   };
 
   const handleError = (error) => {
     if (!error.response) {
-      return Alert.alert(
-        "Something Went Wrong!",
+      ErrorAlertModal(
         "Don't worry, that was us! Please try again later",
-        [
-          {
-            text: "Okay",
-            style: "destructive",
-          },
-        ],
-        { cancelable: false }
+        error
       );
+      return;
     }
 
     if (error.response.status == 400)
-      return Alert.alert(
-        "Something Went Wrong!",
-        error.response.data.msg,
-        [
-          {
-            text: "Okay",
-            style: "destructive",
-          },
-        ],
-        { cancelable: false }
-      );
+      return ErrorAlertModal(error.response.data.msg, error);
 
     if (error.response.status == 500)
-      return Alert.alert(
-        "Something Went Wrong!",
-        error.response.data.msg,
-        [
-          {
-            text: "Okay",
-            style: "destructive",
-          },
-        ],
-        { cancelable: false }
-      );
+      return ErrorAlertModal(error.response.data.msg, error);
   };
 
-  /**
-   * Confirm OTP and send activate account request
-   * @param {Object} otpInput InputBox array data
-   * @param {String} otpOriginal System generated OTP
-   * @param {String} signupToken System generated signup token
-   */
   const handleConfirm = async (otpInput, otpOriginal, signupToken) => {
     const otpEntered = `${otpInput.e1}${otpInput.e2}${otpInput.e3}${otpInput.e4}${otpInput.e5}${otpInput.e6}`;
 
     // Validate OTP
     if (!isMatchOtp(otpEntered, otpOriginal)) {
-      return Alert.alert(
-        "Varification Failed",
-        "Please enter a valid OTP",
-        [
-          {
-            text: "Re-enter",
-            style: "destructive",
-            onPress: () => handleOtpInputClear(),
-          },
-        ],
-        { cancelable: false }
-      );
+      return ErrorAlertModal("Please enter a valid OTP", null);
     }
 
     try {
       setLoading(true);
 
-      // POST activation request
       const activateProfileBody = { signupToken };
-      const response = await api.activateProfile(activateProfileBody);
+      const response = await api.post.activateProfile(activateProfileBody);
 
       if (!response.data.result)
         throw new Error(
@@ -194,32 +131,21 @@ const ConfirmationScreen = (props) => {
       const signToken = response.data.result.signToken;
       const refToken = response.data.result.refToken;
 
-      // Update redux stores
       handleUserStoreUpdate({ id: response.data.result.id });
       handleTokenStoreUpdate(signToken, refToken);
 
-      Save("signToken", signToken); // Save sign token in secure store
-      Save("refToken", refToken); // Save refresh token in secure store
-      Save("userRole", response.data.result.role.toString()); // Save user signup state
+      await Save("signToken", signToken); // Save sign token in secure store
+      await Save("refToken", refToken); // Save refresh token in secure store
+      await Save("userRole", response.data.result.role.toString()); // Save user signup state
 
-      console.log(`role ${response.data.result.role.toString()}`);
+      handleOtpInputClear();
 
       // Navigate to Interest selection
       props.navigation.replace("signupInfoOne");
     } catch (error) {
       if (!error.response) {
-        console.log("Error @confirmation:", error);
-        return Alert.alert(
-          "Something went wrong",
-          error.message ?? "Sorry, it's our fault! Please try again later...",
-          [
-            {
-              text: "Okay",
-              style: "destructive",
-            },
-          ],
-          { cancelable: false }
-        );
+        ErrorAlertModal(error);
+        return;
       }
       handleError(error);
     } finally {

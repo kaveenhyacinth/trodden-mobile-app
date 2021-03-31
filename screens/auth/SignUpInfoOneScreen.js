@@ -1,22 +1,21 @@
-//#region Imports
-import React, { useState, useEffect, useReducer } from "react";
+import React, { useState, useReducer } from "react";
 import * as yup from "yup";
-import { View, StyleSheet, Alert } from "react-native";
-import { useSelector, useDispatch } from "react-redux";
+import { View, StyleSheet } from "react-native";
+import { useDispatch } from "react-redux";
 import { Picker } from "@react-native-picker/picker";
 import DatePickerModel from "react-native-modal-datetime-picker";
 import { storeUser } from "../../store/actions/storeUser";
 import Colors from "../../theme/Colors";
 import Typography from "../../theme/Typography";
-import ScreenView from "../../components/ScreenView";
-import BodyText from "../../components/BodyText";
-import InputBox from "../../components/InputBox";
-import CountryPicker from "../../components/CountryPicker";
-import CallingCodePicker from "../../components/CallingCodePicker";
-import BigButton from "../../components/BigButton";
-import LoadingButton from "../../components/LoadingButton";
-import FormContainer from "../../components/FormContainer";
-//#endregion
+import ScreenView from "../../components/ui/ScreenView";
+import BodyText from "../../components/ui/BodyText";
+import InputBox from "../../components/ui/InputBox";
+import CountryPicker from "../../components/ui/CountryPicker";
+import CallingCodePicker from "../../components/ui/CallingCodePicker";
+import BigButton from "../../components/ui/BigButton";
+import LoadingButton from "../../components/ui/LoadingButton";
+import FormContainer from "../../components/ui/FormContainer";
+import ErrorAlertModal from "../../components/modals/ErrorAlertModal";
 
 const INFO_ONE_FORM_UPDATE = "INFO_ONE_FORM_UPDATE";
 
@@ -63,13 +62,9 @@ const validationSchema = yup.object().shape({
 });
 
 const SignupInfoOneScreen = (props) => {
-  //#region Local state
   const [loading, setLoading] = useState(false);
   const [birthdateOutput, setBirthdateOutput] = useState();
   const [isDatePickerVisible, setiIsDatePickerVisible] = useState(false);
-  //#endregion
-
-  //#region Local form state
   const [formState, dispatchFormState] = useReducer(formReducer, {
     inputValues: {
       city: "",
@@ -99,14 +94,8 @@ const SignupInfoOneScreen = (props) => {
       gender: "",
     },
   });
-  //#endregion
 
   const dispatch = useDispatch();
-  const store = useSelector((state) => state.userStore);
-
-  useEffect(() => {
-    console.log("User Store:", store);
-  }, []);
 
   const handleValidation = async (inputValue, inputKey) => {
     try {
@@ -142,7 +131,6 @@ const SignupInfoOneScreen = (props) => {
     }
   };
 
-  //#region Input Handler
   const handleInput = async (value, key) => {
     let validation = { validity: true, msg: "" };
 
@@ -169,9 +157,7 @@ const SignupInfoOneScreen = (props) => {
       await handleValidation(value, key);
     }
   };
-  //#endregion
 
-  //#region Handles
   const handleCountryPick = (country) => {
     handleInput(country.name, "country");
     handleInput(country.region, "region");
@@ -189,14 +175,11 @@ const SignupInfoOneScreen = (props) => {
   const handleUserStoreUpdate = (userData) => {
     dispatch(storeUser(userData));
   };
-  //#endregion
 
-  // #region Submit Handles
   const handleSubmit = async () => {
     const formData = formState.inputValues;
     const formValidation = formState.inputValidities;
 
-    console.log("Form Data", formData);
     try {
       setLoading(true);
 
@@ -208,8 +191,6 @@ const SignupInfoOneScreen = (props) => {
         formValidation.contact &&
         formValidation.birthdate &&
         formValidation.gender;
-
-      console.log("Validity:", isValid);
 
       if (!isValid)
         throw new Error("Invalid inputs detected. Please re-try...");
@@ -232,22 +213,11 @@ const SignupInfoOneScreen = (props) => {
 
       props.navigation.replace("signupInfoTwo");
     } catch (error) {
-      Alert.alert(
-        "Oh My Trod!",
-        error.message ?? "Something went wrong! Please try again later...",
-        [
-          {
-            text: "Sure",
-            style: "destructive",
-          },
-        ],
-        { cancelable: false }
-      );
+      ErrorAlertModal(error.message, error);
     } finally {
       setLoading(false);
     }
   };
-  //#endregion
 
   return (
     <ScreenView style={styles.screen}>
@@ -323,7 +293,6 @@ const SignupInfoOneScreen = (props) => {
   );
 };
 
-//#region Styles
 const styles = StyleSheet.create({
   screen: {
     justifyContent: "space-between",
@@ -378,6 +347,5 @@ const styles = StyleSheet.create({
     marginHorizontal: 3,
   },
 });
-//#endregion
 
 export default SignupInfoOneScreen;

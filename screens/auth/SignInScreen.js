@@ -1,4 +1,3 @@
-//#region Imports
 import React, { useState, useReducer } from "react";
 import { Text, StyleSheet, Pressable, Alert } from "react-native";
 import { useDispatch } from "react-redux";
@@ -7,13 +6,12 @@ import { storeToken } from "../../store/actions/storeToken";
 import api from "../../api";
 import Colors from "../../theme/Colors";
 import Typography from "../../theme/Typography";
-import ScreenView from "../../components/ScreenView";
-import BodyText from "../../components/BodyText";
-import InputBox from "../../components/InputBox";
-import BigButton from "../../components/BigButton";
-import LoadingButton from "../../components/LoadingButton";
-import FormContainer from "../../components/FormContainer";
-//#endregion
+import ScreenView from "../../components/ui/ScreenView";
+import BodyText from "../../components/ui/BodyText";
+import InputBox from "../../components/ui/InputBox";
+import BigButton from "../../components/ui/BigButton";
+import LoadingButton from "../../components/ui/LoadingButton";
+import FormContainer from "../../components/ui/FormContainer";
 
 const FORM_UPDATE = "FORM_UPDATE";
 
@@ -32,11 +30,12 @@ const formReducer = (state, action) => {
   return state;
 };
 
-//#region Component
 const SignInScreen = (props) => {
-  const dispatch = useDispatch();
-
-  // Merged form state
+  const [loading, setLoading] = useState(false);
+  const [inputErrorMessage, setInputErrorMessage] = useState({
+    email: "",
+    password: "",
+  });
   const [formState, dispatchFormState] = useReducer(formReducer, {
     inputValues: {
       email: "",
@@ -49,13 +48,7 @@ const SignInScreen = (props) => {
     formValidity: false,
   });
 
-  //#region Local State
-  const [loading, setLoading] = useState(false);
-  const [inputErrorMessage, setInputErrorMessage] = useState({
-    email: "",
-    password: "",
-  });
-  //#endregion
+  const dispatch = useDispatch();
 
   // Handle user input
   const handleInput = (inputText, key) =>
@@ -68,7 +61,6 @@ const SignInScreen = (props) => {
     });
 
   // Uptate new tokens in token store
-
   const handleTokenUpdate = (signToken, refToken) => {
     dispatch(storeToken(signToken, refToken));
   };
@@ -196,9 +188,7 @@ const SignInScreen = (props) => {
     </ScreenView>
   );
 };
-//#endregion
 
-//#region Styles
 const styles = StyleSheet.create({
   screen: {
     justifyContent: "space-between",
@@ -218,6 +208,5 @@ const styles = StyleSheet.create({
     color: Colors.primary,
   },
 });
-//#endregion
 
 export default SignInScreen;

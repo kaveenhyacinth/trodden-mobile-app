@@ -1,20 +1,18 @@
-//#region Imports
 import React, { useState } from "react";
 import { Formik } from "formik";
 import * as yup from "yup";
-import { Text, StyleSheet, Pressable, Alert } from "react-native";
+import { Text, StyleSheet, Pressable } from "react-native";
 import api from "../../api";
 import Colors from "../../theme/Colors";
 import Typography from "../../theme/Typography";
-import ScreenView from "../../components/ScreenView";
-import BodyText from "../../components/BodyText";
-import InputBox from "../../components/InputBox";
-import BigButton from "../../components/BigButton";
-import LoadingButton from "../../components/LoadingButton";
-import FormContainer from "../../components/FormContainer";
-//#endregion
+import ScreenView from "../../components/ui/ScreenView";
+import BodyText from "../../components/ui/BodyText";
+import InputBox from "../../components/ui/InputBox";
+import BigButton from "../../components/ui/BigButton";
+import LoadingButton from "../../components/ui/LoadingButton";
+import FormContainer from "../../components/ui/FormContainer";
+import ErrorAlertModal from "../../components/modals/ErrorAlertModal";
 
-//#region Validation schema
 const ValidationSchema = yup.object().shape({
   firstName: yup
     .string()
@@ -51,11 +49,9 @@ const ValidationSchema = yup.object().shape({
     .max(20, "Too long! Keep it less than 20 characters")
     .required("Required!"),
 });
-//#endregion
 
 const SignUpScreen = (props) => {
   const [loading, setLoading] = useState(false);
-  // catch error messages
   const [inputErrorMessage, setInputErrorMessage] = useState({
     firstName: "",
     lastName: "",
@@ -64,7 +60,6 @@ const SignUpScreen = (props) => {
     password: "",
   });
 
-  // Handle errors
   const handleError = (error) => {
     const errorData = error.response.data ?? error;
     const isValidationError = Array.isArray(errorData.result);
@@ -102,25 +97,14 @@ const SignUpScreen = (props) => {
           }));
       });
     }
-    // if not a validation error
-    return Alert.alert(
-      "Oh My Trod!",
-      errorData.msg,
-      [
-        {
-          text: "Okay",
-          style: "destructive",
-        },
-      ],
-      { cancelable: false }
-    );
+
+    return ErrorAlertModal(errorData.msg, errorData);
   };
 
   const handleSignup = async (formData) => {
     try {
       setLoading(true);
 
-      // Request signup
       const signupBody = {
         firstName: formData.firstName,
         lastName: formData.lastName,
@@ -128,7 +112,7 @@ const SignUpScreen = (props) => {
         email: formData.email,
         password: formData.password,
       };
-      const response = await api.signup(signupBody);
+      const response = await api.post.signup(signupBody);
       if (!response.data.result) throw new Error("Please try again later");
 
       // Navigate to confirmation
@@ -142,16 +126,9 @@ const SignUpScreen = (props) => {
     } catch (error) {
       console.log("Signup Errors:", error.response.data);
       if (!error.response)
-        return Alert.alert(
-          "Something went wrong",
+        return ErrorAlertModal(
           "Sorry, it's our fault! Please try again later...",
-          [
-            {
-              text: "Okay",
-              style: "destructive",
-            },
-          ],
-          { cancelable: false }
+          error
         );
       handleError(error);
     } finally {

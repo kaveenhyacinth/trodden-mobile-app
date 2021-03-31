@@ -2,9 +2,9 @@ import React from "react";
 import { View, Text, Image, StyleSheet, Dimensions } from "react-native";
 import Colors from "../../theme/Colors";
 import Typography from "../../theme/Typography";
-import ScreenView from "../../components/ScreenView";
-import BigButton from "../../components/BigButton";
-import BigButtonLight from "../../components/BigButtonLight";
+import ScreenView from "../../components/ui/ScreenView";
+import BigButton from "../../components/ui/BigButton";
+import BigButtonLight from "../../components/ui/BigButtonLight";
 
 const OpenScreen = (props) => {
   return (
