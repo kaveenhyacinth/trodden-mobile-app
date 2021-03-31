@@ -1,7 +1,6 @@
 import React from "react";
 import {
   View,
-  Text,
   Image,
   StyleSheet,
   Dimensions,
@@ -9,14 +8,11 @@ import {
 } from "react-native";
 import Colors from "../../theme/Colors";
 import Typography from "../../theme/Typography";
-import ScreenView from "../../components/ScreenView";
+import ScreenView from "../../components/ui/ScreenView";
 
 const LoadingScreen = (props) => {
   return (
     <ScreenView style={styles.container}>
-      {/* <View style={styles.titleContainer}>
-        <Text style={styles.title}>Trodden</Text>
-      </View> */}
       <View style={styles.imageContainer}>
         <Image
           source={require("../../assets/loading.png")}

@@ -1,9 +1,9 @@
 import React from "react";
 import { View, Image, StyleSheet, Dimensions } from "react-native";
 import Colors from "../../theme/Colors";
-import BodyText from "../../components/BodyText";
+import BodyText from "../../components/ui/BodyText";
 
-const { width: WINDOW_WIDTH, height: WINDOW_HEIGHT } = Dimensions.get("window");
+const { width: WINDOW_WIDTH } = Dimensions.get("window");
 
 const EmptyScreen = (props) => {
   return (
