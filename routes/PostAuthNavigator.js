@@ -9,7 +9,7 @@ import SignUpInterestScreen from "../screens/auth/SignUpInterestsScreen";
 
 const Stack = createStackNavigator();
 
-const defaultStackNavOptions = {
+const DEFAULT_STACK_NAVIGATION_OPTIONS = {
   headerStyle: {
     backgroundColor: Colors.accent,
   },
@@ -20,9 +20,9 @@ const defaultStackNavOptions = {
   headerTintColor: Colors.info,
 };
 
-const PostAuthNavigator = (props) => {
+const PostAuthStackNavigator = (props) => {
   return (
-    <Stack.Navigator screenOptions={{ ...defaultStackNavOptions }}>
+    <Stack.Navigator screenOptions={{ ...DEFAULT_STACK_NAVIGATION_OPTIONS }}>
       <Stack.Screen
         name="confirmOTP"
         component={SignupConfirmationScreen}
@@ -55,4 +55,4 @@ const PostAuthNavigator = (props) => {
   );
 };
 
-export default PostAuthNavigator;
+export default PostAuthStackNavigator;

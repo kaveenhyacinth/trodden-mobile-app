@@ -3,14 +3,14 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import Colors from "../theme/Colors";
 import Typography from "../theme/Typography";
-import CaravansExplore from "../screens/views/CaravansExploreScreen";
-import InboxScreen from "../screens/core/InboxScreen";
-import ProfileUser from "../screens/views/ProfileUser";
+import OutRequestsScreen from "../screens/inbox/OutRequestsScreen";
+import InRequestsScreen from "../screens/inbox/InRequestsScreen";
+import ProfileUser from "../screens/profile/ProfileUser";
 
 const Stack = createStackNavigator();
 const Tab = createMaterialTopTabNavigator();
 
-const defaultStackNavOptions = {
+const DEFAULT_STACK_NAVIGATION_OPTIONS = {
   headerStyle: {
     backgroundColor: Colors.accent,
     elevation: 0,
@@ -23,42 +23,42 @@ const defaultStackNavOptions = {
   headerTintColor: Colors.info,
 };
 
-const defaultTabOptions = {
+const DEFAULT_TAB_NAVIGATION_OPTIONS = {
   activeTintColor: Colors.primary,
   inactiveTintColor: Colors.outline,
   labelStyle: { fontFamily: Typography.title.fontFamily },
   tabStyle: { backgroundColor: Colors.accent },
 };
 
-const InboxNavigator = (props) => {
+const InboxTabNavigator = (props) => {
   return (
     <Tab.Navigator
       tabBarOptions={{
-        ...defaultTabOptions,
+        ...DEFAULT_TAB_NAVIGATION_OPTIONS,
       }}
     >
       <Tab.Screen
-        name="nomadsExplore"
-        component={InboxScreen}
+        name="inReqs"
+        component={InRequestsScreen}
         options={{
           title: "Invitations",
         }}
       />
       <Tab.Screen
-        name="caravansExplore"
-        component={CaravansExplore}
+        name="outReqs"
+        component={OutRequestsScreen}
         options={{
-          title: "Caravans",
+          title: "Pending...",
         }}
       />
     </Tab.Navigator>
   );
 };
 
-const InboxStack = (props) => {
+const InboxStackNavigator = (props) => {
   return (
-    <Stack.Navigator screenOptions={{ ...defaultStackNavOptions }}>
-      <Stack.Screen name="Inbox" component={InboxNavigator} />
+    <Stack.Navigator screenOptions={{ ...DEFAULT_STACK_NAVIGATION_OPTIONS }}>
+      <Stack.Screen name="Inbox" component={InboxTabNavigator} />
       <Stack.Screen
         name="Profile"
         component={ProfileUser}
@@ -68,4 +68,4 @@ const InboxStack = (props) => {
   );
 };
 
-export default InboxStack;
+export default InboxStackNavigator;

@@ -4,20 +4,17 @@ import {
   TransitionPresets,
 } from "@react-navigation/stack";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import { Ionicons } from "@expo/vector-icons";
-import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import Colors from "../theme/Colors";
 import Typography from "../theme/Typography";
-import HeaderButton from "../components/HeaderButton";
-import NomadsExplore from "../screens/views/NomadsExploreScreen";
-import CaravansExplore from "../screens/views/CaravansExploreScreen";
-import ProfileUser from "../screens/views/ProfileUser";
-import SearchView from "../screens/views/SearchView";
+import NomadsExplore from "../screens/explore/NomadsExploreScreen";
+import CaravansExplore from "../screens/explore/CaravansExploreScreen";
+import SearchView from "../screens/explore/SearchView";
+import ProfileUser from "../screens/profile/ProfileUser";
 
 const Stack = createStackNavigator();
 const Tab = createMaterialTopTabNavigator();
 
-const defaultStackNavOptions = {
+const DEFAULT_STACK_NAVIGATION_OPTIONS = {
   headerStyle: {
     backgroundColor: Colors.accent,
     elevation: 0,
@@ -30,18 +27,18 @@ const defaultStackNavOptions = {
   headerTintColor: Colors.info,
 };
 
-const defaultTabOptions = {
+const DEFAULT_TAB_NAVIGATION_OPTIONS = {
   activeTintColor: Colors.primary,
   inactiveTintColor: Colors.outline,
   labelStyle: { fontFamily: Typography.title.fontFamily },
   tabStyle: { backgroundColor: Colors.accent },
 };
 
-const ExploreNavigator = (props) => {
+const ExploreTabNavigator = (props) => {
   return (
     <Tab.Navigator
       tabBarOptions={{
-        ...defaultTabOptions,
+        ...DEFAULT_TAB_NAVIGATION_OPTIONS,
       }}
     >
       <Tab.Screen
@@ -62,25 +59,13 @@ const ExploreNavigator = (props) => {
   );
 };
 
-const ExploreStack = (props) => {
+const ExploreStackNavigator = (props) => {
   return (
-    <Stack.Navigator screenOptions={{ ...defaultStackNavOptions }}>
+    <Stack.Navigator screenOptions={{ ...DEFAULT_STACK_NAVIGATION_OPTIONS }}>
       <Stack.Screen
         name="Explore"
-        component={ExploreNavigator}
-        options={{
-          headerRight: () => (
-            <HeaderButtons HeaderButtonComponent={HeaderButton}>
-              <Item
-                title="POST"
-                IconComponent={Ionicons}
-                iconName="search"
-                color={Colors.primary}
-                onPress={() => props.navigation.navigate("Search")}
-              />
-            </HeaderButtons>
-          ),
-        }}
+        component={ExploreTabNavigator}
+        options={{ title: "Explore" }}
       />
       <Stack.Screen
         name="Profile"
@@ -91,7 +76,7 @@ const ExploreStack = (props) => {
         name="Search"
         component={SearchView}
         options={{
-          title: "Search",
+          title: "Search Trodden",
           ...TransitionPresets.ModalSlideFromBottomIOS,
         }}
       />
@@ -99,4 +84,4 @@ const ExploreStack = (props) => {
   );
 };
 
-export default ExploreStack;
+export default ExploreStackNavigator;

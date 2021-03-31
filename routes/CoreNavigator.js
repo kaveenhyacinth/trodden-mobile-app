@@ -1,73 +1,70 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import Colors from "../theme/Colors";
-import ExploreNavigation from "./ExploreNavigation";
-import TribeNavigation from "./TribeNavigation";
-import ProfileNavigation from "./ProfileNavigation";
-import HomeNavigation from "./HomeNavigation";
-import InboxNavigator from "./InboxNavigator";
+import Home from "./HomeNavigator";
+import Explore from "./ExploreNavigator";
+import Profile from "./ProfileNavigator";
+import Tribe from "./TribeNavigator";
+import Inbox from "./InboxNavigator";
+
+const DEFAULT_TAB_NAVIGATION_OPTIONS = {
+  activeTintColor: Colors.primary,
+  showLabel: false,
+  tabStyle: { backgroundColor: Colors.accent },
+};
 
 const Tab = createBottomTabNavigator();
 
-const renderFaIcons = (tabInfo) => (name, size) => (
-  <FontAwesome5 name={name} size={size} color={tabInfo.color} />
-);
-const renderIcIcons = (tabInfo) => (name, size) => (
+const renderIcons = (tabInfo) => (name, size) => (
   <Ionicons name={name} size={size} color={tabInfo.color} />
 );
 
-const defaultTabOptions = {
-  activeTintColor: Colors.primary,
-  showLabel: false,
-};
-
-const CoreNavigator = (props) => {
+const CoreTabNavigator = (props) => {
   return (
     <Tab.Navigator
       tabBarOptions={{
-        ...defaultTabOptions,
-        tabStyle: { backgroundColor: Colors.accent },
+        ...DEFAULT_TAB_NAVIGATION_OPTIONS,
       }}
     >
       <Tab.Screen
         name={"Home"}
-        component={HomeNavigation}
+        component={Home}
         options={{
-          tabBarIcon: (tabInfo) => renderIcIcons(tabInfo)("home", 25),
+          tabBarIcon: (tabInfo) => renderIcons(tabInfo)("home", 25),
         }}
       />
       <Tab.Screen
         name={"Explore"}
-        component={ExploreNavigation}
+        component={Explore}
         options={{
-          tabBarIcon: (tabInfo) => renderIcIcons(tabInfo)("search", 25),
+          tabBarIcon: (tabInfo) => renderIcons(tabInfo)("search", 25),
         }}
       />
       <Tab.Screen
         name={"Profile"}
-        component={ProfileNavigation}
+        component={Profile}
         options={{
           tabBarIcon: (tabInfo) =>
-            renderIcIcons(tabInfo)("person-circle-sharp", 30),
+            renderIcons(tabInfo)("person-circle-sharp", 30),
         }}
       />
       <Tab.Screen
         name={"Tribe"}
-        component={TribeNavigation}
+        component={Tribe}
         options={{
-          tabBarIcon: (tabInfo) => renderIcIcons(tabInfo)("leaf", 25),
+          tabBarIcon: (tabInfo) => renderIcons(tabInfo)("leaf", 25),
         }}
       />
       <Tab.Screen
         name={"NewPost"}
-        component={InboxNavigator}
+        component={Inbox}
         options={{
-          tabBarIcon: (tabInfo) => renderIcIcons(tabInfo)("notifications", 25),
+          tabBarIcon: (tabInfo) => renderIcons(tabInfo)("notifications", 25),
         }}
       />
     </Tab.Navigator>
   );
 };
 
-export default CoreNavigator;
+export default CoreTabNavigator;

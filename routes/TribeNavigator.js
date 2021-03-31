@@ -3,15 +3,15 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import Colors from "../theme/Colors";
 import Typography from "../theme/Typography";
-import CaravansExplore from "../screens/views/CaravansExploreScreen";
-import BlazeScreen from "../screens/views/BlazesScreen";
-import NomadTribeScreen from "../screens/views/NomadTribeScreen";
-import ProfileUser from "../screens/views/ProfileUser"
+import CaravanScreen from "../screens/tribe/CaravanScreen";
+import BlazeScreen from "../screens/tribe/BlazesScreen";
+import NomadScreen from "../screens/tribe/NomadsScreen";
+import ProfileUser from "../screens/profile/ProfileUserr";
 
 const Stack = createStackNavigator();
 const Tab = createMaterialTopTabNavigator();
 
-const defaultStackNavOptions = {
+const DEFAULT_STACK_NAVIGATION_OPTIONS = {
   headerStyle: {
     backgroundColor: Colors.accent,
     elevation: 0,
@@ -24,18 +24,18 @@ const defaultStackNavOptions = {
   headerTintColor: Colors.info,
 };
 
-const defaultTabOptions = {
+const DEFAULT_TAB_NAVIGATION_OPTIONS = {
   activeTintColor: Colors.primary,
   inactiveTintColor: Colors.outline,
   labelStyle: { fontFamily: Typography.title.fontFamily },
   tabStyle: { backgroundColor: Colors.accent },
 };
 
-const ExploreNavigator = (props) => {
+const TribeTabNavigator = (props) => {
   return (
     <Tab.Navigator
       tabBarOptions={{
-        ...defaultTabOptions,
+        ...DEFAULT_TAB_NAVIGATION_OPTIONS,
       }}
     >
       <Tab.Screen
@@ -47,14 +47,14 @@ const ExploreNavigator = (props) => {
       />
       <Tab.Screen
         name="caravans"
-        component={CaravansExplore}
+        component={CaravanScreen}
         options={{
           title: "Caravans",
         }}
       />
       <Tab.Screen
         name="nomads"
-        component={NomadTribeScreen}
+        component={NomadScreen}
         options={{
           title: "Nomads",
         }}
@@ -63,13 +63,17 @@ const ExploreNavigator = (props) => {
   );
 };
 
-const ExploreStack = (props) => {
+const TribeStackNavigator = (props) => {
   return (
-    <Stack.Navigator screenOptions={{ ...defaultStackNavOptions }}>
-      <Stack.Screen name="Tribe" component={ExploreNavigator} />
-      <Stack.Screen name="Profile" component={ProfileUser} options={{title: "..."}} />
+    <Stack.Navigator screenOptions={{ ...DEFAULT_STACK_NAVIGATION_OPTIONS }}>
+      <Stack.Screen name="Tribe" component={TribeTabNavigator} />
+      <Stack.Screen
+        name="Profile"
+        component={ProfileUser}
+        options={{ title: "..." }}
+      />
     </Stack.Navigator>
   );
 };
 
-export default ExploreStack;
+export default TribeStackNavigator;

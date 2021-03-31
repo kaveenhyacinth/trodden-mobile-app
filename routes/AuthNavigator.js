@@ -8,7 +8,7 @@ import SignUpScreen from "../screens/auth/SignUpScreen";
 
 const Stack = createStackNavigator();
 
-const defaultStackNavOptions = {
+const DEFAULT_STACK_NAVIGATION_OPTIONS = {
   headerStyle: {
     backgroundColor: Colors.accent,
   },
@@ -19,9 +19,9 @@ const defaultStackNavOptions = {
   headerTintColor: Colors.info,
 };
 
-const AuthNavigator = (props) => {
+const AuthStackNavigator = (props) => {
   return (
-    <Stack.Navigator screenOptions={{ ...defaultStackNavOptions }}>
+    <Stack.Navigator screenOptions={{ ...DEFAULT_STACK_NAVIGATION_OPTIONS }}>
       <Stack.Screen
         name="OpenScreen"
         component={OpenScreen}
@@ -48,4 +48,4 @@ const AuthNavigator = (props) => {
   );
 };
 
-export default AuthNavigator;
+export default AuthStackNavigator;

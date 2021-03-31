@@ -5,13 +5,13 @@ import {
 } from "@react-navigation/stack";
 import Colors from "../theme/Colors";
 import Typography from "../theme/Typography";
-import ProfileOwn from "../screens/views/ProfileOwn";
-import NewTripScreen from "../screens/views/NewTripScreen";
-import TripDayPlannerScreen from "../screens/views/TripDayPlannerScreen";
+import ProfileOwn from "../screens/profile/ProfileOwn";
+import CreateTripScreen from "../screens/create/CreateTripScreen";
+import CreateTripDayPlanScreen from "../screens/create/CreateTripDayPlan";
 
 const Stack = createStackNavigator();
 
-const defaultStackNavOptions = {
+const DEFAULT_STACK_NAVIGATION_OPTIONS = {
   headerStyle: {
     backgroundColor: Colors.accent,
     elevation: 0,
@@ -24,11 +24,10 @@ const defaultStackNavOptions = {
   headerTintColor: Colors.info,
 };
 
-const OwnProfileStackNavigation = (props) => {
+const ProfileStackNavigator = (props) => {
   return (
-    <Stack.Navigator screenOptions={{ ...defaultStackNavOptions }}>
+    <Stack.Navigator screenOptions={{ ...DEFAULT_STACK_NAVIGATION_OPTIONS }}>
       <Stack.Screen name="Nomad" component={ProfileOwn} />
-
       <Stack.Screen
         name="Profile"
         component={ProfileOwn}
@@ -36,7 +35,7 @@ const OwnProfileStackNavigation = (props) => {
       />
       <Stack.Screen
         name="NewTrip"
-        component={NewTripScreen}
+        component={CreateTripScreen}
         options={{
           title: "Plan New Trip",
           ...TransitionPresets.SlideFromRightIOS,
@@ -44,7 +43,7 @@ const OwnProfileStackNavigation = (props) => {
       />
       <Stack.Screen
         name="DayTrip"
-        component={TripDayPlannerScreen}
+        component={CreateTripDayPlanScreen}
         options={{
           title: "Plan Your Trip",
           ...TransitionPresets.SlideFromRightIOS,
@@ -54,4 +53,4 @@ const OwnProfileStackNavigation = (props) => {
   );
 };
 
-export default OwnProfileStackNavigation;
+export default ProfileStackNavigator;

@@ -5,14 +5,13 @@ import {
 } from "@react-navigation/stack";
 import Colors from "../theme/Colors";
 import Typography from "../theme/Typography";
-import HomeScreen from "../screens/core/HomeScreen";
-import NewPostScreen from "../screens/views/NewPostScreen";
-import ProfileUser from "../screens/views/ProfileUser";
-import { Text } from "react-native";
+import HomeScreen from "../screens/home/HomeScreen";
+import CreateMemoScreen from "../screens/create/CreateMemoScreen";
+import ProfileUser from "../screens/profile/ProfileUser";
 
 const Stack = createStackNavigator();
 
-const defaultStackNavOptions = {
+const DEFAULT_STACK_NAVIGATION_OPTIONS = {
   headerStyle: {
     backgroundColor: Colors.accent,
     elevation: 1,
@@ -25,9 +24,9 @@ const defaultStackNavOptions = {
   headerTintColor: Colors.info,
 };
 
-const HomeNavigation = (props) => {
+const HomeStackNavigator = (props) => {
   return (
-    <Stack.Navigator screenOptions={{ ...defaultStackNavOptions }}>
+    <Stack.Navigator screenOptions={{ ...DEFAULT_STACK_NAVIGATION_OPTIONS }}>
       <Stack.Screen
         name="trodden"
         component={HomeScreen}
@@ -39,9 +38,9 @@ const HomeNavigation = (props) => {
       />
       <Stack.Screen
         name="newMemo"
-        component={NewPostScreen}
+        component={CreateMemoScreen}
         options={{
-          title: "New Memory",
+          title: "Create New Memory",
           ...TransitionPresets.SlideFromRightIOS,
         }}
       />
@@ -56,4 +55,4 @@ const HomeNavigation = (props) => {
   );
 };
 
-export default HomeNavigation;
+export default HomeStackNavigator;
