@@ -1,10 +1,10 @@
 import React from "react";
 import { View, Image, StyleSheet, Dimensions } from "react-native";
-import { FontAwesome5 } from "@expo/vector-icons";
-import { downloadImage } from "../../services/mediaService";
+import { Ionicons } from "@expo/vector-icons";
+import { downloadImage } from "../../helpers/mediaHandler";
 import Colors from "../../theme/Colors";
 import Typography from "../../theme/Typography";
-import BodyText from "../components/BodyText";
+import BodyText from "../ui/BodyText";
 
 const { width: WINDOW_WIDTH, height: WINDOW_HEIGHT } = Dimensions.get("window");
 
@@ -30,7 +30,7 @@ const ProfileHeader = (props) => {
             style={styles.username}
           >{`@${props.nomad.username}`}</BodyText>
           <BodyText style={styles.country}>
-            <FontAwesome5 name="map-marker-alt" />{" "}
+            <Ionicons name="location" />{" "}
             {`${props.nomad.city}, ${props.nomad.country}`}
           </BodyText>
         </View>

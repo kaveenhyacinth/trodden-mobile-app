@@ -1,7 +1,7 @@
 import React from "react";
-import { View, Text, TextInput, StyleSheet } from "react-native";
-
-import Colors from "../theme/Colors";
+import { View, TextInput, StyleSheet } from "react-native";
+import Colors from "../../theme/Colors";
+import BodyText from "./BodyText";
 
 const InputBox = React.forwardRef((props, ref) => {
   return (
@@ -13,7 +13,7 @@ const InputBox = React.forwardRef((props, ref) => {
         style={{ ...styles.input, ...props.style }}
         autoCorrect={false}
       />
-      <Text style={styles.message}>{props.message}</Text>
+      <BodyText style={styles.message}>{props.message}</BodyText>
     </View>
   );
 });

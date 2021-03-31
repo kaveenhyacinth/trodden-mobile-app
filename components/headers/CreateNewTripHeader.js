@@ -1,13 +1,13 @@
 import React from "react";
-import { View, StyleSheet, Pressable, Dimensions } from "react-native";
+import { View, StyleSheet, Dimensions } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import Colors from "../../theme/Colors";
-import BodyText from "./BodyText";
 import Typography from "../../theme/Typography";
+import BodyText from "../ui/BodyText";
 
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("screen");
+const { width: WINDOW_WIDTH } = Dimensions.get("window");
 
-const NewPostHome = (props) => {
+const CreateNewTripHeader = (props) => {
   return (
     <View style={styles.container}>
       <View style={styles.row}>
@@ -39,7 +39,7 @@ const NewPostHome = (props) => {
 
 const styles = StyleSheet.create({
   container: {
-    width: SCREEN_WIDTH,
+    width: WINDOW_WIDTH,
     height: 50,
     backgroundColor: Colors.accent,
   },
@@ -67,4 +67,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default NewPostHome;
+export default CreateNewTripHeader;

@@ -1,6 +1,5 @@
 import React from "react";
 import { View, ActivityIndicator, StyleSheet } from "react-native";
-
 import Colors from "../../theme/Colors";
 import Typography from "../../theme/Typography";
 

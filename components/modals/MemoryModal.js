@@ -1,4 +1,3 @@
-//#region Imports
 import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
@@ -10,8 +9,7 @@ import {
   Dimensions,
 } from "react-native";
 import { Video } from "expo-av";
-import Constants from "expo-constants";
-import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
 import regexifyString from "regexify-string";
 import {
@@ -19,27 +17,19 @@ import {
   getNomadMemories,
 } from "../../store/actions/getMemories";
 import { getFeed } from "../../store/actions/getFeed";
-import { Fetch } from "../../services/deviceStorage";
-import api from "../../api/api";
+import { Fetch } from "../../helpers/deviceStorageHandler";
+import api from "../../api/index";
+import { downloadImage, downloadVideo } from "../../helpers/mediaHandler";
 import Colors from "../../theme/Colors";
 import Typography from "../../theme/Typography";
-import BodyText from "./BodyText";
-import ImageGallary from "./ImageGallary";
-import CommentsView from "./CommentsModal";
-//#endregion
+import BodyText from "../ui/BodyText";
+import ImageGallary from "../ui/ImageGallary";
+import CommentsModal from "./CommentsModal";
+import ErrorAlertModal from "./ErrorAlertModal";
 
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("screen");
+const { width: WINDOW_WIDTH } = Dimensions.get("window");
 
-const imageUrl = (uri) => `${Constants.manifest.extra.BASE_URL}/image/${uri}`;
-const videoUrl = (uri) => `${Constants.manifest.extra.BASE_URL}/video/${uri}`;
-
-/**
- *
- * @param {Object} props
- * @requires type prop
- * @requires data prop
- */
-const Memory = (props) => {
+const MemoryModal = (props) => {
   const [postId] = useState(props.data._id);
   const [content] = useState(props.data.content);
   const [media] = useState(props.data.media);
@@ -54,37 +44,26 @@ const Memory = (props) => {
   const [isHeated, setIsHeated] = useState(false);
   const [newComment, setNewComment] = useState("");
 
-  const handleMarkLike = useCallback(async () => {
-    try {
-      const userId = await Fetch("nomadId");
-      console.log("heats state", heats);
-      const isHeated = heats.find((heat) => heat._id === userId);
-      if (isHeated) return setIsHeated(true);
-      return setIsHeated(false);
-    } catch (error) {
-      Alert.alert(
-        "Oh My trod!",
-        error.message ?? "Something went wrong. Please try again later",
-        [
-          {
-            text: "I Will",
-            style: "destructive",
-          },
-        ],
-        { cancelable: false }
-      );
-      console.log("Error Happen @handleLike", error);
-    }
-  }, [props.data.heats]);
+  const dispatch = useDispatch();
+
+  const tempNomadStore = useSelector((state) => state.tempNomadStore);
 
   useEffect(() => {
-    console.log("Call for likes", postId);
-    handleMarkLike();
-    setHeatCount(props.data.heats.length);
-  }, [handleMarkLike, props.data.heats]);
+    repaintLike();
+  }, [repaintLike]);
 
-  const dispatch = useDispatch();
-  const tempNomadStore = useSelector((state) => state.tempNomadStore);
+  const repaintLike = useCallback(async () => {
+    try {
+      const userId = await Fetch("nomadId");
+      const isHeated = heats.find((heat) => heat._id === userId);
+      if (isHeated) return setIsHeated(true);
+      setIsHeated(false);
+      setHeatCount(heats.length);
+      return;
+    } catch (error) {
+      ErrorAlertModal(error);
+    }
+  }, [heats]);
 
   const renderHashTags = (content) => {
     const regexp = new RegExp(/(^|\s)#[a-zA-Z0-9][\w-]*\b/g);
@@ -159,7 +138,7 @@ const Memory = (props) => {
               style={styles.image}
               key={item._id}
               source={{
-                uri: imageUrl(item.uri),
+                uri: downloadImage(item.uri),
               }}
             />
           ))}
@@ -175,7 +154,7 @@ const Memory = (props) => {
               key={item._id}
               style={styles.image}
               source={{
-                uri: videoUrl(item.uri),
+                uri: downloadVideo(item.uri),
               }}
               useNativeControls
               resizeMode="cover"
@@ -201,29 +180,19 @@ const Memory = (props) => {
         userId,
         postId,
       };
-      const response = await api.postHeat(heatBody);
+      const response = await api.patch.postHeat(heatBody);
       if (!response.data.result)
         throw new Error("Something went wrong! Please try again!");
 
       console.log("new heat", response.data.result);
 
-      // if (props.type === "self") await getOwnMemories(userId)(dispatch);
-      // if (props.type === "feed") await getFeed(userId)(dispatch);
-      // if (!props.type || props.type === "non-self")
-      //   await getNomadMemories(tempNomadStore.nomadId)(dispatch);
+      if (props.type === "self") await getOwnMemories(userId)(dispatch);
+      if (props.type === "feed") await getFeed(userId)(dispatch);
+      if (!props.type || props.type === "non-self")
+        await getNomadMemories(tempNomadStore.nomadId)(dispatch);
+      return;
     } catch (error) {
-      Alert.alert(
-        "Oh My trod!",
-        error.message ?? "Something went wrong. Please try again later",
-        [
-          {
-            text: "I Will",
-            style: "destructive",
-          },
-        ],
-        { cancelable: false }
-      );
-      console.log("Error Happen @handleLike", error);
+      ErrorAlertModal(error);
     }
   };
 
@@ -236,7 +205,7 @@ const Memory = (props) => {
         content: newComment,
         postId,
       };
-      const response = await api.postComment(commentBody);
+      const response = await api.patch.postComment(commentBody);
       if (!response.data.result)
         throw new Error("Something went wrong! Please try again!");
       setNewComment("");
@@ -245,31 +214,21 @@ const Memory = (props) => {
       if (props.type === "feed") await getFeed(nomadId)(dispatch);
       if (!props.type || props.type === "non-self")
         await getNomadMemories(tempNomadStore.nomadId)(dispatch);
+      return;
     } catch (error) {
-      Alert.alert(
-        "Oh My trod!",
-        error.message ?? "Something went wrong. Please try again later",
-        [
-          {
-            text: "I Will",
-            style: "destructive",
-          },
-        ],
-        { cancelable: false }
-      );
-      console.log("Error Happen @handlePostComment", error);
+      ErrorAlertModal(error);
     }
   };
 
   return (
-    <View style={styles.container} removeClippedSubviews>
+    <View style={styles.container}>
       <View style={styles.header}>
         <View style={styles.leftSection}>
           <Pressable onPress={() => {}}>
             <View style={styles.headerImageWrapper}>
               <Image
                 style={styles.headerImage}
-                source={{ uri: imageUrl(user.prof_img) }}
+                source={{ uri: downloadImage(user.prof_img) }}
               />
             </View>
           </Pressable>
@@ -280,7 +239,7 @@ const Memory = (props) => {
           >{`${user.first_name} ${user.last_name}`}</BodyText>
           <Pressable onPress={() => {}}>
             <BodyText style={styles.headerLocation}>
-              <FontAwesome5 name="map-marker-alt" color={Colors.primary} />
+              <Ionicons name="location" color={Colors.primary} />
               {destination ? " " + destination.des_name : " Somewhere on Earth"}
             </BodyText>
           </Pressable>
@@ -289,7 +248,7 @@ const Memory = (props) => {
           <Pressable
             onPress={() => setIsOpenSettings((prevState) => !prevState)}
           >
-            <FontAwesome5 name="ellipsis-v" size={15} color={Colors.info} />
+            <Ionicons name="ellipsis-vertical" size={15} color={Colors.info} />
           </Pressable>
         </View>
       </View>
@@ -346,7 +305,7 @@ const Memory = (props) => {
         visible={isOpenComments}
         onRequestClose={() => setisOpenComments(false)}
       >
-        <CommentsView
+        <CommentsModal
           inputValue={newComment}
           onInputChangeText={(value) => setNewComment(value)}
           onSubmit={() => handlePostComment()}
@@ -361,7 +320,7 @@ const Memory = (props) => {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: Colors.accent,
-    width: SCREEN_WIDTH,
+    width: WINDOW_WIDTH,
     marginVertical: 6,
     //#region IOS Elevation
     shadowColor: "#000",
@@ -375,14 +334,13 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   header: {
-    // backgroundColor: "#fcc",
     flexDirection: "row",
     height: 60,
     alignItems: "center",
   },
   leftSection: {
     height: 50,
-    width: SCREEN_WIDTH * 0.2,
+    width: WINDOW_WIDTH * 0.2,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -399,7 +357,7 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   midSection: {
-    width: SCREEN_WIDTH * 0.7,
+    width: WINDOW_WIDTH * 0.7,
   },
   headerName: {
     ...Typography.bodyTextBold,
@@ -410,7 +368,7 @@ const styles = StyleSheet.create({
     color: Colors.info,
   },
   rightSection: {
-    width: SCREEN_WIDTH * 0.1,
+    width: WINDOW_WIDTH * 0.1,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -423,12 +381,12 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   imagesWrapper: {
-    height: SCREEN_WIDTH,
-    width: SCREEN_WIDTH,
+    height: WINDOW_WIDTH,
+    width: WINDOW_WIDTH,
   },
   videoWrapper: {
-    height: SCREEN_WIDTH,
-    width: SCREEN_WIDTH,
+    height: WINDOW_WIDTH,
+    width: WINDOW_WIDTH,
   },
   image: {
     flex: 1,
@@ -454,4 +412,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Memory;
+export default MemoryModal;

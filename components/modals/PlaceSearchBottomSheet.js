@@ -4,6 +4,8 @@ import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplet
 import Constants from "expo-constants";
 import Colors from "../../theme/Colors";
 
+const API_KEY = Constants.manifest.extra.PLACE_API_KEY;
+
 const PlaceSearch = (props) => {
   return (
     <View style={styles.container}>
@@ -11,7 +13,7 @@ const PlaceSearch = (props) => {
         placeholder={"Search"}
         onPress={props.onPress}
         query={{
-          key: Constants.manifest.extra.PLACE_API_KEY,
+          key: API_KEY,
           language: "en",
         }}
         styles={{

@@ -1,13 +1,14 @@
-import React from "react";
-import Picker from "react-native-country-picker-modal";
+import React, { useState } from "react";
 import { View, StyleSheet } from "react-native";
-import InputBox from "../InputBox";
-import Button from "./BigButton";
+import Picker from "react-native-country-picker-modal";
 import Colors from "../../theme/Colors";
 import Typography from "../../theme/Typography";
+import InputBox from "./InputBox";
+import Button from "./BigButton";
 
 const CallingCodePicker = (props) => {
-  const value = props.value;
+  const [value] = useState(props.value);
+
   return (
     <View style={styles.inputContainer}>
       <Picker

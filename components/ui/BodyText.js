@@ -1,11 +1,12 @@
 import React from "react";
 import { Text, StyleSheet } from "react-native";
-
-import Typography from "../theme/Typography";
+import Typography from "../../theme/Typography";
 
 const BodyText = (props) => {
   return (
-    <Text {...props} style={{ ...styles.title, ...props.style }}>{props.children}</Text>
+    <Text {...props} style={{ ...styles.title, ...props.style }}>
+      {props.children}
+    </Text>
   );
 };
 

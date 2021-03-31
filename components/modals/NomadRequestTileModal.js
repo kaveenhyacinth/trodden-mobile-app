@@ -1,7 +1,5 @@
-//#region Imports
-import React, { useEffect } from "react";
+import React, { useState } from "react";
 import {
-  Text,
   View,
   StyleSheet,
   Image,
@@ -9,23 +7,22 @@ import {
   Alert,
   Dimensions,
 } from "react-native";
-import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
 import { useDispatch } from "react-redux";
 import { storeTempNomad } from "../../store/actions/storeTempNomad";
-import { downloadImage } from "../../services/mediaService";
-import { Fetch } from "../../services/deviceStorage";
-import api from "../../api/api";
+import { downloadImage } from "../../helpers/mediaHandler";
+import { Fetch } from "../../helpers/deviceStorageHandler";
+import api from "../../api/index";
 import Colors from "../../theme/Colors";
-import BodyText from "./BodyText";
 import Typography from "../../theme/Typography";
-import BigButton from "../components/BigButton";
-//#endregion
+import BodyText from "../ui/BodyText";
+import BigButton from "../ui/BigButton";
+import ErrorAlertModal from "../modals/ErrorAlertModal";
 
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("screen");
-const tileHeight = 90;
+const { width: WINDOW_WIDTH } = Dimensions.get("window");
+const TILE_HEIGHT = 90;
 
-const nomadRequestTile = (props) => {
-  const owner = props.data.owner ?? props.data;
+const nomadRequestTileModal = (props) => {
+  const [owner] = useState(props.data.owner ?? props.data);
 
   const dispatch = useDispatch();
 
@@ -86,23 +83,12 @@ const nomadRequestTile = (props) => {
         userId: nomadId,
         requestee: owner._id,
       };
-      const response = await api.requestBond(reqBody);
+      const response = await api.post.requestBond(reqBody);
       if (!response.data.success)
         throw new Error("Couldn't place bond request");
       props.onRefresh();
     } catch (error) {
-      Alert.alert(
-        "Oh My trod!",
-        error.message ?? "Something went wrong. Please try again later",
-        [
-          {
-            text: "I Will",
-            style: "destructive",
-          },
-        ],
-        { cancelable: false }
-      );
-      console.log("Error Happen", error);
+      ErrorAlertModal(error);
     }
   };
 
@@ -114,23 +100,12 @@ const nomadRequestTile = (props) => {
         requestorId: owner._id,
         requestId: props.data._id,
       };
-      const response = await api.acceptBond(reqBody);
+      const response = await api.patch.acceptBond(reqBody);
       if (!response.data.success)
         throw new Error("Couldn't place bond request");
       props.onRefresh();
     } catch (error) {
-      Alert.alert(
-        "Oh My trod!",
-        error.message ?? "Something went wrong. Please try again later",
-        [
-          {
-            text: "I Will",
-            style: "destructive",
-          },
-        ],
-        { cancelable: false }
-      );
-      console.log("Error Happen", error);
+      ErrorAlertModal(error);
     }
   };
 
@@ -178,21 +153,21 @@ const nomadRequestTile = (props) => {
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    width: SCREEN_WIDTH,
-    height: tileHeight,
+    width: WINDOW_WIDTH,
+    height: TILE_HEIGHT,
     marginVertical: 10,
     backgroundColor: Colors.accent,
   },
   leftSection: {
-    height: tileHeight,
-    width: tileHeight + 10,
+    height: TILE_HEIGHT,
+    width: TILE_HEIGHT + 10,
     alignItems: "flex-end",
     justifyContent: "center",
   },
   imageWrapper: {
-    width: tileHeight,
-    height: tileHeight,
-    borderRadius: tileHeight / 2,
+    width: TILE_HEIGHT,
+    height: TILE_HEIGHT,
+    borderRadius: TILE_HEIGHT / 2,
     overflow: "hidden",
   },
   image: {
@@ -201,7 +176,7 @@ const styles = StyleSheet.create({
   },
   rightSection: {
     height: "100%",
-    width: SCREEN_WIDTH - 110,
+    width: WINDOW_WIDTH - 110,
   },
   upperDiv: {
     flex: 1,
@@ -229,4 +204,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default nomadRequestTile;
+export default nomadRequestTileModal;

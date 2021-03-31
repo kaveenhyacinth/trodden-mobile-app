@@ -5,7 +5,6 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
-
 import Colors from "../../theme/Colors";
 
 const ScreenView = (props) => {

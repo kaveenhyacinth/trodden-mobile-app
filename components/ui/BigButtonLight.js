@@ -1,8 +1,7 @@
 import React from "react";
 import { View, Text, Pressable, StyleSheet } from "react-native";
-
-import Colors from "../theme/Colors";
-import Typography from "../theme/Typography";
+import Colors from "../../theme/Colors";
+import Typography from "../../theme/Typography";
 
 const BigButton = (props) => {
   return (

@@ -50,7 +50,6 @@ const InterestGridTile = (props) => {
   );
 };
 
-//#region Styles
 const styles = StyleSheet.create({
   gridItem: {
     flex: 1,
@@ -109,6 +108,5 @@ const styles = StyleSheet.create({
     color: "white",
   },
 });
-//#endregion
 
 export default InterestGridTile;

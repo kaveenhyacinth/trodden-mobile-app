@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
 import { View, StyleSheet, Image, Button } from "react-native";
-
 import Colors from "../../theme/Colors";
 import BodyText from "./BodyText";
 

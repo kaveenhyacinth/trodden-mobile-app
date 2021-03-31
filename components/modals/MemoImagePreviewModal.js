@@ -1,22 +1,20 @@
 import React from "react";
 import { View, ImageBackground, StyleSheet, Pressable } from "react-native";
-import Colors from "../../theme/Colors";
 import { Ionicons } from "@expo/vector-icons";
+import Colors from "../../theme/Colors";
 
-const MemoImagePreview = (props) => {
-  return (
-    <ImageBackground
-      style={{ ...styles.selectedImage, ...props.style }}
-      source={{ uri: props.source }}
-    >
-      <Pressable onPress={props.onClose}>
-        <View style={styles.counterWrapper}>
-          <Ionicons name="close-circle" size={20} color={Colors.accent} />
-        </View>
-      </Pressable>
-    </ImageBackground>
-  );
-};
+const MemoImagePreview = (props) => (
+  <ImageBackground
+    style={{ ...styles.selectedImage, ...props.style }}
+    source={{ uri: props.source }}
+  >
+    <Pressable onPress={props.onClose}>
+      <View style={styles.counterWrapper}>
+        <Ionicons name="close-circle" size={20} color={Colors.accent} />
+      </View>
+    </Pressable>
+  </ImageBackground>
+);
 
 const styles = StyleSheet.create({
   selectedImage: {

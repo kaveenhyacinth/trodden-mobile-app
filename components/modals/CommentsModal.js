@@ -1,5 +1,4 @@
-//#region Imports
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   ScrollView,
@@ -12,16 +11,15 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { downloadImage } from "../../helpers/mediaHandler";
 import EmptyScreen from "../../screens/info/EmptyScreen";
-import BodyText from "./BodyText";
-import InputBox from "../InputBox";
+import BodyText from "../ui/BodyText";
+import InputBox from "../ui/InputBox";
 import Colors from "../../theme/Colors";
 import Typography from "../../theme/Typography";
-//#endregion
 
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("screen");
+const { width: SCREEN_WIDTH } = Dimensions.get("screen");
 
 const CommentsView = (props) => {
-  const comments = props.comments;
+  const [comments] = useState(props.comments);
 
   const renderCommentBubble = (comment) => {
     const commentor = comment.commentor;
