@@ -8,7 +8,7 @@ import api from "../api";
 import AuthNavigator from "./AuthNavigator";
 import PostAuthNavigator from "./PostAuthNavigator";
 import CoreNavigator from "./CoreNavigator";
-import LoadingScreen from "../screens/extra/LoadingScreen";
+import LoadingScreen from "../screens/info/LoadingScreen";
 
 const Stack = createStackNavigator();
 
@@ -32,7 +32,7 @@ const MainNavigator = (props) => {
         const refreshTokenBody = {
           refreshToken: refToken,
         };
-        const response = await api.refreshToken(refreshTokenBody);
+        const response = await api.post.refreshToken(refreshTokenBody);
 
         if (!response.data.result) throw new Error("Something went wrong!");
 
