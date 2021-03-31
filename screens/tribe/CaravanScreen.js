@@ -1,11 +1,13 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Text, View } from "react-native";
+import ScreenView from "../../components/ui/ScreenView";
+import EmptyScreen from "../info/EmptyScreen";
 
 const CaravanScreen = (props) => {
   return (
-    <View>
-      <Text>Caravan Screen</Text>
-    </View>
+    <ScreenView>
+      <EmptyScreen />
+    </ScreenView>
   );
 };
 

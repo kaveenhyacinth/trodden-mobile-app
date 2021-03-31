@@ -1,53 +1,39 @@
-import React, { useState, useEffect } from "react";
-import { SafeAreaView, FlatList, Alert, BackHandler } from "react-native";
-import { Fetch } from "../../services/deviceStorage";
-import api from "../../api/api";
+import React, { useState, useEffect, useCallback } from "react";
+import { SafeAreaView, FlatList, Alert } from "react-native";
+import { Fetch } from "../../helpers/deviceStorageHandler";
+import api from "../../api";
 import EmptyScreen from "../info/EmptyScreen";
 import Colors from "../../theme/Colors";
-import NomadRequestTile from "../../components/NomadRequestTile";
+import NomadRequestTile from "../../components/modals/NomadRequestTileModal";
+import ErrorAlertModal from "../../components/modals/ErrorAlertModal";
 
 const InboxScreen = (props) => {
   const [loading, setLoading] = useState(true);
   const [bondsList, setBondsList] = useState([]);
 
   useEffect(() => {
-    loadBondList();
-  }, []);
+    fetchBondList();
+  }, [fetchBondList]);
 
-  useEffect(() => {
-    console.log("Bond List", bondsList);
-  }, [bondsList]);
-
-  const loadBondList = async () => {
+  const fetchBondList = useCallback(async () => {
     try {
       setLoading(true);
       const nomadId = await Fetch("nomadId");
-      const response = await api.getBondsList(nomadId);
+      const response = await api.get.getBondsList(nomadId);
       if (!response.data.success)
         throw new Error("Something went wrong! Please try again later...");
-      setBondsList((prevState) => response.data.result);
+      setBondsList(response.data.result);
     } catch (error) {
-      Alert.alert(
-        "Oh My trod!",
-        error.message ?? "Something went wrong. Please try again later",
-        [
-          {
-            text: "I Will",
-            style: "destructive",
-          },
-        ],
-        { cancelable: false }
-      );
-      console.log("Error Happen", error);
+      ErrorAlertModal(error.message, error);
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   const renderNomads = ({ item }) => (
     <NomadRequestTile
       onNavigate={handleNavigation}
-      onRefresh={loadBondList}
+      onRefresh={fetchBondList}
       data={item}
     />
   );
@@ -64,7 +50,7 @@ const InboxScreen = (props) => {
         keyExtractor={(item) => item._id}
         ListEmptyComponent={<EmptyScreen />}
         refreshing={loading}
-        onRefresh={() => loadBondList()}
+        onRefresh={() => fetchBondList()}
       />
     </SafeAreaView>
   );

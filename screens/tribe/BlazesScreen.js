@@ -1,7 +1,7 @@
 import React from "react";
 import { Text, View } from "react-native";
-import ScreenView from "../../components/ScreenView"
-import EmptyScreen from "../extra/EmptyScreen";
+import ScreenView from "../../components/ui/ScreenView";
+import EmptyScreen from "../info/EmptyScreen";
 
 const BlazesScreen = () => {
   return (
