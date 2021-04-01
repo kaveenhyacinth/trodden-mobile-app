@@ -58,11 +58,11 @@ const shoot = {
   },
   get: {
     getInterests: () => Http.get("/api/interests"),
-    getCurrentUser: (userId) => Http.get(`/api/profile/my/${userId}`),
     getFeed: (userId) => Http.get(`/api/feed/${userId}`),
-    getNomad: (userId) => Http.get(`/api/profile/user/${userId}`),
+    getCurrentUser: (userId) => Http.get(`/api/profile/my/${userId}`),
+    getNomadById: (userId) => Http.get(`/api/profile/user/${userId}`),
     getOwnMemories: (userId) => Http.get(`/api/memories/my/${userId}`),
-    getNomadMemories: (userId) => Http.get(`/api/memories/fetch/${userId}`),
+    getMemoriesByUser: (userId) => Http.get(`/api/memories/fetch/${userId}`),
     getNomadSuggestions: (userId) => Http.get(`/api/sug/i/nomads/${userId}`),
     getCaravanSuggestions: (userId) =>
       Http.get(`/api/sug/i/caravans/${userId}`),

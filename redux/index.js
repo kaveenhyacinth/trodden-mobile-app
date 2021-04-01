@@ -11,3 +11,7 @@ export {
   fetchNomadSuggestions,
   fetchCaravanSuggestions,
 } from "./suggestions/suggestionActions";
+export {
+  fetchLookupNomad,
+  resetLookupNomad,
+} from "./lookups/nomad/nomadActions";
