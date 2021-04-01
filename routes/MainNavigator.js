@@ -3,7 +3,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { Alert } from "react-native";
 import { useDispatch } from "react-redux";
 import { Save, Fetch } from "../helpers/deviceStorageHandler";
-import { storeToken } from "../store/actions/storeToken";
+import { storeTokens } from "../redux";
 import api from "../api";
 import AuthNavigator from "./AuthNavigator";
 import PostAuthNavigator from "./PostAuthNavigator";
@@ -67,7 +67,7 @@ const MainNavigator = (props) => {
   }, []);
 
   const handleUpdateTokens = (signToken, refToken) => {
-    dispatch(storeToken(signToken, refToken));
+    dispatch(storeTokens(signToken, refToken));
   };
 
   if (loading) {

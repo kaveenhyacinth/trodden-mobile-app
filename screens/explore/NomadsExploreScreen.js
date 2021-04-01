@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { SafeAreaView, FlatList } from "react-native";
-import { useSelector, useDispatch } from "react-redux";
 import { Fetch } from "../../helpers/deviceStorageHandler";
-import { nomadSuggestions } from "../../store/actions/getSuggestions";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchNomadSuggestions } from "../../redux";
 import EmptyScreen from "../info/EmptyScreen";
 import Colors from "../../theme/Colors";
 import NomadRequestTile from "../../components/modals/NomadRequestTileModal";
@@ -23,7 +23,7 @@ const NomadsExploreScreen = (props) => {
     try {
       setLoading(true);
       const nomadId = await Fetch("nomadId");
-      await nomadSuggestions(nomadId)(dispatch);
+      await fetchNomadSuggestions(nomadId)(dispatch);
     } catch (error) {
       ErrorAlertModal(error.message, error);
     } finally {
@@ -47,7 +47,7 @@ const NomadsExploreScreen = (props) => {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: Colors.accent }}>
       <FlatList
-        data={suggestionsStore.nomads}
+        data={suggestionsStore.nomads.data}
         renderItem={renderNomads}
         keyExtractor={(item) => item._id}
         ListEmptyComponent={<EmptyScreen />}

@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { FlatList, StyleSheet } from "react-native";
-import { useSelector, useDispatch } from "react-redux";
 import { Ionicons } from "@expo/vector-icons";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import { Fetch } from "../../helpers/deviceStorageHandler";
-import { getNomads } from "../../store/actions/storeNomad";
-import { getFeed } from "../../store/actions/Feed";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchNomadProfile, fetchFeed } from "../../redux";
 import EmptyScreen from "../info/EmptyScreen";
 import LoadingScreen from "../info/LoadingScreen";
 import Colors from "../../theme/Colors";
@@ -31,15 +30,15 @@ const HomeScreen = (props) => {
 
   useEffect(() => {
     setLoading(true);
-    fetchFeed();
+    fetchFeedFromApi();
     setLoading(false);
-  }, [fetchFeed, setLoading]);
+  }, [fetchFeedFromApi, setLoading]);
 
   const fetchOwner = useCallback(async () => {
     try {
       setLoading(true);
       const nomadId = await Fetch("nomadId");
-      await getNomads(nomadId)(dispatch);
+      await fetchNomadProfile(nomadId)(dispatch);
     } catch (error) {
       ErrorAlertModal(error.message, error);
     } finally {
@@ -47,10 +46,10 @@ const HomeScreen = (props) => {
     }
   }, []);
 
-  const fetchFeed = useCallback(async () => {
+  const fetchFeedFromApi = useCallback(async () => {
     try {
       const nomadId = await Fetch("nomadId");
-      await getFeed(nomadId)(dispatch);
+      await fetchFeed(nomadId)(dispatch);
       console.log("Fetching feed");
     } catch (error) {
       ErrorAlertModal(error.message, error);
@@ -79,13 +78,13 @@ const HomeScreen = (props) => {
 
   const renderFeed = ({ item }) => <Memory type="feed" data={item} />;
 
-  const handleRefresh = async () => await fetchFeed();
+  const handleRefresh = async () => await fetchFeedFromApi();
 
   if (loading) return <LoadingScreen />;
 
   return (
     <FlatList
-      data={feedStore}
+      data={feedStore.data}
       renderItem={renderFeed}
       ListHeaderComponent={renderListHeader}
       ListEmptyComponent={() => <EmptyScreen />}

@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { StyleSheet, View, Alert, Dimensions, Animated } from "react-native";
 import { TabView, TabBar } from "react-native-tab-view";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchNomadLookup } from "../../redux";
 import { Fetch } from "../../helpers/deviceStorageHandler";
 import api from "../../api";
 import TimelineScreen from "./TimelineScreen";

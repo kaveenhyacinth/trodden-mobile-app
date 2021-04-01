@@ -12,8 +12,9 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { Video } from "expo-av";
-import { useSelector } from "react-redux";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchNomadMemories } from "../../redux";
 import { Fetch } from "../../helpers/deviceStorageHandler";
 import { downloadImage } from "../../helpers/mediaHandler";
 import api from "../../api";
@@ -40,6 +41,8 @@ const NewPostScreen = (props) => {
     id: undefined,
     types: [],
   });
+
+  const dispatch = useDispatch();
 
   const nomadStore = useSelector((state) => state.nomadStore);
 
@@ -436,7 +439,6 @@ const NewPostScreen = (props) => {
 
   const handleSubmit = async () => {
     try {
-      console.log("1. Inside Submit");
       const userId = await Fetch("nomadId");
       let mediaBody = new FormData();
       let mediaArray = [];
@@ -450,7 +452,6 @@ const NewPostScreen = (props) => {
         const mediaFiles = isImage ? images : video;
         const fieldName = isImage ? "images[]" : "videos[]";
 
-        console.log("2. Building form");
         mediaFiles.map((media) => {
           let fileType = media.uri.split(".").pop();
           mediaBody.append(fieldName, {
@@ -467,8 +468,6 @@ const NewPostScreen = (props) => {
           },
         };
 
-        console.log("3. Sending Request");
-
         const mediaRes = isImage
           ? await api.post.uploadImages(mediaBody)(config)
           : await api.post.uploadVideos(mediaBody)(config);
@@ -478,8 +477,6 @@ const NewPostScreen = (props) => {
 
         const resArray = mediaRes.data.result;
 
-        console.log("4. Response:", mediaRes.data.result);
-
         resArray.map((resObj) => {
           const mediaObj = {
             uri: resObj.filename,
@@ -487,8 +484,6 @@ const NewPostScreen = (props) => {
           };
           mediaArray.push(mediaObj);
         });
-
-        console.log("5. Media array:", mediaArray);
       }
 
       const memoBody = {
@@ -502,16 +497,14 @@ const NewPostScreen = (props) => {
         },
       };
 
-      console.log("6. Memory body:", memoBody);
-
-      console.log("7. Sending request");
       const response = await api.post.createMemo(memoBody);
       if (!response.data)
         throw new Error(
           "Something went wrong while creating the memory! Please try again later..."
         );
 
-      console.log("8. Response:", response.data.result);
+      await fetchNomadMemories(userId)(dispatch);
+
       props.navigation.replace("core", { screen: "Profile" });
     } catch (error) {
       ErrorAlertModal("Error Happen when creating new memory", error);
@@ -524,7 +517,7 @@ const NewPostScreen = (props) => {
         <View style={styles.imageContainer}>
           <View style={styles.imageWrapper}>
             <Image
-              source={{ uri: downloadImage(nomadStore.prof_img) }}
+              source={{ uri: downloadImage(nomadStore.data.prof_img) }}
               style={styles.headerImage}
             />
           </View>
@@ -532,7 +525,7 @@ const NewPostScreen = (props) => {
         <View style={styles.sharePrefWrapper}>
           <BodyText
             style={styles.NomadName}
-          >{`${nomadStore.first_name} ${nomadStore.last_name}`}</BodyText>
+          >{`${nomadStore.data.first_name} ${nomadStore.data.last_name}`}</BodyText>
           <BodyText
             style={styles.NomadLocation}
             onPress={() => setIsLocationModelOpen(true)}

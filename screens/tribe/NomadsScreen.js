@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { SafeAreaView, FlatList, Alert } from "react-native";
+import { SafeAreaView, FlatList } from "react-native";
 import { Fetch } from "../../helpers/deviceStorageHandler";
-import api from "../../api";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchNomadsTribe } from "../../redux";
 import EmptyScreen from "../info/EmptyScreen";
 import Colors from "../../theme/Colors";
 import NomadRequestTile from "../../components/modals/NomadRequestTileModal";
@@ -9,7 +10,10 @@ import ErrorAlertModal from "../../components/modals/ErrorAlertModal";
 
 const InboxScreen = (props) => {
   const [loading, setLoading] = useState(true);
-  const [bondsList, setBondsList] = useState([]);
+
+  const dispatch = useDispatch();
+
+  const tribeStore = useSelector((state) => state.tribeStore);
 
   useEffect(() => {
     fetchBondList();
@@ -19,10 +23,7 @@ const InboxScreen = (props) => {
     try {
       setLoading(true);
       const nomadId = await Fetch("nomadId");
-      const response = await api.get.getBondsList(nomadId);
-      if (!response.data.success)
-        throw new Error("Something went wrong! Please try again later...");
-      setBondsList(response.data.result);
+      await fetchNomadsTribe(nomadId)(dispatch);
     } catch (error) {
       ErrorAlertModal(error.message, error);
     } finally {
@@ -45,7 +46,7 @@ const InboxScreen = (props) => {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: Colors.accent }}>
       <FlatList
-        data={bondsList.tribe}
+        data={tribeStore.nomads.data.tribe}
         renderItem={renderNomads}
         keyExtractor={(item) => item._id}
         ListEmptyComponent={<EmptyScreen />}

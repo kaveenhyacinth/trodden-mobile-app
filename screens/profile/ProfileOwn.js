@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { StyleSheet, View, Alert, Dimensions, Animated } from "react-native";
 import { TabView, TabBar } from "react-native-tab-view";
-import { useSelector, useDispatch } from "react-redux";
 import { Ionicons } from "@expo/vector-icons";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import { useNavigation } from "@react-navigation/native";
-import { resetMomeries } from "../../store/actions/getMemories";
+import { useSelector, useDispatch } from "react-redux";
+import { resetNomadMomeries } from "../../redux";
 import { Delete } from "../../helpers/deviceStorageHandler";
 import TimelineScreen from "./TimelineScreen";
 import TripsScreen from "./TripsScreen";
@@ -37,12 +37,6 @@ const OwnerProfileView = (props) => {
   let listRefArr = useRef([]);
   let listOffset = useRef({});
   let isListGliding = useRef(false);
-
-  useEffect(() => {
-    console.log("WIndows Height", WINDOW_HEIGHT);
-    console.log("Header Height", HEADER_HEIGHT);
-    console.log("Tab Height", TAB_BAR_HEIGHT);
-  }, [WINDOW_HEIGHT, HEADER_HEIGHT, TAB_BAR_HEIGHT]);
 
   useEffect(() => {
     repaintHeaderButtons();
@@ -84,14 +78,14 @@ const OwnerProfileView = (props) => {
 
   const repaintHeaderTitle = useCallback(() => {
     props.navigation.setOptions({
-      title: `@${nomadStore.username ?? "..."}`,
+      title: `@${nomadStore.data.username ?? "..."}`,
     });
-  }, [nomadStore.username]);
+  }, [nomadStore.data.username]);
 
   const handleConfirmSignOut = () => {
     Alert.alert(
       "Do you want to log-out?",
-      `We are going to miss you ${nomadStore.first_name}!`,
+      `We are going to miss you ${nomadStore.data.first_name}!`,
       [
         {
           text: "Yes",
@@ -112,7 +106,7 @@ const OwnerProfileView = (props) => {
       await Delete("refToken");
       await Delete("signToken");
       await Delete("nomadId");
-      dispatch(resetMomeries());
+      dispatch(resetNomadMomeries());
       navigatorProps.dangerouslyGetParent().replace("auth");
     } catch (error) {
       ErrorAlertModal(error.message, error);
@@ -172,7 +166,7 @@ const OwnerProfileView = (props) => {
       <Animated.View
         style={[styles.header, { transform: [{ translateY: y }] }]}
       >
-        <ProfileHeader nomad={nomadStore} />
+        <ProfileHeader nomad={nomadStore.data} />
       </Animated.View>
     );
   };
