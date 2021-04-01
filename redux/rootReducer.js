@@ -7,6 +7,7 @@ import memoriesStore from "./memories/memoriesReducer";
 import feedStore from "./feed/feedReducer";
 import suggestionsStore from "./suggestions/suggestionReducer";
 import requestsStore from "./requests/requestsReducer";
+import tribeStore from "./tribe/tribeReducer";
 import lookupNomadStore from "./lookups/nomad/nomadReducer";
 // import lookupCaravanStore from "./lookups/caravan/caravanReducer";
 // import lookupBlazeStore from "./lookups/blaze/blazeReducer";
@@ -22,6 +23,7 @@ const rootReducer = combineReducers({
   feedStore,
   suggestionsStore,
   requestsStore,
+  tribeStore,
   lookupNomadStore,
   // lookupCaravanStore,
   // lookupBlazeStore,

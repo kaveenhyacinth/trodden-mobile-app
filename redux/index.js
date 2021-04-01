@@ -12,10 +12,11 @@ export {
   fetchCaravanSuggestions,
 } from "./suggestions/suggestionActions";
 export {
-  fetchLookupNomad,
-  resetLookupNomad,
+  fetchNomadLookup,
+  resetNomadLookup,
 } from "./lookups/nomad/nomadActions";
 export {
   fetchIncomingReqs,
   fetchOutgoingReqs,
 } from "./requests/requestActions";
+export { fetchNomadsTribe } from "./tribe/tribeActions";

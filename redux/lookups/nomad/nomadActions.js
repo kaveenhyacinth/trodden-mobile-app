@@ -20,7 +20,7 @@ const fetchLookupNomadFailure = (error) => ({
   payload: { error },
 });
 
-export const fetchLookupNomad = (nomadId) => async (dispatch) => {
+export const fetchNomadLookup = (nomadId) => async (dispatch) => {
   try {
     dispatch(fetchLookupNomadRequest());
     const userRes = await api.get.getNomadById(nomadId);
@@ -36,6 +36,6 @@ export const fetchLookupNomad = (nomadId) => async (dispatch) => {
   }
 };
 
-export const resetLookupNomad = () => ({
+export const resetNomadLookup = () => ({
   type: RESET_LN,
 });
