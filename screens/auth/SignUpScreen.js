@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Formik } from "formik";
 import * as yup from "yup";
-import { Text, StyleSheet, Pressable } from "react-native";
+import { StyleSheet } from "react-native";
 import api from "../../api";
 import Colors from "../../theme/Colors";
 import Typography from "../../theme/Typography";
@@ -198,17 +198,17 @@ const SignUpScreen = (props) => {
                 Sign Up
               </BigButton>
             )}
-
-            <Pressable
-              onPress={() => {
-                props.navigation.navigate("signIn");
-              }}
-            >
-              <BodyText style={styles.linkText}>
-                if you already have an account{" "}
-                <Text style={styles.link}>Sign In</Text>
+            <BodyText style={styles.linkText}>
+              if you already have an account{" "}
+              <BodyText
+                onPress={() => {
+                  props.navigation.navigate("signIn");
+                }}
+                style={styles.link}
+              >
+                Sign In
               </BodyText>
-            </Pressable>
+            </BodyText>
           </FormContainer>
         )}
       </Formik>

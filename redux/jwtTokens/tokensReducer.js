@@ -1,11 +1,11 @@
-import { STORE_TOKEN } from "../actionTypes";
+import { STORE_TOKEN } from "./tokenTypess";
 
 const initialState = {
   signToken: "",
   refToken: "",
 };
 
-const storeTokenReducer = (state = initialState, action) => {
+const tokensReducer = (state = initialState, action) => {
   switch (action.type) {
     case STORE_TOKEN:
       return {
@@ -18,4 +18,4 @@ const storeTokenReducer = (state = initialState, action) => {
   }
 };
 
-export default storeTokenReducer;
+export default tokensReducer;

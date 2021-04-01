@@ -1,9 +1,8 @@
 import React, { useState, useRef } from "react";
-import { Text, View, StyleSheet, Pressable } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { useDispatch } from "react-redux";
 import { Save } from "../../helpers/deviceStorageHandler";
-import { storeUser } from "../../store/actions/storeUser";
-import { storeToken } from "../../store/actions/storeToken";
+import { storeGuest, storeTokens } from "../../redux";
 import api from "../../api";
 import Colors from "../../theme/Colors";
 import Typography from "../../theme/Typography";
@@ -86,11 +85,11 @@ const ConfirmationScreen = (props) => {
     otpGenerated === otpEntered ? true : false;
 
   const handleUserStoreUpdate = (userData) => {
-    dispatch(storeUser(userData));
+    dispatch(storeGuest(userData));
   };
 
   const handleTokenStoreUpdate = (signToken, refToken) => {
-    dispatch(storeToken(signToken, refToken));
+    dispatch(storeTokens(signToken, refToken));
   };
 
   const handleError = (error) => {
@@ -241,12 +240,13 @@ const ConfirmationScreen = (props) => {
             Confirm
           </BigButton>
         )}
-        <Pressable onPress={() => {}}>
-          <BodyText style={styles.bodyText}>
-            If you don’t recieve the OTP
-            <Text style={styles.link}> RESEND</Text>
+        <BodyText style={styles.bodyText}>
+          If you don’t recieve the OTP
+          <BodyText onPress={() => {}} style={styles.link}>
+            {" "}
+            RESEND
           </BodyText>
-        </Pressable>
+        </BodyText>
       </FormContainer>
     </ScreenView>
   );

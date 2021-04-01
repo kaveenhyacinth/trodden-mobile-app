@@ -4,17 +4,12 @@ import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
 import * as Font from "expo-font";
 import { NavigationContainer } from "@react-navigation/native";
-// import { useScreens } from "react-native-screens";
-import { createStore, applyMiddleware } from "redux";
-import thunk from "redux-thunk";
 import { Provider } from "react-redux";
-import rootReducer from "./store/reducers/rootReducer";
 import MainNavigator from "./routes/MainNavigator";
+import store from "./redux/store";
+// import { useScreens } from "react-native-screens";
 
 // useScreens();
-
-// Redux globalized store
-const store = createStore(rootReducer, applyMiddleware(thunk));
 
 const fetchFonts = () => {
   return Font.loadAsync({

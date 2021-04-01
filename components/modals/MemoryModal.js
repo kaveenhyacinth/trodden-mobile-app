@@ -16,7 +16,7 @@ import {
   getOwnMemories,
   getNomadMemories,
 } from "../../store/actions/getMemories";
-import { getFeed } from "../../store/actions/getFeed";
+import { getFeed } from "../../store/actions/Feed";
 import { Fetch } from "../../helpers/deviceStorageHandler";
 import api from "../../api/index";
 import { downloadImage, downloadVideo } from "../../helpers/mediaHandler";

@@ -1,8 +1,8 @@
 import React, { useState, useReducer } from "react";
-import { Text, StyleSheet, Pressable, Alert } from "react-native";
+import { StyleSheet } from "react-native";
 import { useDispatch } from "react-redux";
 import { Save } from "../../helpers/deviceStorageHandler";
-import { storeToken } from "../../store/actions/storeToken";
+import { storeTokens } from "../../redux";
 import api from "../../api";
 import Colors from "../../theme/Colors";
 import Typography from "../../theme/Typography";
@@ -12,6 +12,7 @@ import InputBox from "../../components/ui/InputBox";
 import BigButton from "../../components/ui/BigButton";
 import LoadingButton from "../../components/ui/LoadingButton";
 import FormContainer from "../../components/ui/FormContainer";
+import ErrorAlertModal from "../../components/modals/ErrorAlertModal";
 
 const FORM_UPDATE = "FORM_UPDATE";
 
@@ -62,7 +63,7 @@ const SignInScreen = (props) => {
 
   // Uptate new tokens in token store
   const handleTokenUpdate = (signToken, refToken) => {
-    dispatch(storeToken(signToken, refToken));
+    dispatch(storeTokens(signToken, refToken));
   };
 
   const handleError = (error) => {
@@ -85,17 +86,7 @@ const SignInScreen = (props) => {
       });
     }
     // if not a validation error
-    return Alert.alert(
-      "Oh My Trod!",
-      errorData.result,
-      [
-        {
-          text: "Okay",
-          style: "destructive",
-        },
-      ],
-      { cancelable: false }
-    );
+    return ErrorAlertModal(errorData.result, errorData);
   };
 
   const handleSignIn = async () => {
@@ -124,16 +115,9 @@ const SignInScreen = (props) => {
       props.navigation.replace("core");
     } catch (error) {
       if (!error.response)
-        return Alert.alert(
-          "Something went wrong",
-          error.message ?? "Sorry, it's our fault! Please try again later...",
-          [
-            {
-              text: "Okay",
-              style: "destructive",
-            },
-          ],
-          { cancelable: false }
+        return ErrorAlertModal(
+          "Sorry, it's our fault! Please try again later...",
+          error
         );
       handleError(error);
       console.log("Error Happens Here...", error);
@@ -171,17 +155,17 @@ const SignInScreen = (props) => {
             Sign In
           </BigButton>
         )}
-
-        <Pressable
-          onPress={() => {
-            props.navigation.navigate("signUp");
-          }}
-        >
-          <BodyText style={styles.linkText}>
-            if you don't have an account{" "}
-            <Text style={styles.link}>Sign Up</Text>
+        <BodyText style={styles.linkText}>
+          if you don't have an account{" "}
+          <BodyText
+            onPress={() => {
+              props.navigation.navigate("signUp");
+            }}
+            style={styles.link}
+          >
+            Sign Up
           </BodyText>
-        </Pressable>
+        </BodyText>
       </FormContainer>
     </ScreenView>
   );

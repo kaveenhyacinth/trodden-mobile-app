@@ -1,13 +1,20 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { View, StyleSheet, FlatList, Dimensions } from "react-native";
+import {
+  View,
+  SafeAreaView,
+  StyleSheet,
+  FlatList,
+  Dimensions,
+} from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { Save } from "../../helpers/deviceStorageHandler";
-import { getInterests } from "../../store/actions/getInterests";
+import { fetchInterests } from "../../redux";
 import api from "../../api";
 import Colors from "../../theme/Colors";
 import Typography from "../../theme/Typography";
 import BodyText from "../../components/ui/BodyText";
 import BigButton from "../../components/ui/BigButton";
+import LoadingButton from "../../components/ui/LoadingButton";
 import InterestGridTile from "../../components/modals/InterestTileModal";
 import ErrorAlertModal from "../../components/modals/ErrorAlertModal";
 import LoadingScreen from "../info/LoadingScreen";
@@ -20,21 +27,18 @@ const SignUpInterestsScreen = (props) => {
 
   const dispatch = useDispatch();
 
-  const userStore = useSelector((state) => state.userStore);
+  const guestStore = useSelector((state) => state.guestStore);
   const interetsStore = useSelector((state) => state.interestsStore);
 
   useEffect(() => {
-    fetchInterests();
-  }, [fetchInterests]);
+    fetchInterestsFromApi();
+  }, [fetchInterestsFromApi]);
 
-  const fetchInterests = useCallback(async () => {
+  const fetchInterestsFromApi = useCallback(async () => {
     try {
-      setLoading(true);
-      await getInterests()(dispatch);
+      await fetchInterests()(dispatch);
     } catch (error) {
       ErrorAlertModal(error.message, error);
-    } finally {
-      setLoading(false);
     }
   }, []);
 
@@ -44,9 +48,9 @@ const SignUpInterestsScreen = (props) => {
     return true;
   };
 
-  const handlePrepareUserData = (userStore, interests) => {
+  const handlePrepareUserData = (guestStore, interests) => {
     return {
-      ...userStore,
+      ...guestStore,
       interests,
     };
   };
@@ -121,7 +125,7 @@ const SignUpInterestsScreen = (props) => {
       if (!isValid)
         throw new Error("Please select at least 3 interests to proceed...");
 
-      const data = handlePrepareUserData(userStore, selectedInterests);
+      const data = handlePrepareUserData(guestStore, selectedInterests);
       console.log("Data to send to the server\n", data);
 
       // Upload image
@@ -184,14 +188,15 @@ const SignUpInterestsScreen = (props) => {
     }
   };
 
-  if (loading) return <LoadingScreen />;
+  if (interetsStore.loading) return <LoadingScreen />;
+  if (interetsStore.error) return ErrorAlertModal(interetsStore.error, null);
 
   return (
-    <View style={styles.screen}>
+    <SafeAreaView style={styles.screen}>
       <View style={{ width: "100%", marginBottom: 80 }}>
         <FlatList
           style={styles.list}
-          data={interetsStore.interests}
+          data={interetsStore.data}
           renderItem={renderInterests}
           keyExtractor={(item) => item._id}
           numColumns={2}
@@ -206,16 +211,21 @@ const SignUpInterestsScreen = (props) => {
         />
       </View>
       <View style={styles.buttonContainer}>
-        <BigButton style={styles.button} onPress={handleSubmit}>
-          Done
-        </BigButton>
+        {loading ? (
+          <LoadingButton />
+        ) : (
+          <BigButton style={styles.button} onPress={handleSubmit}>
+            Done
+          </BigButton>
+        )}
+
         <View style={styles.bottomBars}>
           <BodyText style={styles.active}>-</BodyText>
           <BodyText style={styles.active}>-</BodyText>
           <BodyText style={styles.active}>-</BodyText>
         </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 

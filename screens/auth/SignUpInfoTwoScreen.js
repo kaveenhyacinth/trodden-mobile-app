@@ -3,7 +3,7 @@ import { View, Alert, StyleSheet } from "react-native";
 import { useDispatch } from "react-redux";
 import * as ImagePicker from "expo-image-picker";
 import * as yup from "yup";
-import { storeUser } from "../../store/actions/storeUser";
+import { storeGuest } from "../../redux";
 import Colors from "../../theme/Colors";
 import Typography from "../../theme/Typography";
 import ScreenView from "../../components/ui/ScreenView";
@@ -158,7 +158,7 @@ const SignupInfoTwoScreen = (props) => {
   };
 
   const handleUserStoreUpdate = (userData) => {
-    dispatch(storeUser(userData));
+    dispatch(storeGuest(userData));
   };
 
   const handleSubmit = async () => {

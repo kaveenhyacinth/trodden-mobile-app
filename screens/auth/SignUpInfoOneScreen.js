@@ -4,7 +4,7 @@ import { View, StyleSheet } from "react-native";
 import { useDispatch } from "react-redux";
 import { Picker } from "@react-native-picker/picker";
 import DatePickerModel from "react-native-modal-datetime-picker";
-import { storeUser } from "../../store/actions/storeUser";
+import { storeGuest } from "../../redux";
 import Colors from "../../theme/Colors";
 import Typography from "../../theme/Typography";
 import ScreenView from "../../components/ui/ScreenView";
@@ -173,7 +173,7 @@ const SignupInfoOneScreen = (props) => {
   };
 
   const handleUserStoreUpdate = (userData) => {
-    dispatch(storeUser(userData));
+    dispatch(storeGuest(userData));
   };
 
   const handleSubmit = async () => {
@@ -223,8 +223,7 @@ const SignupInfoOneScreen = (props) => {
     <ScreenView style={styles.screen}>
       <FormContainer>
         <BodyText style={styles.infoText}>
-          Awesome Nomad! Welcome to the world of Trodden. Tell us more about
-          you....
+          Awesome! Welcome to the world of Trodden. Tell us more about you....
         </BodyText>
         <BodyText>City</BodyText>
         <InputBox

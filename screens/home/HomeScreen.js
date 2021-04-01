@@ -5,7 +5,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import { Fetch } from "../../helpers/deviceStorageHandler";
 import { getNomads } from "../../store/actions/storeNomad";
-import { getFeed } from "../../store/actions/getFeed";
+import { getFeed } from "../../store/actions/Feed";
 import EmptyScreen from "../info/EmptyScreen";
 import LoadingScreen from "../info/LoadingScreen";
 import Colors from "../../theme/Colors";
