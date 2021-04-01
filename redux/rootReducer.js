@@ -6,6 +6,7 @@ import nomadStore from "./nomad/nomadReducer";
 import memoriesStore from "./memories/memoriesReducer";
 import feedStore from "./feed/feedReducer";
 import suggestionsStore from "./suggestions/suggestionReducer";
+import requestsStore from "./requests/requestsReducer";
 import lookupNomadStore from "./lookups/nomad/nomadReducer";
 // import lookupCaravanStore from "./lookups/caravan/caravanReducer";
 // import lookupBlazeStore from "./lookups/blaze/blazeReducer";
@@ -20,6 +21,7 @@ const rootReducer = combineReducers({
   memoriesStore,
   feedStore,
   suggestionsStore,
+  requestsStore,
   lookupNomadStore,
   // lookupCaravanStore,
   // lookupBlazeStore,

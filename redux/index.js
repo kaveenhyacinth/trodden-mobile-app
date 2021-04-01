@@ -15,3 +15,7 @@ export {
   fetchLookupNomad,
   resetLookupNomad,
 } from "./lookups/nomad/nomadActions";
+export {
+  fetchIncomingReqs,
+  fetchOutgoingReqs,
+} from "./requests/requestActions";
