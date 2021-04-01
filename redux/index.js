@@ -7,3 +7,7 @@ export {
   fetchNomadMemories,
   resetNomadMomeries,
 } from "./memories/memoryActions";
+export {
+  fetchNomadSuggestions,
+  fetchCaravanSuggestions,
+} from "./suggestions/suggestionActions";

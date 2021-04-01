@@ -1,6 +1,5 @@
 import { combineReducers } from "redux";
 
-import StoreSuggestionsReducer from "./reducers/storeSuggestionsReducer";
 import StoreTempNomadReducer from "./reducers/storeTempNomadReducer";
 
 import interestsStore from "./interests/interestsReducer";
@@ -9,10 +8,10 @@ import tokensStore from "./jwtTokens/tokensReducer";
 import nomadStore from "./nomad/nomadReducer";
 import memoriesStore from "./memories/memoriesReducer";
 import feedStore from "./feed/feedReducer";
+import suggestionsStore from "./suggestions/suggestionReducer";
 
 const rootReducer = combineReducers({
   tempNomadStore: StoreTempNomadReducer,
-  suggestionsStore: StoreSuggestionsReducer,
 
   interestsStore,
   guestStore,
@@ -20,6 +19,7 @@ const rootReducer = combineReducers({
   nomadStore,
   memoriesStore,
   feedStore,
+  suggestionsStore,
 });
 
 export default rootReducer;
