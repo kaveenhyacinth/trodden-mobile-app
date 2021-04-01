@@ -5,21 +5,21 @@ import {
   FETCH_INTERESTS_FAILURE,
 } from "./interestsTypes";
 
-export const fetchInterestsRequest = () => {
+const fetchInterestsRequest = () => {
   return {
     type: FETCH_INTERESTS_REQUEST,
     payload: [],
   };
 };
 
-export const fetchInterestsSuccess = (interests) => {
+const fetchInterestsSuccess = (interests) => {
   return {
     type: FETCH_INTERESTS_SUCCESS,
     payload: interests,
   };
 };
 
-export const fetchInterestsFailure = (error) => {
+const fetchInterestsFailure = (error) => {
   return {
     type: FETCH_INTERESTS_FAILURE,
     payload: error,
