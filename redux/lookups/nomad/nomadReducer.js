@@ -8,7 +8,11 @@ import {
 const initialState = {
   loading: false,
   data: {
-    user: {},
+    user: {
+      memories: [],
+      trips: [],
+      tribe: [],
+    },
     memories: [],
   },
   error: "",

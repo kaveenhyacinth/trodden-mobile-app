@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import { StyleSheet, View, Alert, Dimensions, Animated } from "react-native";
+import { StyleSheet, View, Dimensions, Animated } from "react-native";
 import { TabView, TabBar } from "react-native-tab-view";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchNomadLookup } from "../../redux";
+import { fetchNomadLookup, resetNomadLookup } from "../../redux";
 import { Fetch } from "../../helpers/deviceStorageHandler";
-import api from "../../api";
 import TimelineScreen from "./TimelineScreen";
 import TripsScreen from "./TripsScreen";
 import LoadingScreen from "../info/LoadingScreen";
@@ -19,13 +18,8 @@ const TAB_BAR_HEIGHT = 50;
 const HEADER_HEIGHT = WINDOW_HEIGHT * 0.4;
 
 const NomadProfileView = (props) => {
-  const [loading, setLoading] = useState(true);
+  const [userId] = useState(props.route.params.id);
   const [isOwner, setIsOwner] = useState(false);
-  const [nomadState, setNomadState] = useState({
-    memories: [],
-    trips: [],
-    tribe: [],
-  });
   const [tabIndex, setIndex] = useState(0);
   const [routes] = useState([
     { key: "tab1", title: "Memories" },
@@ -33,15 +27,21 @@ const NomadProfileView = (props) => {
   ]);
 
   const scrollY = useRef(new Animated.Value(0)).current;
-  const tempNomadStore = useSelector((state) => state.tempNomadStore);
+  const dispatch = useDispatch();
+  const lookupNomadStore = useSelector((state) => state.lookupNomadStore);
 
   let listRefArr = useRef([]);
   let listOffset = useRef({});
   let isListGliding = useRef(false);
 
+  useEffect(() => fetchNomad(), [fetchNomad]);
+  useEffect(() => checkIsOwner(), [checkIsOwner]);
+
   useEffect(() => {
-    fetchNomad();
-  }, [fetchNomad]);
+    props.navigation.setOptions({
+      title: `@${lookupNomadStore.data.user.username}` ?? "...",
+    });
+  }, [lookupNomadStore.data.user]);
 
   useEffect(() => {
     scrollY.addListener(({ value }) => {
@@ -53,29 +53,29 @@ const NomadProfileView = (props) => {
     };
   }, [routes, tabIndex]);
 
+  useEffect(() => {
+    if (lookupNomadStore.error) ErrorAlertModal(lookupNomadStore.error, null);
+  }, [lookupNomadStore.error]);
+
   const fetchNomad = useCallback(async () => {
+    dispatch(resetNomadLookup());
     try {
-      setLoading(true);
-
-      const response = await api.get.getNomad(tempNomadStore.nomadId);
-      if (!response.data.success) throw new Error(response.data.msg);
-
-      props.navigation.setOptions({
-        title: `@${response.data.result.username}`,
-      });
-
-      const nomadId = await Fetch("nomadId");
-      if (nomadId == response.data.result._id) {
-        setIsOwner(true);
-      }
-
-      setNomadState((prevState) => ({ ...prevState, ...response.data.result }));
+      await fetchNomadLookup(userId)(dispatch);
     } catch (error) {
       ErrorAlertModal(error.message, error);
-    } finally {
-      setLoading(false);
     }
-  }, [tempNomadStore.nomadId]);
+  }, [userId]);
+
+  const checkIsOwner = useCallback(async () => {
+    try {
+      const nomadId = await Fetch("nomadId");
+      if (nomadId == userId) {
+        setIsOwner(true);
+      }
+    } catch (error) {
+      ErrorAlertModal(error.message, error);
+    }
+  }, [userId]);
 
   const syncScrollOffset = () => {
     const curRouteKey = routes[tabIndex].key;
@@ -130,7 +130,7 @@ const NomadProfileView = (props) => {
       <Animated.View
         style={[styles.header, { transform: [{ translateY: y }] }]}
       >
-        <ProfileHeader nomad={nomadState} />
+        <ProfileHeader nomad={lookupNomadStore.data.user} />
       </Animated.View>
     );
   };
@@ -229,7 +229,7 @@ const NomadProfileView = (props) => {
     );
   };
 
-  if (loading) return <LoadingScreen />;
+  if (lookupNomadStore.loading) return <LoadingScreen />;
 
   return (
     <View style={{ flex: 1 }}>

@@ -33,14 +33,14 @@ const InboxScreen = (props) => {
 
   const renderNomads = ({ item }) => (
     <NomadRequestTile
-      onNavigate={handleNavigation}
+      onNavigate={() => handleNavigation(item._id)}
       onRefresh={fetchBondList}
       data={item}
     />
   );
 
-  const handleNavigation = () => {
-    props.navigation.navigate("Profile");
+  const handleNavigation = (id) => {
+    props.navigation.navigate("Profile", { id });
   };
 
   return (

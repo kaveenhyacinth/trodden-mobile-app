@@ -1,6 +1,6 @@
 import { Alert } from "react-native";
 
-const ErrorAlertModal = (message = "", error) => {
+const ErrorAlertModal = (message = "", error = null) => {
   console.error("Error occured", error);
   return Alert.alert(
     "Oh My trod!",

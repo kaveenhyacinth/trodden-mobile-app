@@ -1,14 +1,5 @@
 import React, { useState } from "react";
-import {
-  View,
-  StyleSheet,
-  Image,
-  Pressable,
-  Alert,
-  Dimensions,
-} from "react-native";
-import { useDispatch } from "react-redux";
-import { storeTempNomad } from "../../store/actions/storeTempNomad";
+import { View, StyleSheet, Image, Pressable, Dimensions } from "react-native";
 import { downloadImage } from "../../helpers/mediaHandler";
 import { Fetch } from "../../helpers/deviceStorageHandler";
 import api from "../../api/index";
@@ -24,8 +15,6 @@ const TILE_HEIGHT = 90;
 const nomadRequestTileModal = (props) => {
   const [owner] = useState(props.data.owner ?? props.data);
 
-  const dispatch = useDispatch();
-
   const renderButtons = (type = "regular") => {
     if (type === "suggestion")
       return (
@@ -34,7 +23,7 @@ const nomadRequestTileModal = (props) => {
             Add
           </BigButton>
           <BigButton
-            onPress={() => handleViewProfile(owner._id)}
+            onPress={handleViewProfile}
             style={{ ...styles.button, ...styles.lite }}
             textStyle={{ color: Colors.info }}
           >
@@ -59,10 +48,7 @@ const nomadRequestTileModal = (props) => {
       );
     return (
       <View style={styles.lowerDiv}>
-        <BigButton
-          style={styles.button}
-          onPress={() => handleViewProfile(owner._id)}
-        >
+        <BigButton style={styles.button} onPress={handleViewProfile}>
           View
         </BigButton>
         <BigButton
@@ -120,8 +106,7 @@ const nomadRequestTileModal = (props) => {
   };
 
   // TODO:
-  const handleViewProfile = (userId) => {
-    dispatch(storeTempNomad(userId));
+  const handleViewProfile = () => {
     props.onNavigate();
   };
 
@@ -129,7 +114,7 @@ const nomadRequestTileModal = (props) => {
     <View style={styles.container}>
       <View style={styles.leftSection}>
         <View style={styles.imageWrapper}>
-          <Pressable onPress={() => handleViewProfile(owner._id)}>
+          <Pressable onPress={handleViewProfile}>
             <Image
               style={styles.image}
               source={{ uri: downloadImage(owner.prof_img) }}
@@ -141,7 +126,7 @@ const nomadRequestTileModal = (props) => {
         <View style={styles.upperDiv}>
           <BodyText
             style={styles.upperDivText}
-            onPress={() => handleViewProfile(owner._id)}
+            onPress={handleViewProfile}
           >{`${owner.first_name} ${owner.last_name}`}</BodyText>
         </View>
         {renderButtons(props.type)}
