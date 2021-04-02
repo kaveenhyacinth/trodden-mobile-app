@@ -5,7 +5,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import { useNavigation } from "@react-navigation/native";
 import { useSelector, useDispatch } from "react-redux";
-import { resetNomadMomeries } from "../../redux";
+import { fetchNomadMemories, resetNomadMomeries } from "../../redux";
 import { Delete } from "../../helpers/deviceStorageHandler";
 import TimelineScreen from "./TimelineScreen";
 import TripsScreen from "./TripsScreen";
@@ -22,7 +22,6 @@ const TAB_BAR_HEIGHT = 50;
 const HEADER_HEIGHT = WINDOW_HEIGHT * 0.4;
 
 const OwnerProfileView = (props) => {
-  const [loading, setLoading] = useState(true);
   const [tabIndex, setIndex] = useState(0);
   const [routes] = useState([
     { key: "tab1", title: "Memories" },
@@ -33,6 +32,7 @@ const OwnerProfileView = (props) => {
   const dispatch = useDispatch();
   const navigatorProps = useNavigation();
   const nomadStore = useSelector((state) => state.nomadStore);
+  const memoriesStore = useSelector((state) => state.memoriesStore);
 
   let listRefArr = useRef([]);
   let listOffset = useRef({});
@@ -184,11 +184,20 @@ const OwnerProfileView = (props) => {
     );
   };
 
+  const refreshMemories = async () => {
+    try {
+      await fetchNomadMemories(nomadStore.data._id)(dispatch);
+    } catch (error) {
+      ErrorAlertModal(error.message, error);
+    }
+  };
+
   const renderScene = ({ route }) => {
     switch (route.key) {
       case "tab1":
         return (
           <TimelineScreen
+            data={memoriesStore.data}
             authType="self"
             HeaderHeight={HEADER_HEIGHT}
             TabBarHeight={TAB_BAR_HEIGHT}
@@ -196,6 +205,8 @@ const OwnerProfileView = (props) => {
             onMomentumScrollBegin={onMomentumScrollBegin}
             onScrollEndDrag={onScrollEndDrag}
             onMomentumScrollEnd={onMomentumScrollEnd}
+            refreshing={memoriesStore.loading}
+            onRefresh={refreshMemories}
             onGetRef={(ref) => {
               if (ref) {
                 const found = listRefArr.current.find(

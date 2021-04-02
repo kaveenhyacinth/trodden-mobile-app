@@ -4,7 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import { Fetch } from "../../helpers/deviceStorageHandler";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchNomadProfile, fetchFeed } from "../../redux";
+import { fetchNomadProfile, fetchNomadMemories, fetchFeed } from "../../redux";
 import EmptyScreen from "../info/EmptyScreen";
 import LoadingScreen from "../info/LoadingScreen";
 import Colors from "../../theme/Colors";
@@ -14,8 +14,6 @@ import Memory from "../../components/modals/MemoryModal";
 import ErrorAlertModal from "../../components/modals/ErrorAlertModal";
 
 const HomeScreen = (props) => {
-  const [loading, setLoading] = useState(false);
-
   const dispatch = useDispatch();
 
   const feedStore = useSelector((state) => state.feedStore);
@@ -29,16 +27,14 @@ const HomeScreen = (props) => {
   }, [fetchOwner]);
 
   useEffect(() => {
-    setLoading(true);
     fetchFeedFromApi();
-    setLoading(false);
-  }, [fetchFeedFromApi, setLoading]);
+  }, [fetchFeedFromApi]);
 
   const fetchOwner = useCallback(async () => {
     try {
-      setLoading(true);
       const nomadId = await Fetch("nomadId");
       await fetchNomadProfile(nomadId)(dispatch);
+      await fetchNomadMemories(nomadId)(dispatch);
     } catch (error) {
       ErrorAlertModal(error.message, error);
     } finally {
@@ -80,7 +76,7 @@ const HomeScreen = (props) => {
 
   const handleRefresh = async () => await fetchFeedFromApi();
 
-  if (loading) return <LoadingScreen />;
+  if (feedStore.loading) return <LoadingScreen />;
 
   return (
     <FlatList
@@ -92,7 +88,7 @@ const HomeScreen = (props) => {
       showsHorizontalScrollIndicator={false}
       showsVerticalScrollIndicator={false}
       keyExtractor={(item, index) => index.toString()}
-      refreshing={loading}
+      refreshing={feedStore.loading}
       onRefresh={handleRefresh}
     />
   );

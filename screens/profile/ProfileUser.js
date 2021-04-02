@@ -153,6 +153,7 @@ const NomadProfileView = (props) => {
       case "tab1":
         return (
           <TimelineScreen
+            data={lookupNomadStore.data.memories}
             authType="non-self"
             HeaderHeight={HEADER_HEIGHT}
             TabBarHeight={TAB_BAR_HEIGHT}
@@ -160,6 +161,8 @@ const NomadProfileView = (props) => {
             onMomentumScrollBegin={onMomentumScrollBegin}
             onScrollEndDrag={onScrollEndDrag}
             onMomentumScrollEnd={onMomentumScrollEnd}
+            refreshing={lookupNomadStore.loading}
+            onRefresh={fetchNomad}
             onGetRef={(ref) => {
               if (ref) {
                 const found = listRefArr.current.find(
