@@ -9,25 +9,24 @@ import NomadRequestTile from "../../components/modals/NomadRequestTileModal";
 import ErrorAlertModal from "../../components/modals/ErrorAlertModal";
 
 const InboxScreen = (props) => {
-  const [loading, setLoading] = useState(true);
-
   const dispatch = useDispatch();
 
   const tribeStore = useSelector((state) => state.tribeStore);
 
   useEffect(() => {
-    fetchBondList();
+    let isSubscribed = true;
+    fetchBondList(isSubscribed);
+    return () => (isSubscribed = false);
   }, [fetchBondList]);
 
-  const fetchBondList = useCallback(async () => {
+  const fetchBondList = useCallback(async (isSubscribed) => {
     try {
-      setLoading(true);
-      const nomadId = await Fetch("nomadId");
-      await fetchNomadsTribe(nomadId)(dispatch);
+      if (isSubscribed) {
+        const nomadId = await Fetch("nomadId");
+        await fetchNomadsTribe(nomadId)(dispatch);
+      }
     } catch (error) {
       ErrorAlertModal(error.message, error);
-    } finally {
-      setLoading(false);
     }
   }, []);
 
@@ -50,7 +49,7 @@ const InboxScreen = (props) => {
         renderItem={renderNomads}
         keyExtractor={(item) => item._id}
         ListEmptyComponent={<EmptyScreen />}
-        refreshing={loading}
+        refreshing={tribeStore.loading}
         onRefresh={() => fetchBondList()}
       />
     </SafeAreaView>

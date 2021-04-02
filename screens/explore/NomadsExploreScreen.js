@@ -16,28 +16,35 @@ const NomadsExploreScreen = (props) => {
   const suggestionsStore = useSelector((state) => state.suggestionsStore);
 
   useEffect(() => {
-    fetchSuggestions();
+    let isSubscribed = true;
+    fetchSuggestions(isSubscribed);
+    return () => (isSubscribed = false);
   }, [fetchSuggestions]);
 
-  const fetchSuggestions = useCallback(async () => {
-    try {
-      setLoading(true);
-      const nomadId = await Fetch("nomadId");
-      await fetchNomadSuggestions(nomadId)(dispatch);
-    } catch (error) {
-      ErrorAlertModal(error.message, error);
-    } finally {
-      setLoading(false);
-    }
-  }, [dispatch]);
+  const fetchSuggestions = useCallback(
+    async (isSubscribed) => {
+      try {
+        if (isSubscribed) {
+          setLoading(true);
+          const nomadId = await Fetch("nomadId");
+          await fetchNomadSuggestions(nomadId)(dispatch);
+        }
+      } catch (error) {
+        ErrorAlertModal(error.message, error);
+      } finally {
+        if (isSubscribed) setLoading(false);
+      }
+    },
+    [dispatch]
+  );
 
-  const handleNavigation = () => {
-    props.navigation.navigate("Profile");
+  const handleNavigation = (id) => {
+    props.navigation.navigate("Profile", { id });
   };
 
   const renderNomads = ({ item }) => (
     <NomadRequestTile
-      onNavigate={handleNavigation}
+      onNavigate={() => handleNavigation(item._id)}
       onRefresh={fetchSuggestions}
       type="suggestion"
       data={item}

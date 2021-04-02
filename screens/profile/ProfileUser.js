@@ -34,8 +34,12 @@ const NomadProfileView = (props) => {
   let listOffset = useRef({});
   let isListGliding = useRef(false);
 
-  useEffect(() => fetchNomad(), [fetchNomad]);
-  useEffect(() => checkIsOwner(), [checkIsOwner]);
+  useEffect(() => {
+    let isSubscribed = true;
+    fetchNomad(isSubscribed);
+    checkIsOwner(isSubscribed);
+    return () => (isSubscribed = false);
+  }, [fetchNomad, checkIsOwner]);
 
   useEffect(() => {
     props.navigation.setOptions({
@@ -57,25 +61,29 @@ const NomadProfileView = (props) => {
     if (lookupNomadStore.error) ErrorAlertModal(lookupNomadStore.error, null);
   }, [lookupNomadStore.error]);
 
-  const fetchNomad = useCallback(async () => {
-    dispatch(resetNomadLookup());
-    try {
-      await fetchNomadLookup(userId)(dispatch);
-    } catch (error) {
-      ErrorAlertModal(error.message, error);
-    }
-  }, [userId]);
-
-  const checkIsOwner = useCallback(async () => {
-    try {
-      const nomadId = await Fetch("nomadId");
-      if (nomadId == userId) {
-        setIsOwner(true);
+  const fetchNomad = useCallback(
+    async (isSubscribed) => {
+      dispatch(resetNomadLookup());
+      try {
+        if (isSubscribed) await fetchNomadLookup(userId)(dispatch);
+      } catch (error) {
+        ErrorAlertModal(error.message, error);
       }
-    } catch (error) {
-      ErrorAlertModal(error.message, error);
-    }
-  }, [userId]);
+    },
+    [userId]
+  );
+
+  const checkIsOwner = useCallback(
+    async (isSubscribed) => {
+      try {
+        const nomadId = await Fetch("nomadId");
+        if (isSubscribed && nomadId == userId) setIsOwner(true);
+      } catch (error) {
+        ErrorAlertModal(error.message, error);
+      }
+    },
+    [userId]
+  );
 
   const syncScrollOffset = () => {
     const curRouteKey = routes[tabIndex].key;

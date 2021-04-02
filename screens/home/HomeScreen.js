@@ -37,8 +37,6 @@ const HomeScreen = (props) => {
       await fetchNomadMemories(nomadId)(dispatch);
     } catch (error) {
       ErrorAlertModal(error.message, error);
-    } finally {
-      setLoading(false);
     }
   }, []);
 
@@ -76,7 +74,7 @@ const HomeScreen = (props) => {
 
   const handleRefresh = async () => await fetchFeedFromApi();
 
-  if (feedStore.loading) return <LoadingScreen />;
+  // if (feedStore.loading) return <LoadingScreen />;
 
   return (
     <FlatList
