@@ -14,7 +14,7 @@ import Memory from "../../components/modals/MemoryModal";
 import ErrorAlertModal from "../../components/modals/ErrorAlertModal";
 
 const HomeScreen = (props) => {
-  const [loading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
 
   const feedStore = useSelector((state) => state.feedStore);
@@ -47,15 +47,21 @@ const HomeScreen = (props) => {
     }
   }, []);
 
-  const fetchFeedFromApi = useCallback(async (isSubscribed) => {
-    try {
-      const nomadId = await Fetch("nomadId");
-      if (isSubscribed) await fetchFeed(nomadId)(dispatch);
-      console.log("Fetching feed");
-    } catch (error) {
-      ErrorAlertModal(error.message, error);
-    }
-  }, []);
+  const fetchFeedFromApi = useCallback(
+    async (isSubscribed) => {
+      try {
+        if (isSubscribed) setLoading(true);
+        const nomadId = await Fetch("nomadId");
+        if (isSubscribed) await fetchFeed(nomadId)(dispatch);
+        console.log("Fetching feed");
+      } catch (error) {
+        ErrorAlertModal(error.message, error);
+      } finally {
+        if (isSubscribed) setLoading(false);
+      }
+    },
+    [feedStore.data]
+  );
 
   const repaintHeaderButton = useCallback(() => {
     props.navigation.setOptions({
