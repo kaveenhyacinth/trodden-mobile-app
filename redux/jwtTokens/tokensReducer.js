@@ -1,4 +1,4 @@
-import { STORE_TOKEN } from "./tokenTypess";
+import { STORE_TOKEN } from "./tokenTypes";
 
 const initialState = {
   signToken: "",

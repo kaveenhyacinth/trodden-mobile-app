@@ -4,19 +4,14 @@ import {
   Image,
   Pressable,
   Modal,
-  Alert,
   StyleSheet,
   Dimensions,
 } from "react-native";
 import { Video } from "expo-av";
 import { Ionicons } from "@expo/vector-icons";
-import { useDispatch, useSelector } from "react-redux";
 import regexifyString from "regexify-string";
-import {
-  getOwnMemories,
-  getNomadMemories,
-} from "../../store/actions/getMemories";
-import { getFeed } from "../../store/actions/Feed";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchNomadMemories, fetchNomadLookup, fetchFeed } from "../../redux";
 import { Fetch } from "../../helpers/deviceStorageHandler";
 import api from "../../api/index";
 import { downloadImage, downloadVideo } from "../../helpers/mediaHandler";
@@ -46,7 +41,7 @@ const MemoryModal = (props) => {
 
   const dispatch = useDispatch();
 
-  const tempNomadStore = useSelector((state) => state.tempNomadStore);
+  const lookupNomadStore = useSelector((state) => state.lookupNomadStore);
 
   useEffect(() => {
     repaintLike();
@@ -186,10 +181,10 @@ const MemoryModal = (props) => {
 
       console.log("new heat", response.data.result);
 
-      if (props.type === "self") await getOwnMemories(userId)(dispatch);
-      if (props.type === "feed") await getFeed(userId)(dispatch);
+      if (props.type === "self") await fetchNomadMemories(userId)(dispatch);
+      if (props.type === "feed") await fetchFeed(userId)(dispatch);
       if (!props.type || props.type === "non-self")
-        await getNomadMemories(tempNomadStore.nomadId)(dispatch);
+        await fetchNomadLookup(lookupNomadStore.data.user._id)(dispatch);
       return;
     } catch (error) {
       ErrorAlertModal(error);
@@ -210,10 +205,10 @@ const MemoryModal = (props) => {
         throw new Error("Something went wrong! Please try again!");
       setNewComment("");
 
-      if (props.type === "self") await getOwnMemories(nomadId)(dispatch);
-      if (props.type === "feed") await getFeed(nomadId)(dispatch);
+      if (props.type === "self") await fetchNomadMemories(nomadId)(dispatch);
+      if (props.type === "feed") await fetchFeed(nomadId)(dispatch);
       if (!props.type || props.type === "non-self")
-        await getNomadMemories(tempNomadStore.nomadId)(dispatch);
+        await fetchNomadLookup(lookupNomadStore.data.user._id)(dispatch);
       return;
     } catch (error) {
       ErrorAlertModal(error);
