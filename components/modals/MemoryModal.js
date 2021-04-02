@@ -316,17 +316,17 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: Colors.accent,
     width: WINDOW_WIDTH,
-    marginVertical: 6,
+    marginVertical: 5,
     //#region IOS Elevation
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.12,
-    shadowRadius: 60,
+    // shadowColor: "#000",
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 2,
+    // },
+    // shadowOpacity: 0.12,
+    // shadowRadius: 60,
     //#endregion
-    elevation: 2,
+    // elevation: 2,
   },
   header: {
     flexDirection: "row",

@@ -14,6 +14,7 @@ import Memory from "../../components/modals/MemoryModal";
 import ErrorAlertModal from "../../components/modals/ErrorAlertModal";
 
 const HomeScreen = (props) => {
+  const [loading] = useState(false);
   const dispatch = useDispatch();
 
   const feedStore = useSelector((state) => state.feedStore);
@@ -23,27 +24,33 @@ const HomeScreen = (props) => {
   }, [repaintHeaderButton]);
 
   useEffect(() => {
-    fetchOwner();
+    let isSubscribed = true;
+    fetchOwner(isSubscribed);
+    return () => (isSubscribed = false);
   }, [fetchOwner]);
 
   useEffect(() => {
-    fetchFeedFromApi();
+    let isSubscribed = true;
+    fetchFeedFromApi(isSubscribed);
+    return () => (isSubscribed = false);
   }, [fetchFeedFromApi]);
 
-  const fetchOwner = useCallback(async () => {
+  const fetchOwner = useCallback(async (isSubscribed) => {
     try {
       const nomadId = await Fetch("nomadId");
-      await fetchNomadProfile(nomadId)(dispatch);
-      await fetchNomadMemories(nomadId)(dispatch);
+      if (isSubscribed) {
+        await fetchNomadProfile(nomadId)(dispatch);
+        await fetchNomadMemories(nomadId)(dispatch);
+      }
     } catch (error) {
       ErrorAlertModal(error.message, error);
     }
   }, []);
 
-  const fetchFeedFromApi = useCallback(async () => {
+  const fetchFeedFromApi = useCallback(async (isSubscribed) => {
     try {
       const nomadId = await Fetch("nomadId");
-      await fetchFeed(nomadId)(dispatch);
+      if (isSubscribed) await fetchFeed(nomadId)(dispatch);
       console.log("Fetching feed");
     } catch (error) {
       ErrorAlertModal(error.message, error);
@@ -86,7 +93,7 @@ const HomeScreen = (props) => {
       showsHorizontalScrollIndicator={false}
       showsVerticalScrollIndicator={false}
       keyExtractor={(item, index) => index.toString()}
-      refreshing={feedStore.loading}
+      refreshing={loading}
       onRefresh={handleRefresh}
     />
   );
