@@ -41,7 +41,10 @@ const nomadReducer = (state = initialState, action) => {
     case FETCH_NOMAD_PROFILE_SUCCESS:
       return {
         loading: false,
-        data: action.payload,
+        data: {
+          ...state.data,
+          ...action.payload,
+        },
         error: "",
       };
     case FETCH_NOMAD_PROFILE_FAILURE:

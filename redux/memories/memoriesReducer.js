@@ -1,3 +1,4 @@
+import { produce } from "immer";
 import {
   FETCH_NOMAD_MEMORIES_REQUEST,
   FETCH_NOMAD_MEMORIES_SUCCESS,

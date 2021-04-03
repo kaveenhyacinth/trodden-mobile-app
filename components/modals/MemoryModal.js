@@ -199,7 +199,7 @@ const MemoryModal = (props) => {
         postId,
       };
       const response = await api.patch.postComment(commentBody);
-      if (!response.data.result)
+      if (!response.data.success)
         throw new Error("Something went wrong! Please try again!");
       setNewComment("");
 
