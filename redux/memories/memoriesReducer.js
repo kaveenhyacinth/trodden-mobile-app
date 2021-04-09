@@ -15,28 +15,27 @@ const initialState = {
 const nomadMemoriesReducer = (state = initialState, action) => {
   switch (action.type) {
     case FETCH_NOMAD_MEMORIES_REQUEST:
-      return {
-        ...state,
-        loading: true,
-      };
+      return produce(state, (draftState) => {
+        draftState.loading = true;
+      });
     case FETCH_NOMAD_MEMORIES_SUCCESS:
-      return {
-        loading: false,
-        data: action.payload,
-        error: "",
-      };
+      return produce(state, (draftState) => {
+        draftState.loading = false;
+        draftState.data = [...action.payload];
+        draftState.error = "";
+      });
     case FETCH_NOMAD_MEMORIES_FAILURE:
-      return {
-        loading: false,
-        data: [],
-        error: action.payload,
-      };
+      return produce(state, (draftState) => {
+        draftState.loading = false;
+        draftState.data = [];
+        draftState.error = action.payload;
+      });
     case RESET_NOMAD_MEMORIES:
-      return {
-        loading: false,
-        data: [],
-        error: "",
-      };
+      return produce(state, (draftState) => {
+        draftState.loading = false;
+        draftState.data = [];
+        draftState.error = "";
+      });
     default:
       return state;
   }

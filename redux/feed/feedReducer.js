@@ -1,3 +1,4 @@
+import { produce } from "immer";
 import {
   FETCH_NOMAD_FEED_REQUEST,
   FETCH_NOMAD_FEED_SUCCESS,
@@ -11,24 +12,24 @@ const initialState = {
 };
 
 const feedReducer = (state = initialState, action) => {
+  console.log(state.data);
   switch (action.type) {
     case FETCH_NOMAD_FEED_REQUEST:
-      return {
-        ...state,
-        loading: true,
-      };
+      return produce(state, (draftState) => {
+        draftState.loading = true;
+      });
     case FETCH_NOMAD_FEED_SUCCESS:
-      return {
-        loading: false,
-        data: action.payload,
-        error: "",
-      };
+      return produce(state, (draftState) => {
+        draftState.loading = false;
+        draftState.data = [...action.payload];
+        draftState.error = "";
+      });
     case FETCH_NOMAD_FEED_FAILURE:
-      return {
-        loading: false,
-        data: [],
-        error: action.payload,
-      };
+      return produce(state, (draftState) => {
+        draftState.loading = false;
+        draftState.data = [];
+        draftState.error = action.payload;
+      });
     default:
       return state;
   }
