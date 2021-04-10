@@ -51,8 +51,14 @@ const NewPostScreen = (props) => {
   }, [renderHeaderButton]);
 
   useEffect(() => {
+    const checkIsPostReady = () => {
+      if (images.length === 0 && video.length === 0)
+        return setIsPostReady(false);
+      if (content.length < 5) return setIsPostReady(false);
+      return setIsPostReady(true);
+    };
     checkIsPostReady();
-  }, [images, video, content]);
+  }, [images.length, video.length, content.length]);
 
   const renderHeaderButton = useCallback(() => {
     props.navigation.setOptions({
@@ -69,12 +75,6 @@ const NewPostScreen = (props) => {
       ),
     });
   }, [isPostReady]);
-
-  const checkIsPostReady = () => {
-    if ((images.length !== 0 || video.length !== 0) && content.length >= 5)
-      return setIsPostReady(true);
-    return setIsPostReady(false);
-  };
 
   const renderSelcetedItems = () => {
     if (video.length !== 0 && images.length === 0) {

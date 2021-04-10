@@ -15,6 +15,7 @@ import { fetchNomadMemories, fetchNomadLookup, fetchFeed } from "../../redux";
 import { Fetch } from "../../helpers/deviceStorageHandler";
 import api from "../../api/index";
 import { downloadImage, downloadVideo } from "../../helpers/mediaHandler";
+import { timeDifference } from "../../helpers/timeStampEngine";
 import Colors from "../../theme/Colors";
 import Typography from "../../theme/Typography";
 import BodyText from "../ui/BodyText";
@@ -278,19 +279,22 @@ const MemoryModal = (props) => {
         </View>
         <View style={styles.statusTextContainer}>
           <BodyText style={styles.statusText}>
-            <Pressable>
-              <BodyText style={styles.statusText}>
-                {heatCount}
-                {heatCount === 1 ? ` heart` : ` hearts`}
-              </BodyText>
-            </Pressable>
-            {"  "}
-            <Pressable onPress={() => setisOpenComments(true)}>
-              <BodyText style={styles.statusText}>
-                {data.comments.length}
-                {data.comments.length === 1 ? ` comment` : ` comments`}
-              </BodyText>
-            </Pressable>
+            <BodyText style={styles.statusText}>
+              {heatCount}
+              {heatCount === 1 ? ` heart` : ` hearts`}
+            </BodyText>
+            <BodyText style={styles.statusText}>{" · "}</BodyText>
+            <BodyText
+              onPress={() => setisOpenComments(true)}
+              style={styles.statusText}
+            >
+              {data.comments.length}
+              {data.comments.length === 1 ? ` comment` : ` comments`}
+            </BodyText>
+            <BodyText style={styles.statusText}>{" · "}</BodyText>
+            <BodyText style={styles.statusText}>
+              {timeDifference(data.createdAt)}
+            </BodyText>
           </BodyText>
         </View>
       </View>

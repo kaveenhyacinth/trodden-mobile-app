@@ -25,6 +25,11 @@ const CommentsView = (props) => {
     setComments([...props.comments]);
   }, [props.comments]);
 
+  useEffect(() => {
+    if (comments !== [])
+      console.log("Dates", (new Date() - new Date(2021, 2, 4, 5, 50, 34, 200))/1000/60/60/24/7);
+  });
+
   const renderCommentBubble = (comment) => {
     const commentor = comment.commentor;
     const content = comment.content;
@@ -66,7 +71,7 @@ const CommentsView = (props) => {
       </ScrollView>
       <View style={styles.newCommentContainer}>
         <InputBox
-          placeholder="Type a new comment"
+          placeholder="Start typing new comment..."
           style={{ borderColor: Colors.accent }}
           containerStyle={{ width: SCREEN_WIDTH * 0.8 }}
           onChangeText={(value) => props.onInputChangeText(value)}
@@ -74,11 +79,11 @@ const CommentsView = (props) => {
           returnKeyType="send"
           onSubmitEditing={props.onSubmit}
         />
-        <View style={styles.sendBtnWrapper}>
+        {/* <View style={styles.sendBtnWrapper}>
           <Pressable onPress={props.onSubmit}>
             <Ionicons name="send" size={30} color={Colors.primary} />
           </Pressable>
-        </View>
+        </View> */}
       </View>
     </SafeAreaView>
   );
@@ -123,8 +128,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     paddingHorizontal: 10,
     justifyContent: "space-between",
-    borderTopColor: Colors.outline,
-    borderTopWidth: 1,
+    // borderTopColor: Colors.outline,
+    // borderTopWidth: 1,
   },
   sendBtnWrapper: {
     height: "100%",
@@ -147,7 +152,7 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   commentContentWrapper: {
-    backgroundColor: Colors.backgroundOverlay,
+    backgroundColor: Colors.background,
     flex: 1,
     paddingVertical: 10,
     paddingHorizontal: 10,
@@ -160,7 +165,7 @@ const styles = StyleSheet.create({
     ...Typography.bodyTextBold,
   },
   commentContent: {
-    paddingVertical: 5,
+    paddingVertical: 1,
   },
 });
 
