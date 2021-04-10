@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useReducer } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Image,
@@ -25,48 +25,35 @@ import ErrorAlertModal from "./ErrorAlertModal";
 const { width: WINDOW_WIDTH } = Dimensions.get("window");
 
 const MemoryModal = (props) => {
-  const [postId] = useState(props.data._id);
-  const [content] = useState(props.data.content);
-  const [media] = useState(props.data.media);
-  const [user] = useState(props.data.owner);
-  const [destination] = useState(props.data.destination);
-  const [comments, setComments] = useState(props.data.comments);
-  const [heats] = useState(props.data.heats);
-  const [heatCount, setHeatCount] = useState(heats.length);
+  const [data, setData] = useState(props.data);
+  const [heatCount, setHeatCount] = useState(props.data.heats.length);
   const [isReadMore, setIsReadMore] = useState(false);
   const [isOpenSettings, setIsOpenSettings] = useState(false);
   const [isOpenComments, setisOpenComments] = useState(false);
   const [isHeated, setIsHeated] = useState(false);
   const [newComment, setNewComment] = useState("");
 
-  const [, forceUpdate] = useReducer((x) => x + 1, 0);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log("Comments in memory modal", comments);
-  }, [comments]);
+    setData({ ...props.data });
+  }, [props.data]);
 
+  // Paint like button
   useEffect(() => {
-    console.log("Comments in memory modal props", props.data.comments);
-    setComments([...props.data.comments]);
-  }, [props.data.comments]);
-
-  useEffect(() => {
-    repaintLike();
-  }, [repaintLike]);
-
-  const repaintLike = useCallback(async () => {
-    try {
-      const userId = await Fetch("nomadId");
-      const isHeated = heats.find((heat) => heat._id === userId);
-      if (isHeated) return setIsHeated(true);
-      setIsHeated(false);
-      setHeatCount(heats.length);
-      return;
-    } catch (error) {
-      ErrorAlertModal(error.message, error);
-    }
-  }, [heats]);
+    (async () => {
+      try {
+        const userId = await Fetch("nomadId");
+        const heated = data.heats.find((heat) => heat._id === userId);
+        if (heated) return setIsHeated(true);
+        setIsHeated(false);
+        setHeatCount(data.heats.length);
+        return;
+      } catch (error) {
+        ErrorAlertModal(error.message, error);
+      }
+    })();
+  }, [data.heats]);
 
   const renderHashTags = (content) => {
     const regexp = new RegExp(/(^|\s)#[a-zA-Z0-9][\w-]*\b/g);
@@ -101,7 +88,7 @@ const MemoryModal = (props) => {
     return textList;
   };
 
-  const renderContent = () => {
+  const renderContent = (content) => {
     if (content.length < 100) {
       return <BodyText>{renderHashTags(content)}</BodyText>;
     }
@@ -171,27 +158,25 @@ const MemoryModal = (props) => {
 
   const handleLike = async () => {
     try {
-      // Start mocking like dislike before real function to reduce delay
-      isHeated
-        ? setHeatCount((prevState) => prevState - 1)
-        : setHeatCount((prevState) => prevState + 1);
-      setIsHeated((prevState) => !prevState);
-      // End mocking
-
       const userId = await Fetch("nomadId");
       const heatBody = {
         userId,
-        postId,
+        postId: data._id,
       };
       const response = await api.patch.postHeat(heatBody);
-      if (!response.data.result)
+      if (!response.data.success)
         throw new Error("Something went wrong! Please try again!");
 
       console.log("new heat", response.data.result);
 
+      const newHeats = response.data.result.heats;
+      setIsHeated((prevState) => !prevState);
+      setHeatCount(newHeats.length);
+
       if (props.type === "self" || props.type === "feed")
         await fetchNomadMemories(userId)(dispatch);
-      if (props.type === "non-self") await fetchNomadLookup(user._id)(dispatch);
+      if (props.type === "non-self")
+        await fetchNomadLookup(data.owner._id)(dispatch);
       await fetchFeed(userId)(dispatch);
       return;
     } catch (error) {
@@ -206,7 +191,7 @@ const MemoryModal = (props) => {
       const commentBody = {
         userId: nomadId,
         content: newComment,
-        postId,
+        postId: data._id,
       };
       const response = await api.patch.postComment(commentBody);
       if (!response.data.success)
@@ -215,14 +200,16 @@ const MemoryModal = (props) => {
 
       if (props.type === "self" || props.type === "feed")
         await fetchNomadMemories(nomadId)(dispatch);
-      if (props.type === "non-self") await fetchNomadLookup(user._id)(dispatch);
+      if (props.type === "non-self")
+        await fetchNomadLookup(data.owner._id)(dispatch);
       await fetchFeed(nomadId)(dispatch);
-      forceUpdate();
       return;
     } catch (error) {
       ErrorAlertModal(error.message, error);
     }
   };
+
+  if (data === {}) return <></>;
 
   return (
     <View style={styles.container}>
@@ -232,7 +219,7 @@ const MemoryModal = (props) => {
             <View style={styles.headerImageWrapper}>
               <Image
                 style={styles.headerImage}
-                source={{ uri: downloadImage(user.prof_img) }}
+                source={{ uri: downloadImage(data.owner.prof_img) }}
               />
             </View>
           </Pressable>
@@ -240,11 +227,13 @@ const MemoryModal = (props) => {
         <View style={styles.midSection}>
           <BodyText
             style={styles.headerName}
-          >{`${user.first_name} ${user.last_name}`}</BodyText>
+          >{`${data.owner.first_name} ${data.owner.last_name}`}</BodyText>
           <Pressable onPress={() => {}}>
             <BodyText style={styles.headerLocation}>
               <Ionicons name="location" color={Colors.primary} />
-              {destination ? " " + destination.des_name : " Somewhere on Earth"}
+              {data.destination
+                ? " " + data.destination.des_name
+                : " Somewhere on Earth"}
             </BodyText>
           </Pressable>
         </View>
@@ -256,8 +245,8 @@ const MemoryModal = (props) => {
           </Pressable>
         </View>
       </View>
-      <View style={styles.content}>{renderContent()}</View>
-      {renderGalary(media)}
+      <View style={styles.content}>{renderContent(data.content)}</View>
+      {renderGalary(data.media)}
       <View style={styles.statusBar}>
         <View style={styles.statusIconContainer}>
           <Pressable onPress={handleLike}>
@@ -297,8 +286,8 @@ const MemoryModal = (props) => {
             {"  "}
             <Pressable onPress={() => setisOpenComments(true)}>
               <BodyText style={styles.statusText}>
-                {comments.length}
-                {comments.length === 1 ? ` comment` : ` comments`}
+                {data.comments.length}
+                {data.comments.length === 1 ? ` comment` : ` comments`}
               </BodyText>
             </Pressable>
           </BodyText>
@@ -314,7 +303,7 @@ const MemoryModal = (props) => {
           onInputChangeText={(value) => setNewComment(value)}
           onSubmit={() => handlePostComment()}
           onClose={() => setisOpenComments(false)}
-          comments={comments}
+          comments={data.comments}
         />
       </Modal>
     </View>

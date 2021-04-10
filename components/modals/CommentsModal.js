@@ -22,7 +22,6 @@ const CommentsView = (props) => {
   const [comments, setComments] = useState([]);
 
   useEffect(() => {
-    console.log("Comments in comments view prop", props.comments);
     setComments([...props.comments]);
   }, [props.comments]);
 
