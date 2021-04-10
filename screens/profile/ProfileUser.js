@@ -18,7 +18,8 @@ const TAB_BAR_HEIGHT = 50;
 const HEADER_HEIGHT = WINDOW_HEIGHT * 0.4;
 
 const NomadProfileView = (props) => {
-  const [userId] = useState(props.route.params.id);
+  const [loading, setLoading] = useState(true);
+  const [userId, setUserId] = useState(props.route.params.id);
   const [isOwner, setIsOwner] = useState(false);
   const [tabIndex, setIndex] = useState(0);
   const [routes] = useState([
@@ -35,15 +36,19 @@ const NomadProfileView = (props) => {
   let isListGliding = useRef(false);
 
   useEffect(() => {
-    let isSubscribed = true;
-    fetchNomad(isSubscribed);
-    checkIsOwner(isSubscribed);
-    return () => (isSubscribed = false);
+    setUserId(props.route.params.id);
+  }, [props.route.params.id]);
+
+  useEffect(() => {
+    fetchNomad();
+    checkIsOwner();
   }, [fetchNomad, checkIsOwner]);
 
   useEffect(() => {
     props.navigation.setOptions({
-      title: `@${lookupNomadStore.data.user.username}` ?? "...",
+      title: lookupNomadStore.data.user.username
+        ? `@${lookupNomadStore.data.user.username}`
+        : "Loading...",
     });
   }, [lookupNomadStore.data.user]);
 
@@ -61,29 +66,26 @@ const NomadProfileView = (props) => {
     if (lookupNomadStore.error) ErrorAlertModal(lookupNomadStore.error, null);
   }, [lookupNomadStore.error]);
 
-  const fetchNomad = useCallback(
-    async (isSubscribed) => {
-      dispatch(resetNomadLookup());
-      try {
-        if (isSubscribed) await fetchNomadLookup(userId)(dispatch);
-      } catch (error) {
-        ErrorAlertModal(error.message, error);
-      }
-    },
-    [userId]
-  );
+  const fetchNomad = useCallback(async () => {
+    setLoading(true);
+    dispatch(resetNomadLookup());
+    try {
+      await fetchNomadLookup(userId)(dispatch);
+    } catch (error) {
+      ErrorAlertModal(error.message, error);
+    } finally {
+      setLoading(false);
+    }
+  }, [userId]);
 
-  const checkIsOwner = useCallback(
-    async (isSubscribed) => {
-      try {
-        const nomadId = await Fetch("nomadId");
-        if (isSubscribed && nomadId == userId) setIsOwner(true);
-      } catch (error) {
-        ErrorAlertModal(error.message, error);
-      }
-    },
-    [userId]
-  );
+  const checkIsOwner = useCallback(async () => {
+    try {
+      const nomadId = await Fetch("nomadId");
+      if (nomadId == userId) setIsOwner(true);
+    } catch (error) {
+      ErrorAlertModal(error.message, error);
+    }
+  }, [userId]);
 
   const syncScrollOffset = () => {
     const curRouteKey = routes[tabIndex].key;
@@ -240,7 +242,8 @@ const NomadProfileView = (props) => {
     );
   };
 
-  if (lookupNomadStore.loading) return <LoadingScreen />;
+  // if (lookupNomadStore.loading) return <LoadingScreen />;
+  if (loading) return <LoadingScreen />;
 
   return (
     <View style={{ flex: 1 }}>
