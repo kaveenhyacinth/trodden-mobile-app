@@ -1,7 +1,7 @@
 export const timeDifference = (date) => {
   const msDiff = new Date() - new Date(date);
-  const sDiff = msDiff / 1000;
-  const miDiff = sDiff / 60;
+  const sDiff = Math.floor(msDiff / 1000);
+  const miDiff = Math.floor(sDiff / 60);
   const hDiff = Math.floor(miDiff / 60);
   const dDiff = Math.floor(hDiff / 24);
   const wDiff = Math.floor(dDiff / 7);
