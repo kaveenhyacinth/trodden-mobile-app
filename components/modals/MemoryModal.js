@@ -37,7 +37,8 @@ const MemoryModal = (props) => {
 
   useEffect(() => {
     setData({ ...props.data });
-  }, [props.data]);
+    setHeatCount(props.data.heats.length);
+  }, [props.data, props.data.heats.length]);
 
   // Paint like button
   useEffect(() => {
