@@ -1,4 +1,4 @@
-import { produce } from "immer";
+import produce from "immer";
 import {
   FETCH_NOMAD_FEED_REQUEST,
   FETCH_NOMAD_FEED_SUCCESS,
@@ -12,7 +12,6 @@ const initialState = {
 };
 
 const feedReducer = (state = initialState, action) => {
-  console.log(state.data);
   switch (action.type) {
     case FETCH_NOMAD_FEED_REQUEST:
       return produce(state, (draftState) => {

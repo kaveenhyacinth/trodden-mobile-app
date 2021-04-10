@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import {
   View,
   ScrollView,
@@ -19,13 +19,18 @@ import Typography from "../../theme/Typography";
 const { width: SCREEN_WIDTH } = Dimensions.get("screen");
 
 const CommentsView = (props) => {
-  const [comments] = useState(props.comments);
+  const [comments, setComments] = useState([]);
+
+  useEffect(() => {
+    console.log("Comments in comments view prop", props.comments);
+    setComments([...props.comments]);
+  }, [props.comments]);
 
   const renderCommentBubble = (comment) => {
     const commentor = comment.commentor;
     const content = comment.content;
     return (
-      <View key={comment._id} style={styles.commentBubbleWrapper}>
+      <View key={Math.random().toString()} style={styles.commentBubbleWrapper}>
         <View style={styles.commentImageContainer}>
           <Image
             style={styles.commentImage}
@@ -42,9 +47,7 @@ const CommentsView = (props) => {
     );
   };
 
-  const renderComments = () => {
-    if (!comments || comments.length === 0) return <EmptyScreen />;
-
+  const renderComments = (comments) => {
     return comments.map((comment) => renderCommentBubble(comment));
   };
 
@@ -59,7 +62,8 @@ const CommentsView = (props) => {
         </View>
       </View>
       <ScrollView style={styles.commentsContainer}>
-        {renderComments()}
+        {console.log("Insider comments at comment view", comments)}
+        {comments === [] ? <EmptyScreen /> : renderComments(comments)}
       </ScrollView>
       <View style={styles.newCommentContainer}>
         <InputBox

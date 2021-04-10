@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useReducer } from "react";
 import {
   View,
   Image,
@@ -30,7 +30,7 @@ const MemoryModal = (props) => {
   const [media] = useState(props.data.media);
   const [user] = useState(props.data.owner);
   const [destination] = useState(props.data.destination);
-  const [comments] = useState(props.data.comments);
+  const [comments, setComments] = useState(props.data.comments);
   const [heats] = useState(props.data.heats);
   const [heatCount, setHeatCount] = useState(heats.length);
   const [isReadMore, setIsReadMore] = useState(false);
@@ -39,7 +39,17 @@ const MemoryModal = (props) => {
   const [isHeated, setIsHeated] = useState(false);
   const [newComment, setNewComment] = useState("");
 
+  const [, forceUpdate] = useReducer((x) => x + 1, 0);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    console.log("Comments in memory modal", comments);
+  }, [comments]);
+
+  useEffect(() => {
+    console.log("Comments in memory modal props", props.data.comments);
+    setComments([...props.data.comments]);
+  }, [props.data.comments]);
 
   useEffect(() => {
     repaintLike();
@@ -207,6 +217,7 @@ const MemoryModal = (props) => {
         await fetchNomadMemories(nomadId)(dispatch);
       if (props.type === "non-self") await fetchNomadLookup(user._id)(dispatch);
       await fetchFeed(nomadId)(dispatch);
+      forceUpdate();
       return;
     } catch (error) {
       ErrorAlertModal(error.message, error);

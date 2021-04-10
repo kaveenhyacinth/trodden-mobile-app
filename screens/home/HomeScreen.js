@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { FlatList, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
@@ -15,24 +15,43 @@ import ErrorAlertModal from "../../components/modals/ErrorAlertModal";
 
 const HomeScreen = (props) => {
   const [loading, setLoading] = useState(false);
+  const [nomadId, setUserId] = useState(undefined);
+  const componentIsMounted = useRef(true);
   const dispatch = useDispatch();
-
   const feedStore = useSelector((state) => state.feedStore);
+
+  // Cleanup fn
+  useEffect(() => {
+    return () => {
+      componentIsMounted.current = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    console.log("Feedstore last post", feedStore.data[0]);
+  }, [feedStore.data]);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const nomadId = await Fetch("nomadId");
+        if (componentIsMounted.current) setUserId(nomadId);
+      } catch (error) {
+        ErrorAlertModal(error.message, error);
+      }
+    })();
+  }, [Fetch, setUserId, ErrorAlertModal, componentIsMounted]);
 
   useEffect(() => {
     repaintHeaderButton();
   }, [repaintHeaderButton]);
 
   useEffect(() => {
-    let isSubscribed = true;
-    fetchOwner(isSubscribed);
-    return () => (isSubscribed = false);
+    fetchOwner(componentIsMounted);
   }, [fetchOwner]);
 
   useEffect(() => {
-    let isSubscribed = true;
-    fetchFeedFromApi(isSubscribed);
-    return () => (isSubscribed = false);
+    fetchFeedFromApi();
   }, [fetchFeedFromApi]);
 
   const fetchOwner = useCallback(async (isSubscribed) => {
@@ -47,21 +66,18 @@ const HomeScreen = (props) => {
     }
   }, []);
 
-  const fetchFeedFromApi = useCallback(
-    async (isSubscribed) => {
-      try {
-        if (isSubscribed) setLoading(true);
-        const nomadId = await Fetch("nomadId");
-        if (isSubscribed) await fetchFeed(nomadId)(dispatch);
-        console.log("Fetching feed");
-      } catch (error) {
-        ErrorAlertModal(error.message, error);
-      } finally {
-        if (isSubscribed) setLoading(false);
-      }
-    },
-    [feedStore.data]
-  );
+  const fetchFeedFromApi = useCallback(async () => {
+    try {
+      setLoading(true);
+      const nomadId = await Fetch("nomadId");
+      await fetchFeed(nomadId)(dispatch);
+      console.log("Fetching feed", feedStore.loading);
+    } catch (error) {
+      ErrorAlertModal(error.message, error);
+    } finally {
+      setLoading(false);
+    }
+  }, [nomadId, feedStore.loading]);
 
   const repaintHeaderButton = useCallback(() => {
     props.navigation.setOptions({
@@ -85,10 +101,6 @@ const HomeScreen = (props) => {
 
   const renderFeed = ({ item }) => <Memory type="feed" data={item} />;
 
-  const handleRefresh = async () => await fetchFeedFromApi();
-
-  // if (feedStore.loading) return <LoadingScreen />;
-
   return (
     <FlatList
       data={feedStore.data}
@@ -100,7 +112,7 @@ const HomeScreen = (props) => {
       showsVerticalScrollIndicator={false}
       keyExtractor={(item, index) => index.toString()}
       refreshing={loading}
-      onRefresh={handleRefresh}
+      onRefresh={fetchFeedFromApi}
     />
   );
 };
