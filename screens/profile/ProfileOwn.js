@@ -8,7 +8,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { fetchNomadMemories, resetNomadMomeries } from "../../redux";
 import { Delete } from "../../helpers/deviceStorageHandler";
 import TimelineScreen from "./TimelineScreen";
-import TripsScreen from "./TripsScreen";
+import TripsScreenOwn from "./TripsScreenOwn";
 import Colors from "../../theme/Colors";
 import Typography from "../../theme/Typography";
 import ProfileHeader from "../../components/headers/ProfileHeader";
@@ -223,7 +223,7 @@ const OwnerProfileView = (props) => {
           />
         );
       case "tab2":
-        return <TripsScreen />;
+        return <TripsScreenOwn />;
       default:
         return null;
     }

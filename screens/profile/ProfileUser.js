@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchNomadLookup, resetNomadLookup } from "../../redux";
 import { Fetch } from "../../helpers/deviceStorageHandler";
 import TimelineScreen from "./TimelineScreen";
-import TripsScreen from "./TripsScreen";
+import TripsScreen from "./TripsScreenUser";
 import LoadingScreen from "../info/LoadingScreen";
 import Colors from "../../theme/Colors";
 import Typography from "../../theme/Typography";
