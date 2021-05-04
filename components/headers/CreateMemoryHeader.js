@@ -27,12 +27,12 @@ const CreateMemoryHeader = (props) => {
       <View style={styles.bottomRow}>
         <View style={styles.bottomCol}>
           <BodyText onPress={props.onPress}>
-            <Ionicons name="image" size={23} color={"blue"} />
+            <Ionicons name="image" size={23} color={Colors.purple} />
           </BodyText>
         </View>
         <View style={styles.bottomCol}>
           <BodyText onPress={props.onPress}>
-            <Ionicons name="camera" size={23} color={"purple"} />
+            <Ionicons name="camera" size={23} color={Colors.blue} />
           </BodyText>
         </View>
         <View style={styles.bottomCol}>

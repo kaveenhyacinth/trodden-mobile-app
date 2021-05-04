@@ -256,7 +256,7 @@ const MemoryModal = (props) => {
               <Ionicons
                 style={styles.statusIcon}
                 size={30}
-                color={Colors.primary}
+                color={Colors.pink}
                 name="heart"
               />
             ) : (
