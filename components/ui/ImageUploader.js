@@ -1,21 +1,23 @@
 import React from "react";
-import { View, StyleSheet, Image, Button } from "react-native";
+import { View, StyleSheet, Image, Button, Pressable } from "react-native";
 import Colors from "../../theme/Colors";
 import BodyText from "./BodyText";
 
 const ImgPicker = (props) => {
   return (
     <View style={{ ...styles.imagePicker, ...props.style }}>
-      <View style={styles.imagePrev}>
-        {props.image !== null ? (
-          <Image style={styles.image} source={{ uri: props.image }} />
-        ) : (
-          <Image
-            style={styles.image}
-            source={require("../../assets/adaptive-icon.png")}
-          />
-        )}
-      </View>
+      <Pressable onPress={props.onUpload}>
+        <View style={styles.imagePrev}>
+          {props.image !== null ? (
+            <Image style={styles.image} source={{ uri: props.image }} />
+          ) : (
+            <Image
+              style={styles.image}
+              source={require("../../assets/adaptive-icon.png")}
+            />
+          )}
+        </View>
+      </Pressable>
       <View style={styles.textArea}>
         <BodyText style={styles.text}>Upload new profile image</BodyText>
         <Button

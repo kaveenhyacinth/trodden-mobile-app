@@ -55,6 +55,7 @@ const shoot = {
     activateProfile: (body) => Http.post("/api/auth/activate", body),
     createMemo: (body) => Http.post("/api/memories/new", body),
     requestBond: (body) => Http.put("/api/profile/req/new", body),
+    createCaravan: (body) => Http.post("/api/caravan/new", body),
   },
   get: {
     getInterests: () => Http.get("/api/interests"),
