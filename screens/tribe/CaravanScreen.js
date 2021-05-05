@@ -1,118 +1,28 @@
-import React, { useEffect, useCallback, useState, useRef } from "react";
-import {
-  Text,
-  StyleSheet,
-  SectionList,
-  SafeAreaView,
-  View,
-} from "react-native";
-import ErrorAlertModal from "../../components/modals/ErrorAlertModal";
-import FloatingButton from "../../components/ui/FloatingButton";
-import ScreenView from "../../components/ui/ScreenView";
-import TitleText from "../../components/ui/TitleText";
-import { Fetch } from "../../helpers/deviceStorageHandler";
-import EmptyScreen from "../info/EmptyScreen";
-import api from "../../api";
+import React, { useEffect } from "react";
+import { StyleSheet, SafeAreaView } from "react-native";
 import Colors from "../../theme/Colors";
-import CaravanListTileModal from "../../components/modals/CaravanListTileModal";
-import Typography from "../../theme/Typography";
+import EmptyScreen from "../info/EmptyScreen";
 
-const CaravanScreen = (props) => {
-  const [loading, setloading] = useState(false);
-  const [caravans, setcaravans] = useState([]);
-
-  const componentIsMounted = useRef(true);
-
-  const fetchCaravans = useCallback(async () => {
-    try {
-      setloading(true);
-      const userId = await Fetch("nomadId");
-      const { data } = await api.get.getUserCaravans(userId);
-      if (!data.success) throw new Error(data.msg);
-      const ownCaravans = data.result.filter(
-        (caravan) => caravan.owner._id === userId
-      );
-      const memberCaravans = data.result.filter(
-        (caravan) => caravan.owner._id !== userId
-      );
-      const sections = [
-        {
-          title: "Own Caravans",
-          data: ownCaravans,
-        },
-        {
-          title: "Joined Caravans",
-          data: memberCaravans,
-        },
-      ];
-      console.log("sections", sections);
-      setcaravans((prevState) => sections);
-    } catch (error) {
-      ErrorAlertModal(error.message, error);
-    } finally {
-      setloading(false);
-    }
-  }, []);
-
-  const handleNavigation = () => {
-    props.navigation.navigate("NewCaravan");
-  };
-
-  const renderTiles = ({ item }) => (
-    <CaravanListTileModal
-      caravan={item}
-      onNavigate={() => {
-        alert("Navigate!");
-      }}
-      onRefresh={fetchCaravans}
-    />
-  );
-
-  const renderHeaders = (title) => (
-    <TitleText style={styles.header}>{title}</TitleText>
-  );
-
+const Caravan = (props) => {
   useEffect(() => {
-    return () => {
-      componentIsMounted.current = false;
-    };
-  }, []);
-
-  useEffect(() => {
-    if (componentIsMounted) {
-      fetchCaravans();
-    }
-  }, [fetchCaravans]);
+    const { params } = props.route;
+    props.navigation.setOptions({
+      title: `${params.name ?? "Caravan"}`,
+    });
+  }, [props.route, props.navigation]);
 
   return (
     <SafeAreaView style={styles.screen}>
-      <SectionList
-        style={styles.sectionList}
-        sections={caravans}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={renderTiles}
-        renderSectionHeader={({ section: { title } }) => renderHeaders(title)}
-      />
-      <FloatingButton onPress={handleNavigation} />
+      <EmptyScreen />
     </SafeAreaView>
   );
 };
 
-export default CaravanScreen;
+export default Caravan;
 
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    paddingHorizontal: 10,
     backgroundColor: Colors.accent,
-  },
-  sectionList: {
-    flex: 1,
-  },
-  header: {
-    fontSize: 18,
-    color: Colors.info,
-    backgroundColor: Colors.background,
-    padding: 10
   },
 });

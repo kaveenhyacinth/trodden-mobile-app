@@ -3,11 +3,12 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import Colors from "../theme/Colors";
 import Typography from "../theme/Typography";
-import CaravanScreen from "../screens/tribe/CaravanScreen";
-import BlazeScreen from "../screens/tribe/BlazesScreen";
+import CaravansListScreen from "../screens/tribe/CaravansListScreen";
+import BlazesListScreen from "../screens/tribe/BlazesListScreen";
 import NomadScreen from "../screens/tribe/NomadsScreen";
 import ProfileUser from "../screens/profile/ProfileUser";
 import CreateCaravan from "../screens/create/CreateCaravanScreen";
+import CaravanScreen from "../screens/tribe/CaravanScreen";
 
 const Stack = createStackNavigator();
 const Tab = createMaterialTopTabNavigator();
@@ -41,14 +42,14 @@ const TribeTabNavigator = (props) => {
     >
       <Tab.Screen
         name="blazes"
-        component={BlazeScreen}
+        component={BlazesListScreen}
         options={{
           title: "Blazes",
         }}
       />
       <Tab.Screen
         name="caravans"
-        component={CaravanScreen}
+        component={CaravansListScreen}
         options={{
           title: "Caravans",
         }}
@@ -78,6 +79,13 @@ const TribeStackNavigator = (props) => {
         component={CreateCaravan}
         options={{
           title: "New Caravan",
+        }}
+      />
+      <Stack.Screen
+        name="Caravan"
+        component={CaravanScreen}
+        options={{
+          title: "...",
         }}
       />
     </Stack.Navigator>
