@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { SafeAreaView, FlatList } from "react-native";
+import { SafeAreaView, FlatList, StyleSheet } from "react-native";
 import { Fetch } from "../../helpers/deviceStorageHandler";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchIncomingReqs } from "../../redux";
@@ -45,7 +45,7 @@ const InboxScreen = (props) => {
   );
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.accent }}>
+    <SafeAreaView style={styles.screen}>
       <FlatList
         data={requestsStore.incoming.data}
         renderItem={renderNomads}
@@ -59,3 +59,12 @@ const InboxScreen = (props) => {
 };
 
 export default InboxScreen;
+
+const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+    paddingTop: 10,
+    alignItems: "center",
+    backgroundColor: Colors.accent,
+  },
+});
