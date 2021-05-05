@@ -19,6 +19,7 @@ const fetchFonts = () => {
     "roboto-bold": require("./assets/fonts/Roboto-Bold.ttf"),
     "roboto-black": require("./assets/fonts/Roboto-Black.ttf"),
     "comfortaa-bold": require("./assets/fonts/Comfortaa-Bold.ttf"),
+    fonarto: require("./assets/fonts/Fonarto.ttf"),
   });
 };
 

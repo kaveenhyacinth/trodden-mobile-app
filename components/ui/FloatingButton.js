@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     position: "absolute",
     bottom: 20,
-    right: 30,
+    right: 20,
     elevation: 5,
   },
 });

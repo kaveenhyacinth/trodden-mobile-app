@@ -70,6 +70,7 @@ const shoot = {
     getIncomingBonds: (userId) => Http.get(`/api/profile/req/in/${userId}`),
     getOutgoingBonds: (userId) => Http.get(`/api/profile/req/out/${userId}`),
     getBondsList: (userId) => Http.get(`/api/profile/tribe/bonds/${userId}`),
+    getUserCaravans: (userId) => Http.get(`/api/caravan/my/${userId}`),
   },
   put: {
     updateProfile: (body) => Http.put("/api/profile/setup", body),

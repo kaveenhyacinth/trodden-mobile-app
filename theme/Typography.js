@@ -2,7 +2,7 @@ import Colors from "./Colors";
 
 export default {
   trodden: {
-    fontFamily: "comfortaa-bold",
+    fontFamily: "fonarto",
     fontSize: 36,
     letterSpacing: 1,
     marginVertical: 10,
