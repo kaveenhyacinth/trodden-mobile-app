@@ -44,7 +44,7 @@ Http.interceptors.response.use(
   }
 );
 
-const shoot = {
+const api = {
   post: {
     uploadImage: (body) => (config) => Http.post("/image/add", body, config),
     uploadImages: (body) => (config) => Http.post("/images/add", body, config),
@@ -71,6 +71,7 @@ const shoot = {
     getOutgoingBonds: (userId) => Http.get(`/api/profile/req/out/${userId}`),
     getBondsList: (userId) => Http.get(`/api/profile/tribe/bonds/${userId}`),
     getUserCaravans: (userId) => Http.get(`/api/caravan/my/${userId}`),
+    getcaravanById: (caravanId) => Http.get(`/api/caravan/fetch/${caravanId}`),
   },
   put: {
     updateProfile: (body) => Http.put("/api/profile/setup", body),
@@ -85,4 +86,4 @@ const shoot = {
   },
 };
 
-export default shoot;
+export default api;
