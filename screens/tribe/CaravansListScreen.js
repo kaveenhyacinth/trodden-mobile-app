@@ -68,6 +68,7 @@ const CaravanScreen = (props) => {
         });
       }}
       onRefresh={fetchCaravans}
+      navigation={props.navigation}
     />
   );
 

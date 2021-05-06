@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { View, StyleSheet, Image, Pressable, Dimensions } from "react-native";
+import { useSelector } from "react-redux";
 import { downloadImage } from "../../helpers/mediaHandler";
 import { Fetch } from "../../helpers/deviceStorageHandler";
 import api from "../../api/index";
@@ -13,17 +14,26 @@ const { width: WINDOW_WIDTH } = Dimensions.get("window");
 const TILE_HEIGHT = 90;
 const TILE_WIDTH = WINDOW_WIDTH - 20;
 
-const CaravanListTileModal = ({ caravan, onRefresh, onNavigate }) => {
-  const [owner, setowner] = useState(false);
+const CaravanListTileModal = ({
+  caravan,
+  onRefresh,
+  onNavigate,
+  navigation,
+}) => {
+  const [isowner, setisOwner] = useState(false);
+  // const [nomadName, setnomadName] = useState("");
+  // const [room, setroom] = useState("");
+
+  const nomadStore = useSelector((state) => state.nomadStore);
 
   const checkOwner = useCallback(async () => {
     try {
       const userId = await Fetch("nomadId");
       if (userId.toString() === caravan.owner._id.toString()) {
-        setowner(true);
+        setisOwner(true);
       }
     } catch (error) {
-      setowner(false);
+      setisOwner(false);
     }
   }, [caravan]);
 
@@ -42,8 +52,13 @@ const CaravanListTileModal = ({ caravan, onRefresh, onNavigate }) => {
   //     ErrorAlertModal(error);
   //   }
   // };
-  const StubBondRequest = () => {
-    alert("Joined!");
+  const handleJoinChat = () => {
+    const nomadName = `${nomadStore.data.first_name} ${nomadStore.data.last_name}`;
+    const nomadId = nomadStore.data._id;
+    const roomId = caravan._id;
+    const roomName = caravan.caravan_name;
+
+    navigation.navigate("Chat", { roomId, roomName, nomadId, nomadName });
   };
 
   // const handleBondAccept = async () => {
@@ -76,11 +91,11 @@ const CaravanListTileModal = ({ caravan, onRefresh, onNavigate }) => {
   const renderButtons = () => {
     return (
       <View style={styles.lowerDiv}>
-        <BigButton style={styles.button} onPress={StubBondRequest}>
+        <BigButton style={styles.button} onPress={handleJoinChat}>
           Chat
         </BigButton>
         <BigButton
-          onPress={() => onNavigate()}
+          onPress={onNavigate}
           style={{ ...styles.button, ...styles.lite }}
           textStyle={{ color: Colors.info }}
         >

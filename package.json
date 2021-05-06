@@ -50,6 +50,7 @@
     "redux-thunk": "^2.3.0",
     "regexify-string": "^1.0.5",
     "remote-redux-devtools": "^0.5.16",
+    "socket.io-client": "^4.0.1",
     "yup": "^0.32.9"
   },
   "devDependencies": {
