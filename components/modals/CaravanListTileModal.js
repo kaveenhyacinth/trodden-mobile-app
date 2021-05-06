@@ -36,21 +36,21 @@ const CaravanListTileModal = ({
     }
   }, [caravan]);
 
-  // const handleBondRequest = async () => {
-  //   try {
-  //     const nomadId = await Fetch("nomadId");
-  //     const reqBody = {
-  //       userId: nomadId,
-  //       requestee: owner._id,
-  //     };
-  //     const response = await api.post.requestBond(reqBody);
-  //     if (!response.data.success)
-  //       throw new Error("Couldn't place bond request");
-  //     props.onRefresh();
-  //   } catch (error) {
-  //     ErrorAlertModal(error);
-  //   }
-  // };
+  const handleJoinRequest = async () => {
+    try {
+      const nomadId = await Fetch("nomadId");
+      const reqBody = {
+        userId: nomadId,
+        caravanId: caravan._id,
+      };
+      const response = await api.put.requestJoinCaravan(reqBody);
+      if (!response.data.success)
+        throw new Error("Couldn't place bond request");
+      onRefresh();
+    } catch (error) {
+      ErrorAlertModal(error.message, error);
+    }
+  };
 
   const handleJoinChat = () => {
     const nomadName = `${nomadStore.data.first_name} ${nomadStore.data.last_name}`;
@@ -92,7 +92,7 @@ const CaravanListTileModal = ({
     if (type === "explore")
       return (
         <View style={styles.lowerDiv}>
-          <BigButton style={styles.button} onPress={() => alert("under development!")}>
+          <BigButton style={styles.button} onPress={handleJoinRequest}>
             Join
           </BigButton>
           <BigButton

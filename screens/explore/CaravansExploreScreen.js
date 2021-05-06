@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { SafeAreaView, FlatList } from "react-native";
 import { Fetch } from "../../helpers/deviceStorageHandler";
 import { useSelector, useDispatch } from "react-redux";
@@ -10,15 +10,20 @@ import ErrorAlertModal from "../../components/modals/ErrorAlertModal";
 
 const NomadsExploreScreen = (props) => {
   const [loading, setLoading] = useState(true);
+  const isComponentMounted = useRef(true);
 
   const dispatch = useDispatch();
 
   const suggestionsStore = useSelector((state) => state.suggestionsStore);
 
   useEffect(() => {
-    let isSubscribed = true;
-    fetchSuggestions(isSubscribed);
-    return () => (isSubscribed = false);
+    return () => {
+      isComponentMounted.current = false;
+    };
+  }, [isComponentMounted]);
+
+  useEffect(() => {
+    fetchSuggestions(isComponentMounted);
   }, [fetchSuggestions]);
 
   const fetchSuggestions = useCallback(
@@ -43,7 +48,7 @@ const NomadsExploreScreen = (props) => {
       type="explore"
       caravan={item}
       navigation={props.navigation}
-      onRefresh={fetchSuggestions}
+      onRefresh={() => fetchSuggestions(isComponentMounted)}
       onNavigate={() => {
         props.navigation.navigate("Caravan", {
           name: item.caravan_name,

@@ -1,18 +1,27 @@
 import React, { useEffect, useCallback, useState } from "react";
 import { StyleSheet, SafeAreaView, View, Image, Text } from "react-native";
+import { useSelector } from "react-redux";
+import { FlatList } from "react-native-gesture-handler";
+import { HeaderButtons, Item } from "react-navigation-header-buttons";
+import { Ionicons } from "@expo/vector-icons";
 import api from "../../api";
 import ErrorAlertModal from "../../components/modals/ErrorAlertModal";
+import NomadRequestTile from "../../components/modals/NomadRequestTileModal";
 import BodyText from "../../components/ui/BodyText";
 import { downloadImage } from "../../helpers/mediaHandler";
 import Colors from "../../theme/Colors";
 import EmptyScreen from "../info/EmptyScreen";
 import LoadingScreen from "../info/LoadingScreen";
+import CustomHeaderButton from "../../components/ui/CustomHeaderButton";
 
 const Caravan = (props) => {
   const [loading, setloading] = useState(false);
+  // const [isOwner, setIsOwner] = useState(false);
   const [caravanData, setcaravanData] = useState({
     nomads: [],
   });
+
+  const nomadStore = useSelector((state) => state.nomadStore);
 
   const fetchCaravan = useCallback(async () => {
     try {
@@ -28,21 +37,62 @@ const Caravan = (props) => {
     }
   }, [props.route]);
 
+  const handleRequestTileNavigation = (id) => {
+    props.navigation.navigate("Profile", { id });
+  };
+
+  // useEffect(() => {
+  //   if (caravanData.owner && caravanData.owner._id === nomadStore.data._id)
+  //     setIsOwner(true);
+  //   console.log(
+  //     "comparison at caravan",
+  //     caravanData.owner && caravanData.owner._id === nomadStore.data._id
+  //   );
+  // }, [caravanData, nomadStore]);
+
   useEffect(() => {
+    const isOwner =
+      caravanData.owner && caravanData.owner._id === nomadStore.data._id
+        ? true
+        : false;
     const { params } = props.route;
     props.navigation.setOptions({
       title: `${params.name ?? "Caravan"}`,
+      headerRight: () =>
+        caravanData.owner && (
+          <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
+            <Item
+              title="Nomads"
+              IconComponent={Ionicons}
+              iconName="people-outline"
+              color={Colors.primary}
+              onPress={() =>
+                props.navigation.navigate("CaravanNomads", {
+                  nomads: caravanData.nomads,
+                  owner: caravanData.owner,
+                })
+              }
+            />
+            {isOwner ? (
+              <Item
+                title="Settings"
+                IconComponent={Ionicons}
+                iconName="settings-outline"
+                color={Colors.primary}
+                onPress={() => {}}
+              />
+            ) : null}
+          </HeaderButtons>
+        ),
     });
-  }, [props.route, props.navigation]);
+  }, [props.route, props.navigation, caravanData]);
 
   useEffect(() => {
     fetchCaravan();
   }, [fetchCaravan]);
 
-  if (loading) return <LoadingScreen />;
-
-  return (
-    <SafeAreaView style={styles.screen}>
+  const renderHeader = (caravanData) => (
+    <View style={styles.screen}>
       <View style={styles.styleSection}></View>
       <View style={styles.infoSection}>
         <View style={styles.imageWrapper}>
@@ -60,6 +110,21 @@ const Caravan = (props) => {
           } ${caravanData.nomads.length === 1 ? "Blaze" : "Blazes"}`}</BodyText>
         </View>
       </View>
+    </View>
+  );
+
+  const renderItem = ({ item }) => console.log("Rendering");
+
+  if (loading) return <LoadingScreen />;
+
+  return (
+    <SafeAreaView style={styles.screen}>
+      <FlatList
+        data={caravanData.nomads}
+        renderItem={renderItem}
+        ListHeaderComponent={() => renderHeader(caravanData)}
+        keyExtractor={(item, index) => index.toString()}
+      />
     </SafeAreaView>
   );
 };

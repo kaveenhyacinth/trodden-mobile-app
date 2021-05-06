@@ -54,7 +54,6 @@ const api = {
     refreshToken: (body) => Http.post("/api/auth/refresh-token", body),
     activateProfile: (body) => Http.post("/api/auth/activate", body),
     createMemo: (body) => Http.post("/api/memories/new", body),
-    requestBond: (body) => Http.put("/api/profile/req/new", body),
     createCaravan: (body) => Http.post("/api/caravan/new", body),
   },
   get: {
@@ -75,6 +74,8 @@ const api = {
   },
   put: {
     updateProfile: (body) => Http.put("/api/profile/setup", body),
+    requestBond: (body) => Http.put("/api/profile/req/new", body),
+    requestJoinCaravan: (body) => Http.put("/api/caravan/join", body),
   },
   patch: {
     postComment: (body) => Http.patch("/api/memories/comment", body),

@@ -12,7 +12,7 @@ import ErrorAlertModal from "../modals/ErrorAlertModal";
 const { width: WINDOW_WIDTH } = Dimensions.get("window");
 const TILE_HEIGHT = 90;
 
-const nomadRequestTileModal = (props) => {
+const NomadRequestTileModal = (props) => {
   const [owner] = useState(props.data.owner ?? props.data);
 
   const renderButtons = (type = "regular") => {
@@ -46,6 +46,14 @@ const nomadRequestTileModal = (props) => {
           </BigButton>
         </View>
       );
+    if (type === "own")
+      return (
+        <View style={styles.lowerDiv}>
+          <BigButton style={styles.button} onPress={handleViewProfile}>
+            View Your Profile
+          </BigButton>
+        </View>
+      );
     return (
       <View style={styles.lowerDiv}>
         <BigButton style={styles.button} onPress={handleViewProfile}>
@@ -69,12 +77,12 @@ const nomadRequestTileModal = (props) => {
         userId: nomadId,
         requestee: owner._id,
       };
-      const response = await api.post.requestBond(reqBody);
+      const response = await api.put.requestBond(reqBody);
       if (!response.data.success)
         throw new Error("Couldn't place bond request");
       props.onRefresh();
     } catch (error) {
-      ErrorAlertModal(error);
+      ErrorAlertModal(error.message, error);
     }
   };
 
@@ -91,7 +99,7 @@ const nomadRequestTileModal = (props) => {
         throw new Error("Couldn't place bond request");
       props.onRefresh();
     } catch (error) {
-      ErrorAlertModal(error);
+      ErrorAlertModal(error.message, error);
     }
   };
 
@@ -189,4 +197,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default nomadRequestTileModal;
+export default NomadRequestTileModal;
