@@ -103,11 +103,16 @@ const ChatScreen = ({ navigation, route }) => {
 
   return (
     <SafeAreaView style={styles.screen}>
-      <FlatList
-        data={messages}
-        renderItem={({ item }) => renderChatBubble(item)}
-        keyExtractor={(item, index) => index.toString()}
-      />
+      <View style={{ width: "100%", marginBottom: 50 }}>
+        <FlatList
+          data={messages}
+          renderItem={({ item }) => renderChatBubble(item)}
+          keyExtractor={(item, index) => index.toString()}
+          contentContainerStyle={{ flexDirection: "column-reverse" }}
+          showsVerticalScrollIndicator={false}
+          inverted
+        />
+      </View>
       <View style={styles.inputBoxWrapper}>
         <TextInput
           style={styles.inputBox}
