@@ -8,6 +8,7 @@ import Colors from "../theme/Colors";
 import Typography from "../theme/Typography";
 import NomadsExplore from "../screens/explore/NomadsExploreScreen";
 import CaravansExplore from "../screens/explore/CaravansExploreScreen";
+import CaravanScreen from "../screens/tribe/CaravanScreen";
 import SearchView from "../screens/explore/SearchView";
 import ProfileUser from "../screens/profile/ProfileUser";
 
@@ -78,6 +79,13 @@ const ExploreStackNavigator = (props) => {
         options={{
           title: "Search Trodden",
           ...TransitionPresets.ModalSlideFromBottomIOS,
+        }}
+      />
+      <Stack.Screen
+        name="Caravan"
+        component={CaravanScreen}
+        options={{
+          title: "...",
         }}
       />
     </Stack.Navigator>

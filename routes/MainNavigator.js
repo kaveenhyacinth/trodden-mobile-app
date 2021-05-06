@@ -26,27 +26,28 @@ const MainNavigator = (props) => {
       try {
         // Fetch token form localstorage
         const refToken = await Fetch("refToken");
-        if (!refToken) return setIsSignedn(false);
+        console.log("ref", refToken);
+        if (refToken) {
+          // Request for new tokens
+          const refreshTokenBody = {
+            refreshToken: refToken,
+          };
+          const response = await api.post.refreshToken(refreshTokenBody);
 
-        // Request for new tokens
-        const refreshTokenBody = {
-          refreshToken: refToken,
-        };
-        const response = await api.post.refreshToken(refreshTokenBody);
+          if (!response.data.result) throw new Error("Something went wrong!");
 
-        if (!response.data.result) throw new Error("Something went wrong!");
+          const newSignToken = response.data.result.signToken;
+          const newRefToken = response.data.result.refToken;
+          const nomadId = response.data.result.id;
 
-        const newSignToken = response.data.result.signToken;
-        const newRefToken = response.data.result.refToken;
-        const nomadId = response.data.result.id;
+          // Update state and localstorage with new tokens
+          handleUpdateTokens(newSignToken, newRefToken);
+          await Save("signToken", newSignToken);
+          await Save("refToken", newRefToken);
+          await Save("nomadId", nomadId);
 
-        // Update state and localstorage with new tokens
-        handleUpdateTokens(newSignToken, newRefToken);
-        await Save("signToken", newSignToken);
-        await Save("refToken", newRefToken);
-        await Save("nomadId", nomadId);
-
-        return setIsSignedIn(true);
+          return setIsSignedIn(true);
+        }
       } catch (error) {
         Alert.alert(
           "Oh My Trod!",

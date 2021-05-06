@@ -19,10 +19,9 @@ const CaravanListTileModal = ({
   onRefresh,
   onNavigate,
   navigation,
+  type = "tribe",
 }) => {
   const [isowner, setisOwner] = useState(false);
-  // const [nomadName, setnomadName] = useState("");
-  // const [room, setroom] = useState("");
 
   const nomadStore = useSelector((state) => state.nomadStore);
 
@@ -52,6 +51,7 @@ const CaravanListTileModal = ({
   //     ErrorAlertModal(error);
   //   }
   // };
+
   const handleJoinChat = () => {
     const nomadName = `${nomadStore.data.first_name} ${nomadStore.data.last_name}`;
     const nomadId = nomadStore.data._id;
@@ -89,6 +89,22 @@ const CaravanListTileModal = ({
   // };
 
   const renderButtons = () => {
+    if (type === "explore")
+      return (
+        <View style={styles.lowerDiv}>
+          <BigButton style={styles.button} onPress={() => alert("under development!")}>
+            Join
+          </BigButton>
+          <BigButton
+            onPress={onNavigate}
+            style={{ ...styles.button, ...styles.lite }}
+            textStyle={{ color: Colors.info }}
+          >
+            Visit
+          </BigButton>
+        </View>
+      );
+
     return (
       <View style={styles.lowerDiv}>
         <BigButton style={styles.button} onPress={handleJoinChat}>
