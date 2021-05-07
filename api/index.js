@@ -74,6 +74,7 @@ const api = {
     getcaravanById: (caravanId) => Http.get(`/api/caravan/fetch/${caravanId}`),
     getBlazeById: (blazeId) => Http.get(`/api/blaze/i/${blazeId}`),
     getBlazesbyCaravan: (caravanId) => Http.get(`/api/blaze/c/${caravanId}`),
+    getJoinedBlazes: (userId) => Http.get(`/api/blaze/j/${userId}`),
   },
   put: {
     updateProfile: (body) => Http.put("/api/profile/setup", body),
@@ -84,6 +85,7 @@ const api = {
     postComment: (body) => Http.patch("/api/memories/comment", body),
     postHeat: (body) => Http.patch("/api/memories/heat", body),
     acceptBond: (body) => Http.patch("/api/profile/req/confirm", body),
+    joinBlaze: (body) => Http.patch("/api/blaze/p", body),
   },
   delete: {
     rejectBond: (requestId) => Http.delete(`/api/profile/req/rm/${requestId}`),

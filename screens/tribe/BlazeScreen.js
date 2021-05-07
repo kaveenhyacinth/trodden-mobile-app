@@ -45,6 +45,21 @@ const BlazeScreen = ({ navigation, route }) => {
     [route.params.id]
   );
 
+  const handleJoinBlaze = async () => {
+    try {
+      const userId = await Fetch("nomadId");
+      const body = {
+        userId,
+        blazeId: blazeData._id,
+      };
+      const { data } = await api.patch.joinBlaze(body);
+      if (!data.success) throw new Error(data.msg);
+      setIsJoined(true);
+    } catch (error) {
+      ErrorAlertModal(error.message, error);
+    }
+  };
+
   useEffect(() => {
     return () => {
       isComponentMounted.current = false;
@@ -86,7 +101,9 @@ const BlazeScreen = ({ navigation, route }) => {
             Joined
           </BigButton>
         ) : (
-          <BigButtonLight style={styles.button}>Join Blaze</BigButtonLight>
+          <BigButtonLight style={styles.button} onPress={handleJoinBlaze}>
+            Join Blaze
+          </BigButtonLight>
         )}
       </View>
       <View style={styles.infoWrapper}>

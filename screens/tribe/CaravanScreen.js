@@ -121,7 +121,7 @@ const Caravan = (props) => {
     </View>
   );
 
-  if (loading) return <LoadingScreen />;
+  // if (loading) return <LoadingScreen />;
 
   return (
     <SafeAreaView style={styles.screen}>
@@ -131,6 +131,8 @@ const Caravan = (props) => {
         ListHeaderComponent={() => renderHeader(caravanData)}
         keyExtractor={(item, index) => index.toString()}
         ListEmptyComponent={() => <EmptyScreen />}
+        onRefresh={fetchCaravanAndBlazes}
+        refreshing={loading}
       />
       {caravanData.owner && caravanData.owner._id === nomadStore.data._id ? (
         <FloatingButton onPress={handleCreateBlazeNavigation} />
