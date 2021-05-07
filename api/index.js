@@ -72,6 +72,7 @@ const api = {
     getBondsList: (userId) => Http.get(`/api/profile/tribe/bonds/${userId}`),
     getUserCaravans: (userId) => Http.get(`/api/caravan/my/${userId}`),
     getcaravanById: (caravanId) => Http.get(`/api/caravan/fetch/${caravanId}`),
+    getBlazesbyCaravan: (caravanId) => Http.get(`/api/blaze/c/${caravanId}`),
   },
   put: {
     updateProfile: (body) => Http.put("/api/profile/setup", body),

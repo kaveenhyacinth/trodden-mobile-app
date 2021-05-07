@@ -13,9 +13,11 @@ import EmptyScreen from "../info/EmptyScreen";
 import LoadingScreen from "../info/LoadingScreen";
 import CustomHeaderButton from "../../components/ui/CustomHeaderButton";
 import FloatingButton from "../../components/ui/FloatingButton";
+import BlazeModal from "../../components/modals/BlazeModal";
 
 const Caravan = (props) => {
   const [loading, setloading] = useState(false);
+  const [blazesData, setBlazesData] = useState([]);
   const [caravanData, setcaravanData] = useState({
     nomads: [],
     blazes: [],
@@ -23,13 +25,14 @@ const Caravan = (props) => {
 
   const nomadStore = useSelector((state) => state.nomadStore);
 
-  const fetchCaravan = useCallback(async () => {
+  const fetchCaravanAndBlazes = useCallback(async () => {
     try {
       setloading(true);
       const { params } = props.route;
       const { data } = await api.get.getcaravanById(params.id);
-      console.log("Caravan Data", data);
       setcaravanData((prevState) => ({ ...prevState, ...data.result }));
+      const response = await api.get.getBlazesbyCaravan(data.result._id);
+      setBlazesData([...response.data.result]);
     } catch (error) {
       ErrorAlertModal(error.message, error);
     } finally {
@@ -79,11 +82,11 @@ const Caravan = (props) => {
   }, [props.route, props.navigation, caravanData]);
 
   useEffect(() => {
-    fetchCaravan();
-  }, [fetchCaravan]);
+    fetchCaravanAndBlazes();
+  }, [fetchCaravanAndBlazes]);
 
   const renderHeader = (caravanData) => (
-    <View style={styles.screen}>
+    <View style={[styles.screen, {marginBottom: 20}]}>
       <View style={styles.styleSection}></View>
       <View style={styles.infoSection}>
         <View style={styles.imageWrapper}>
@@ -104,14 +107,18 @@ const Caravan = (props) => {
     </View>
   );
 
-  const renderItem = ({ item }) => console.log("Rendering");
+  const renderItem = ({ item }) => (
+    <View style={styles.blazesContainer}>
+      <BlazeModal data={item} onNavigate={() => alert("Pressed!")} />
+    </View>
+  );
 
   if (loading) return <LoadingScreen />;
 
   return (
     <SafeAreaView style={styles.screen}>
       <FlatList
-        data={caravanData.nomads}
+        data={blazesData}
         renderItem={renderItem}
         ListHeaderComponent={() => renderHeader(caravanData)}
         keyExtractor={(item, index) => index.toString()}
@@ -160,5 +167,8 @@ const styles = StyleSheet.create({
   infoText: {
     marginRight: 20,
     color: Colors.info,
+  },
+  blazesContainer: {
+    alignItems: "center",
   },
 });
