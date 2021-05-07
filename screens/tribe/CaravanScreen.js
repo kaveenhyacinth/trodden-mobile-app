@@ -6,13 +6,13 @@ import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import { Ionicons } from "@expo/vector-icons";
 import api from "../../api";
 import ErrorAlertModal from "../../components/modals/ErrorAlertModal";
-import NomadRequestTile from "../../components/modals/NomadRequestTileModal";
 import BodyText from "../../components/ui/BodyText";
 import { downloadImage } from "../../helpers/mediaHandler";
 import Colors from "../../theme/Colors";
 import EmptyScreen from "../info/EmptyScreen";
 import LoadingScreen from "../info/LoadingScreen";
 import CustomHeaderButton from "../../components/ui/CustomHeaderButton";
+import FloatingButton from "../../components/ui/FloatingButton";
 
 const Caravan = (props) => {
   const [loading, setloading] = useState(false);
@@ -37,7 +37,7 @@ const Caravan = (props) => {
     }
   }, [props.route]);
 
-  const handleRequestTileNavigation = (id) => {
+  const handleCreateBlazeNavigation = (id) => {
     props.navigation.navigate("Profile", { id });
   };
 
@@ -124,7 +124,9 @@ const Caravan = (props) => {
         renderItem={renderItem}
         ListHeaderComponent={() => renderHeader(caravanData)}
         keyExtractor={(item, index) => index.toString()}
+        ListEmptyComponent={() => <EmptyScreen />}
       />
+      <FloatingButton onPress={handleCreateBlazeNavigation} />
     </SafeAreaView>
   );
 };

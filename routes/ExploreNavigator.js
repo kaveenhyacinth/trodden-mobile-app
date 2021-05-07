@@ -11,6 +11,7 @@ import CaravansExplore from "../screens/explore/CaravansExploreScreen";
 import CaravanScreen from "../screens/tribe/CaravanScreen";
 import SearchView from "../screens/explore/SearchView";
 import ProfileUser from "../screens/profile/ProfileUser";
+import CaravanNomadsScreen from "../screens/tribe/CaravanNomadsScreen";
 
 const Stack = createStackNavigator();
 const Tab = createMaterialTopTabNavigator();
@@ -86,6 +87,13 @@ const ExploreStackNavigator = (props) => {
         component={CaravanScreen}
         options={{
           title: "...",
+        }}
+      />
+      <Stack.Screen
+        name="CaravanNomads"
+        component={CaravanNomadsScreen}
+        options={{
+          title: "Nomads",
         }}
       />
     </Stack.Navigator>
