@@ -25,7 +25,7 @@ const BlazeModal = ({ data, onNavigate }) => {
           </BodyText>
           <TitleText style={styles.title}>{data.title}</TitleText>
           <BodyText style={styles.location}>{data.location.des_name}</BodyText>
-          <BodyText style={styles.going}>{`${data.participants.length} going`}</BodyText>
+          <BodyText style={styles.going}>{`${data.participants.length} Joined`}</BodyText>
         </View>
       </View>
     </Pressable>

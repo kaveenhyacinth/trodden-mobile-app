@@ -6,6 +6,7 @@ import Typography from "../../theme/Typography";
 const BigButton = (props) => {
   return (
     <Pressable
+      {...props}
       style={({ pressed }) => [{ opacity: pressed ? 0.8 : 1 }]}
       onPress={props.onPress}
     >

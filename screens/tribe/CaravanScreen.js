@@ -86,7 +86,7 @@ const Caravan = (props) => {
   }, [fetchCaravanAndBlazes]);
 
   const renderHeader = (caravanData) => (
-    <View style={[styles.screen, {marginBottom: 20}]}>
+    <View style={[styles.screen, { marginBottom: 20 }]}>
       <View style={styles.styleSection}></View>
       <View style={styles.infoSection}>
         <View style={styles.imageWrapper}>
@@ -109,7 +109,15 @@ const Caravan = (props) => {
 
   const renderItem = ({ item }) => (
     <View style={styles.blazesContainer}>
-      <BlazeModal data={item} onNavigate={() => alert("Pressed!")} />
+      <BlazeModal
+        data={item}
+        onNavigate={() =>
+          props.navigation.navigate("Blaze", {
+            id: item._id,
+            title: item.title,
+          })
+        }
+      />
     </View>
   );
 
