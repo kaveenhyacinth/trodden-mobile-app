@@ -16,7 +16,6 @@ import FloatingButton from "../../components/ui/FloatingButton";
 
 const Caravan = (props) => {
   const [loading, setloading] = useState(false);
-  // const [isOwner, setIsOwner] = useState(false);
   const [caravanData, setcaravanData] = useState({
     nomads: [],
   });
@@ -37,18 +36,9 @@ const Caravan = (props) => {
     }
   }, [props.route]);
 
-  const handleCreateBlazeNavigation = (id) => {
-    props.navigation.navigate("Profile", { id });
+  const handleCreateBlazeNavigation = () => {
+    props.navigation.navigate("NewBlaze", { id: caravanData._id });
   };
-
-  // useEffect(() => {
-  //   if (caravanData.owner && caravanData.owner._id === nomadStore.data._id)
-  //     setIsOwner(true);
-  //   console.log(
-  //     "comparison at caravan",
-  //     caravanData.owner && caravanData.owner._id === nomadStore.data._id
-  //   );
-  // }, [caravanData, nomadStore]);
 
   useEffect(() => {
     const isOwner =
@@ -126,7 +116,9 @@ const Caravan = (props) => {
         keyExtractor={(item, index) => index.toString()}
         ListEmptyComponent={() => <EmptyScreen />}
       />
-      <FloatingButton onPress={handleCreateBlazeNavigation} />
+      {caravanData.owner && caravanData.owner._id === nomadStore.data._id ? (
+        <FloatingButton onPress={handleCreateBlazeNavigation} />
+      ) : null}
     </SafeAreaView>
   );
 };

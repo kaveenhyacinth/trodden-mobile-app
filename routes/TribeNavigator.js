@@ -11,6 +11,7 @@ import CreateCaravan from "../screens/create/CreateCaravanScreen";
 import CaravanScreen from "../screens/tribe/CaravanScreen";
 import ChatScreen from "../screens/tribe/ChatScreen";
 import CaravanNomadsScreen from "../screens/tribe/CaravanNomadsScreen";
+import CreateBlazeScreen from "../screens/create/CreateBlazeScreen";
 
 const Stack = createStackNavigator();
 const Tab = createMaterialTopTabNavigator();
@@ -102,6 +103,13 @@ const TribeStackNavigator = (props) => {
         component={CaravanNomadsScreen}
         options={{
           title: "Nomads",
+        }}
+      />
+      <Stack.Screen
+        name="NewBlaze"
+        component={CreateBlazeScreen}
+        options={{
+          title: "New Blaze",
         }}
       />
     </Stack.Navigator>

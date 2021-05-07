@@ -10,7 +10,7 @@ const PlaceSearch = (props) => {
   return (
     <View style={styles.container}>
       <GooglePlacesAutocomplete
-        placeholder={"Search"}
+        placeholder={"Search Location"}
         onPress={props.onPress}
         query={{
           key: API_KEY,
@@ -19,7 +19,7 @@ const PlaceSearch = (props) => {
         styles={{
           textInput: {
             borderColor: Colors.outline,
-            borderWidth: 2,
+            borderWidth: 1,
           },
         }}
       />
