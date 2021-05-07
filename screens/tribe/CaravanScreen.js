@@ -18,6 +18,7 @@ const Caravan = (props) => {
   const [loading, setloading] = useState(false);
   const [caravanData, setcaravanData] = useState({
     nomads: [],
+    blazes: [],
   });
 
   const nomadStore = useSelector((state) => state.nomadStore);
@@ -96,8 +97,8 @@ const Caravan = (props) => {
             caravanData.nomads.length ?? 0
           } ${caravanData.nomads.length === 1 ? "Nomad" : "Nomads"}`}</BodyText>
           <BodyText style={styles.infoText}>{`${
-            caravanData.nomads.length ?? 0
-          } ${caravanData.nomads.length === 1 ? "Blaze" : "Blazes"}`}</BodyText>
+            caravanData.blazes.length ?? 0
+          } ${caravanData.blazes.length === 1 ? "Blaze" : "Blazes"}`}</BodyText>
         </View>
       </View>
     </View>

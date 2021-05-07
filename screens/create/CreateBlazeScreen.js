@@ -180,6 +180,8 @@ const CreateBlazeScreen = ({ navigation, route }) => {
         filename,
       };
 
+      console.log("Blaze body", body);
+
       const response = await api.post.createBlaze(body);
 
       if (!response)
@@ -189,7 +191,7 @@ const CreateBlazeScreen = ({ navigation, route }) => {
 
       navigation.goBack();
     } catch (error) {
-      ErrorAlertModal(error.message, error);
+      ErrorAlertModal(error.response.data.msg || error.message, error);
     } finally {
       setLoading(false);
     }

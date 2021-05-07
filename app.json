@@ -27,8 +27,8 @@
       "favicon": "./assets/favicon.png"
     },
     "extra": {
-      "BASE_URL": "http://192.168.8.102:8000",
-      "CHAT_URL": "http://192.168.8.102:5000",
+      "BASE_URL": "http://192.168.8.101:8000",
+      "CHAT_URL": "http://192.168.8.101:5000",
       "PLACE_API_KEY": "AIzaSyCOR9TirjkqbmxLSuwTtJrCIK1nAyR2IZQ"
     }
   }
