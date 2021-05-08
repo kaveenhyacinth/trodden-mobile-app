@@ -24,69 +24,37 @@ const MAP_REGION = {
 
 const TripModal = ({ data, navigation }) => {
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <View style={styles.leftSection}>
-          <Pressable onPress={() => {}}>
-            <View style={styles.headerImageWrapper}>
-              <Image
-                style={styles.headerImage}
-                source={{ uri: downloadImage(data.owner.prof_img) }}
-              />
-            </View>
-          </Pressable>
-        </View>
-        <View style={styles.midSection}>
-          <BodyText
-            style={styles.headerName}
-          >{`${data.owner.first_name} ${data.owner.last_name}`}</BodyText>
-          <Pressable onPress={() => {}}>
-            <BodyText style={styles.headerLocation}>
-              <Ionicons name="location" color={Colors.primary} />
-              {data.destination
-                ? " " + data.destination.des_name
-                : " Somewhere on Earth"}
-            </BodyText>
-          </Pressable>
-        </View>
-        <View style={styles.rightSection}>
-          <Pressable
-            onPress={() => setIsOpenSettings((prevState) => !prevState)}
-          >
-            <Ionicons name="ellipsis-vertical" size={15} color={Colors.info} />
-          </Pressable>
-        </View>
-      </View>
-      <View>
-        <BodyText>{data.title}</BodyText>
-        <BodyText>{`${new Date(data.start_date).toDateString()} to ${new Date(
-          data.end_date
-        ).toDateString()} (${
-          new Date(data.end_date).getDate() -
-          new Date(data.start_date).getDate() +
-          1
-        } ${
-          new Date(data.end_date).getDate() -
+    <Pressable onPress={() => navigation.navigate("Trip", { trip: data })}>
+      <View style={styles.container}>
+        <View>
+          <BodyText style={styles.date}>{`${
+            new Date(data.start_date).toDateString() ===
+            new Date(data.end_date).toDateString()
+              ? new Date(data.start_date).toDateString()
+              : new Date(data.start_date).toDateString() +
+                " ~ " +
+                new Date(data.end_date).toDateString()
+          }`}</BodyText>
+
+          <BodyText style={styles.info}>{`(${
+            new Date(data.end_date).getDate() -
             new Date(data.start_date).getDate() +
-            1 ===
-          1
-            ? "day"
-            : "days"
-        } trip)`}</BodyText>
+            1
+          } ${
+            new Date(data.end_date).getDate() -
+              new Date(data.start_date).getDate() +
+              1 ===
+            1
+              ? "day"
+              : "days"
+          } trip)`}</BodyText>
+          <BodyText style={styles.title}>{data.title}</BodyText>
+        </View>
+        <View>
+          <BodyText>{data.desc}</BodyText>
+        </View>
       </View>
-      <View>
-        <BodyText>{data.desc}</BodyText>
-      </View>
-      <MapView style={styles.map} region={MAP_REGION}>
-        <Marker
-          title="Selected Location"
-          coordinate={{
-            latitude: 8.743221102619863,
-            longitude: 80.93281924724579,
-          }}
-        ></Marker>
-      </MapView>
-    </View>
+    </Pressable>
   );
 };
 
@@ -95,60 +63,32 @@ export default TripModal;
 const styles = StyleSheet.create({
   container: {
     backgroundColor: Colors.accent,
-    width: WINDOW_WIDTH,
+    width: WINDOW_WIDTH - 30,
     marginVertical: 5,
-    //#region IOS Elevation
-    // shadowColor: "#000",
-    // shadowOffset: {
-    //   width: 0,
-    //   height: 2,
-    // },
-    // shadowOpacity: 0.12,
-    // shadowRadius: 60,
-    //#endregion
-    // elevation: 2,
+    borderRadius: 10,
+    padding: 20,
+    // #region IOS Elevation
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.12,
+    shadowRadius: 60,
+    // #endregion
+    elevation: 2,
   },
-  header: {
-    flexDirection: "row",
-    height: 60,
-    alignItems: "center",
+  title: {
+    ...Typography.title,
   },
-  leftSection: {
-    height: 50,
-    width: WINDOW_WIDTH * 0.2,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  headerImageWrapper: {
-    height: "100%",
-    width: 50,
-    borderRadius: 25,
-    borderWidth: 2,
-    borderColor: Colors.primary,
-    overflow: "hidden",
-  },
-  headerImage: {
-    width: 50,
-    height: "100%",
-  },
-  midSection: {
-    width: WINDOW_WIDTH * 0.7,
-  },
-  headerName: {
-    ...Typography.bodyTextBold,
-    fontSize: 18,
-  },
-  headerLocation: {
-    fontSize: 14,
+  info: {
     color: Colors.info,
+    fontSize: 14,
   },
-  rightSection: {
-    width: WINDOW_WIDTH * 0.1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  map: {
-    width: WINDOW_WIDTH,
-    height: WINDOW_WIDTH,
+  date: {
+    color: Colors.red,
+    fontSize: 14,
+    fontWeight: "bold",
+    textTransform: "uppercase",
   },
 });

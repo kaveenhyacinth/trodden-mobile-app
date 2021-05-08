@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
-import { StyleSheet, Animated, Dimensions } from "react-native";
+import { StyleSheet, Animated, Dimensions, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import CreateNewTripHeader from "../../components/headers/CreateNewTripHeader";
 import FloatingButton from "../../components/ui/FloatingButton";
 import ErrorAlertModal from "../../components/modals/ErrorAlertModal";
 import Colors from "../../theme/Colors";
@@ -25,6 +24,7 @@ const TripsScreenOwn = ({
   const [tripsArray, setTripsArray] = useState([]);
 
   const isComponentMounted = useRef(true);
+  const navigation = useNavigation();
 
   useEffect(() => {
     return () => {
@@ -52,9 +52,12 @@ const TripsScreenOwn = ({
     fetchTrips(isComponentMounted);
   }, [fetchTrips]);
 
-  const renderTrips = ({ item }) => <TripModal data={item} />;
+  const renderTrips = ({ item }) => (
+    <View style={{ alignItems: "center" }}>
+      <TripModal data={item} navigation={navigation} />
+    </View>
+  );
 
-  const navigation = useNavigation();
   return (
     <Animated.View style={styles.screen}>
       <Animated.FlatList

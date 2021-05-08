@@ -8,6 +8,7 @@ import Typography from "../theme/Typography";
 import ProfileOwn from "../screens/profile/ProfileOwn";
 import CreateTripScreen from "../screens/create/CreateTripScreen";
 import CreateTripDayPlanScreen from "../screens/create/CreateTripDayPlan";
+import TripScreen from "../screens/profile/TripScreen";
 
 const Stack = createStackNavigator();
 
@@ -47,6 +48,13 @@ const ProfileStackNavigator = (props) => {
         options={{
           title: "Plan Your Trip",
           ...TransitionPresets.SlideFromRightIOS,
+        }}
+      />
+      <Stack.Screen
+        name="Trip"
+        component={TripScreen}
+        options={{
+          title: "...",
         }}
       />
     </Stack.Navigator>
