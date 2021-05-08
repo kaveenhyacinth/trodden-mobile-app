@@ -223,7 +223,29 @@ const OwnerProfileView = (props) => {
           />
         );
       case "tab2":
-        return <TripsScreenOwn />;
+        return (
+          <TripsScreenOwn
+            HeaderHeight={HEADER_HEIGHT}
+            TabBarHeight={TAB_BAR_HEIGHT}
+            scrollY={scrollY}
+            onMomentumScrollBegin={onMomentumScrollBegin}
+            onScrollEndDrag={onScrollEndDrag}
+            onMomentumScrollEnd={onMomentumScrollEnd}
+            onGetRef={(ref) => {
+              if (ref) {
+                const found = listRefArr.current.find(
+                  (e) => e.key === route.key
+                );
+                if (!found) {
+                  listRefArr.current.push({
+                    key: route.key,
+                    value: ref,
+                  });
+                }
+              }
+            }}
+          />
+        );
       default:
         return null;
     }
