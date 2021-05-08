@@ -88,7 +88,7 @@ const HomeScreen = (props) => {
             IconComponent={Ionicons}
             iconName="map-outline"
             color={Colors.primary}
-            onPress={() => {}}
+            onPress={() => props.navigation.navigate("map")}
           />
         </HeaderButtons>
       ),
