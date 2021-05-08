@@ -1,5 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { StyleSheet, Text, View, Dimensions } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
+import { addDayPlan, updateDayPlan } from "../../redux";
 import MapView, { Marker } from "react-native-maps";
 import ScreenView from "../../components/ui/ScreenView";
 import InputBox from "../../components/ui/InputBox";
@@ -16,30 +18,14 @@ const MAP_REGION = {
 };
 
 const TripDayPlannerScreen = (props) => {
+  const tripPlanStore = useSelector((state) => state.tripPlanStore);
+
   const [selectedLocations, setSelectedLocations] = useState([]);
   const [note, setNote] = useState("");
 
+  const dispatch = useDispatch();
+
   useEffect(() => {
-    let clean = false;
-    if (!clean) setHeaderTitle();
-    return () => {
-      clean = true;
-    };
-  }, [setHeaderTitle]);
-
-  const handleSave = () => {
-    if (!note || !selectedLocations) {
-      alert("Please add a note and mark destinations on the map...");
-      return;
-    }
-    const dayObj = {
-      note,
-      selectedLocations,
-    };
-    // props.onSave(dayObj);
-  };
-
-  const setHeaderTitle = useCallback(() => {
     let title = props.route.params.title
       ? `Day ${props.route.params.day} of ${props.route.params.title}`
       : `Day ${props.route.params.day}`;
@@ -47,11 +33,63 @@ const TripDayPlannerScreen = (props) => {
       title,
       headerRight: () => (
         <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
-          <Item title="Save" color={Colors.primary} onPress={handleSave} />
+          <Item
+            title="Save"
+            color={Colors.primary}
+            onPress={() => handleSave(note, selectedLocations)}
+          />
         </HeaderButtons>
       ),
     });
-  }, [props.route.params.day, props.route.params.title]);
+  }, [
+    props.route.params.day,
+    props.route.params.title,
+    note,
+    selectedLocations,
+  ]);
+
+  useEffect(() => {
+    if (tripPlanStore.dayPlans.length !== 0) {
+      const index = tripPlanStore.dayPlans.findIndex(
+        (dayPlan) => dayPlan.day === props.route.params.day
+      );
+      if (index === -1) return;
+
+      setSelectedLocations([
+        ...tripPlanStore.dayPlans[index].selectedLocations,
+      ]);
+      setNote(tripPlanStore.dayPlans[index].note);
+    }
+  }, [tripPlanStore, props]);
+
+  const handleSave = (note, selectedLocations) => {
+    console.log("data to save", { note, selectedLocations });
+
+    if (!note || !selectedLocations) {
+      alert("Please add a note and mark destinations on the map...");
+      return;
+    }
+    const dayObj = {
+      day: props.route.params.day,
+      note,
+      selectedLocations,
+    };
+
+    if (tripPlanStore.dayPlans.length !== 0) {
+      const index = tripPlanStore.dayPlans.findIndex(
+        (dayPlan) => dayPlan.day === props.route.params.day
+      );
+
+      if (index !== -1) {
+        dispatch(updateDayPlan(index, dayObj));
+      } else {
+        dispatch(addDayPlan(dayObj));
+      }
+    } else {
+      dispatch(addDayPlan(dayObj));
+    }
+    props.navigation.goBack();
+  };
 
   const handlePinMarker = (event) => {
     event.persist();

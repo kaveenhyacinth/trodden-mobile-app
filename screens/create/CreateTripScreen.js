@@ -13,11 +13,11 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { Video } from "expo-av";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { resetTripPlan } from "../../redux";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import DatePickerModel from "react-native-modal-datetime-picker";
 import { Fetch } from "../../helpers/deviceStorageHandler";
-import { downloadImage } from "../../helpers/mediaHandler";
 import api from "../../api/";
 import Colors from "../../theme/Colors";
 import Typography from "../../theme/Typography";
@@ -67,11 +67,10 @@ const NewTripScreen = (props) => {
   const [isStartDateVisible, setIsStartDateVisible] = useState(false);
   const [isEndDateVisible, setIsEndDateVisible] = useState(false);
   const [tripDuration, setTripDuration] = useState(0);
-  const [isPostReady, setIsPostReady] = useState(false);
   const [formState, dispatchFormState] = useReducer(formReducer, {
     inputValues: {
       tripTitle: undefined,
-      starDate: undefined,
+      startDate: undefined,
       endDate: undefined,
       content: undefined,
     },
@@ -81,32 +80,66 @@ const NewTripScreen = (props) => {
     },
   });
 
-  useEffect(
-    () =>
-      handleSetTripDuration(
-        formState.inputValues.startDate,
-        formState.inputValues.endDate
-      ),
-    [formState.inputValues.startDate, formState.inputValues.endDate]
-  );
+  const dispatch = useDispatch();
+  const tripPlanStore = useSelector((state) => state.tripPlanStore);
 
   useEffect(() => {
-    renderHeaderButton();
-  }, [renderHeaderButton]);
+    handleSetTripDuration(
+      formState.inputValues.startDate,
+      formState.inputValues.endDate
+    );
+  }, [formState.inputValues.startDate, formState.inputValues.endDate]);
 
-  const renderHeaderButton = useCallback(() => {
+  const handleGoBack = () => {
+    dispatch(resetTripPlan());
+    props.navigation.goBack();
+  };
+
+  const handleSaveTrip = (formState, tripPlanStore) => {
+    const { tripTitle, startDate, endDate, content } = formState.inputValues;
+
+    if (!tripTitle || !startDate || !endDate || !content) {
+      alert("Please fill all the fields to save the trip plan...");
+      return;
+    }
+
+    const saveObj = {
+      ...formState.inputValues,
+      dayPlans: tripPlanStore.dayPlans,
+    };
+
+    if (saveObj.dayPlans.length === 0) {
+      alert("Please add at least one day plan...");
+      return;
+    }
+    
+    console.log("Trip Save Final", saveObj);
+  };
+
+  useEffect(() => {
     props.navigation.setOptions({
       headerRight: () => (
         <HeaderButtons HeaderButtonComponent={HeaderButton}>
           <Item
             title="Save"
-            color={isPostReady ? Colors.primary : Colors.outline}
-            onPress={isPostReady ? null : null}
+            color={Colors.primary}
+            onPress={() => handleSaveTrip(formState, tripPlanStore)}
+          />
+        </HeaderButtons>
+      ),
+      headerLeft: () => (
+        <HeaderButtons HeaderButtonComponent={HeaderButton}>
+          <Item
+            title="goBack"
+            IconComponent={Ionicons}
+            iconName="arrow-back"
+            color={Colors.info}
+            onPress={handleGoBack}
           />
         </HeaderButtons>
       ),
     });
-  }, []);
+  }, [formState, tripPlanStore]);
 
   const renderDayPlanners = (days) => {
     if (days > _MAXIMUM_DAYS_ALLOWED_TO_PLAN)

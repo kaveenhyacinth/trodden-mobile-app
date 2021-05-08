@@ -20,3 +20,9 @@ export {
   fetchOutgoingReqs,
 } from "./requests/requestActions";
 export { fetchNomadsTribe } from "./tribe/tribeActions";
+export {
+  addDayPlan,
+  addTripPlan,
+  updateDayPlan,
+  resetTripPlan,
+} from "./tripPlan/tripPlanActions";
