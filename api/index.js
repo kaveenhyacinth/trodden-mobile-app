@@ -56,6 +56,7 @@ const api = {
     createMemo: (body) => Http.post("/api/memories/new", body),
     createCaravan: (body) => Http.post("/api/caravan/new", body),
     createBlaze: (body) => Http.post("/api/blaze/new", body),
+    createTrip: (body) => Http.post("/api/trip/new", body),
   },
   get: {
     getInterests: () => Http.get("/api/interests"),

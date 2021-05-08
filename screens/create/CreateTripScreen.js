@@ -1,18 +1,6 @@
 import React, { useState, useEffect, useCallback, useReducer } from "react";
-import {
-  View,
-  Image,
-  Modal,
-  Alert,
-  Pressable,
-  ActivityIndicator,
-  StyleSheet,
-  ScrollView,
-  Dimensions,
-} from "react-native";
+import { View, StyleSheet, Dimensions } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import * as ImagePicker from "expo-image-picker";
-import { Video } from "expo-av";
 import { useSelector, useDispatch } from "react-redux";
 import { resetTripPlan } from "../../redux";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
@@ -25,9 +13,9 @@ import ScreenView from "../../components/ui/ScreenView";
 import BodyText from "../../components/ui/BodyText";
 import InputBox from "../../components/ui/InputBox";
 import HeaderButton from "../../components/ui/CustomHeaderButton";
-import MemoImagePreview from "../../components/modals/MemoImagePreviewModal";
 import PlaceSearch from "../../components/modals/PlaceSearchBottomSheet";
 import BigButton from "../../components/ui/BigButton";
+import ErrorAlertModal from "../../components/modals/ErrorAlertModal";
 
 const { width: WINDOW_WIDTH, height: WINDOW_HEIGHT } = Dimensions.get("window");
 const _MS_PER_DAY = 1000 * 60 * 60 * 24;
@@ -95,25 +83,34 @@ const NewTripScreen = (props) => {
     props.navigation.goBack();
   };
 
-  const handleSaveTrip = (formState, tripPlanStore) => {
-    const { tripTitle, startDate, endDate, content } = formState.inputValues;
+  const handleSaveTrip = async (formState, tripPlanStore) => {
+    try {
+      const { tripTitle, startDate, endDate, content } = formState.inputValues;
+      const userId = await Fetch("nomadId");
 
-    if (!tripTitle || !startDate || !endDate || !content) {
-      alert("Please fill all the fields to save the trip plan...");
-      return;
+      if (!tripTitle || !startDate || !endDate || !content) {
+        alert("Please fill all the fields to save the trip plan...");
+        return;
+      }
+
+      const saveObj = {
+        userId,
+        ...formState.inputValues,
+        dayPlans: tripPlanStore.dayPlans,
+      };
+
+      if (saveObj.dayPlans.length === 0) {
+        alert("Please add at least one day plan...");
+        return;
+      }
+
+      console.log("Trip Save Final", saveObj);
+      const { data } = await api.post.createTrip(saveObj);
+      if (!data.success) throw new Error(data.msg);
+      handleGoBack();
+    } catch (error) {
+      ErrorAlertModal(error.message, error);
     }
-
-    const saveObj = {
-      ...formState.inputValues,
-      dayPlans: tripPlanStore.dayPlans,
-    };
-
-    if (saveObj.dayPlans.length === 0) {
-      alert("Please add at least one day plan...");
-      return;
-    }
-    
-    console.log("Trip Save Final", saveObj);
   };
 
   useEffect(() => {
