@@ -36,7 +36,7 @@ const TripDayPlannerScreen = (props) => {
       note,
       selectedLocations,
     };
-    props.onSave(dayObj);
+    // props.onSave(dayObj);
   };
 
   const setHeaderTitle = useCallback(() => {
