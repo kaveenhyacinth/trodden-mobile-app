@@ -12,6 +12,7 @@ import CaravanScreen from "../screens/tribe/CaravanScreen";
 import SearchView from "../screens/explore/SearchView";
 import ProfileUser from "../screens/profile/ProfileUser";
 import CaravanNomadsScreen from "../screens/tribe/CaravanNomadsScreen";
+import TripScreen from "../screens/profile/TripScreen";
 
 const Stack = createStackNavigator();
 const Tab = createMaterialTopTabNavigator();
@@ -73,6 +74,13 @@ const ExploreStackNavigator = (props) => {
         name="Profile"
         component={ProfileUser}
         options={{ title: "..." }}
+      />
+      <Stack.Screen
+        name="Trip"
+        component={TripScreen}
+        options={{
+          title: "...",
+        }}
       />
       <Stack.Screen
         name="Search"

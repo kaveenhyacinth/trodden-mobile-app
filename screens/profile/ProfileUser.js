@@ -5,13 +5,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchNomadLookup, resetNomadLookup } from "../../redux";
 import { Fetch } from "../../helpers/deviceStorageHandler";
 import TimelineScreen from "./TimelineScreen";
-import TripsScreen from "./TripsScreenUser";
 import LoadingScreen from "../info/LoadingScreen";
 import Colors from "../../theme/Colors";
 import Typography from "../../theme/Typography";
 import BodyText from "../../components/ui/BodyText";
 import ProfileHeader from "../../components/headers/ProfileHeader";
 import ErrorAlertModal from "../../components/modals/ErrorAlertModal";
+import TripsScreenUser from "./TripsScreenUser";
 
 const { height: WINDOW_HEIGHT } = Dimensions.get("window");
 const TAB_BAR_HEIGHT = 50;
@@ -189,7 +189,30 @@ const NomadProfileView = (props) => {
           />
         );
       case "tab2":
-        return <TripsScreen />;
+        return (
+          <TripsScreenUser
+            UserId={userId}
+            HeaderHeight={HEADER_HEIGHT}
+            TabBarHeight={TAB_BAR_HEIGHT}
+            scrollY={scrollY}
+            onMomentumScrollBegin={onMomentumScrollBegin}
+            onScrollEndDrag={onScrollEndDrag}
+            onMomentumScrollEnd={onMomentumScrollEnd}
+            onGetRef={(ref) => {
+              if (ref) {
+                const found = listRefArr.current.find(
+                  (e) => e.key === route.key
+                );
+                if (!found) {
+                  listRefArr.current.push({
+                    key: route.key,
+                    value: ref,
+                  });
+                }
+              }
+            }}
+          />
+        );
       default:
         return null;
     }
