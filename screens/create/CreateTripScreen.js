@@ -114,7 +114,7 @@ const NewTripScreen = (props) => {
     let list = [];
     for (let i = 0; i < days; i++) {
       list.push(
-        <View style={styles.container}>
+        <View key={i.toString()} style={styles.container}>
           <View style={styles.row}>
             <View style={styles.colLeft}>
               <Ionicons
