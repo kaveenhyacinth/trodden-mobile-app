@@ -31,6 +31,7 @@ import ErrorAlertModal from "../../components/modals/ErrorAlertModal";
 const { width: WINDOW_WIDTH, height: WINDOW_HEIGHT } = Dimensions.get("window");
 
 const NewPostScreen = (props) => {
+  const [loading, setLoading] = useState(false);
   const [isPostReady, setIsPostReady] = useState(false);
   const [isLocationModelOpen, setIsLocationModelOpen] = useState(false);
   const [content, setContent] = useState("");
@@ -47,8 +48,8 @@ const NewPostScreen = (props) => {
   const nomadStore = useSelector((state) => state.nomadStore);
 
   useEffect(() => {
-    renderHeaderButton();
-  }, [renderHeaderButton]);
+    renderHeaderButton(isPostReady, loading);
+  }, [renderHeaderButton, isPostReady, loading]);
 
   useEffect(() => {
     const checkIsPostReady = () => {
@@ -58,23 +59,32 @@ const NewPostScreen = (props) => {
       return setIsPostReady(true);
     };
     checkIsPostReady();
-  }, [images.length, video.length, content.length]);
+  }, [images, video, content]);
 
-  const renderHeaderButton = useCallback(() => {
-    props.navigation.setOptions({
-      headerRight: () => (
-        <HeaderButtons HeaderButtonComponent={HeaderButton}>
-          <Item
-            title="POST"
-            IconComponent={Ionicons}
-            iconName="send"
-            color={isPostReady ? Colors.primary : Colors.outline}
-            onPress={isPostReady ? handleSubmit : null}
-          />
-        </HeaderButtons>
-      ),
-    });
-  }, [isPostReady]);
+  const renderHeaderButton = useCallback(
+    (isPostReady, loading) => {
+      props.navigation.setOptions({
+        headerRight: () => (
+          <HeaderButtons HeaderButtonComponent={HeaderButton}>
+            {loading ? (
+              <Item
+                title="POSTING..."
+                color={Colors.primary}
+                onPress={() => {}}
+              />
+            ) : (
+              <Item
+                title="POST"
+                color={isPostReady ? Colors.primary : Colors.outline}
+                onPress={isPostReady ? () => handleSubmit() : null}
+              />
+            )}
+          </HeaderButtons>
+        ),
+      });
+    },
+    [loading]
+  );
 
   const renderSelcetedItems = () => {
     if (video.length !== 0 && images.length === 0) {
@@ -439,11 +449,17 @@ const NewPostScreen = (props) => {
 
   const handleSubmit = async () => {
     try {
+      console.log("Inside handle submit");
+      setLoading(true);
       const userId = await Fetch("nomadId");
       let mediaBody = new FormData();
       let mediaArray = [];
 
+      console.log("Still inside!", images);
+
       if ((images.length === 0 && video.length === 0) || !content) return;
+
+      console.log("Still inside!!");
 
       // Upload media only if media files exist
       if (images.length !== 0 || video.length !== 0) {
@@ -476,6 +492,7 @@ const NewPostScreen = (props) => {
           throw new Error("Couldn't upload images eh!");
 
         const resArray = mediaRes.data.result;
+        console.log("Media upload Array", resArray);
 
         resArray.map((resObj) => {
           const mediaObj = {
@@ -505,9 +522,11 @@ const NewPostScreen = (props) => {
 
       await fetchNomadMemories(userId)(dispatch);
 
-      props.navigation.replace("core", { screen: "Profile" });
+      props.navigation.goBack();
     } catch (error) {
       ErrorAlertModal("Error Happen when creating new memory", error);
+    } finally {
+      setLoading(false);
     }
   };
 

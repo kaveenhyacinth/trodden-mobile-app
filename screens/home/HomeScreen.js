@@ -1,17 +1,18 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
-import { FlatList, StyleSheet } from "react-native";
+import { FlatList, StyleSheet, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import { Fetch } from "../../helpers/deviceStorageHandler";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchNomadProfile, fetchNomadMemories, fetchFeed } from "../../redux";
 import EmptyScreen from "../info/EmptyScreen";
-import LoadingScreen from "../info/LoadingScreen";
 import Colors from "../../theme/Colors";
 import CreateMemoryHeader from "../../components/headers/CreateMemoryHeader";
 import CustomHeaderButton from "../../components/ui/CustomHeaderButton";
 import Memory from "../../components/modals/MemoryModal";
 import ErrorAlertModal from "../../components/modals/ErrorAlertModal";
+import BodyText from "../../components/ui/BodyText";
+import FlatlistFooter from "../../components/ui/FlatlistFooter";
 
 const HomeScreen = (props) => {
   const [loading, setLoading] = useState(false);
@@ -26,10 +27,6 @@ const HomeScreen = (props) => {
       componentIsMounted.current = false;
     };
   }, []);
-
-  useEffect(() => {
-    console.log("Feedstore last post", feedStore.data[0]);
-  }, [feedStore.data]);
 
   useEffect(() => {
     (async () => {
@@ -54,6 +51,14 @@ const HomeScreen = (props) => {
     fetchFeedFromApi();
   }, [fetchFeedFromApi]);
 
+  useEffect(() => {
+    const unsubscribe = props.navigation.addListener("focus", () => {
+      fetchFeedFromApi();
+    });
+
+    return unsubscribe;
+  }, [props.navigation, fetchFeedFromApi]);
+
   const fetchOwner = useCallback(async (isSubscribed) => {
     try {
       const nomadId = await Fetch("nomadId");
@@ -71,7 +76,6 @@ const HomeScreen = (props) => {
       setLoading(true);
       const nomadId = await Fetch("nomadId");
       await fetchFeed(nomadId)(dispatch);
-      console.log("Fetching feed", feedStore.loading);
     } catch (error) {
       ErrorAlertModal(error.message, error);
     } finally {
@@ -99,6 +103,8 @@ const HomeScreen = (props) => {
     <CreateMemoryHeader onPress={() => props.navigation.navigate("newMemo")} />
   );
 
+  const renderListFooter = () => <FlatlistFooter />;
+
   const renderFeed = ({ item }) => <Memory type="feed" data={item} />;
 
   return (
@@ -107,6 +113,7 @@ const HomeScreen = (props) => {
       renderItem={renderFeed}
       ListHeaderComponent={renderListHeader}
       ListEmptyComponent={() => <EmptyScreen />}
+      ListFooterComponent={renderListFooter}
       style={styles.screen}
       showsHorizontalScrollIndicator={false}
       showsVerticalScrollIndicator={false}

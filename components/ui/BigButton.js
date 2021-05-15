@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderColor: Colors.primary,
     borderRadius: 5,
-    borderWidth: 2,
+    // borderWidth: 2,
   },
   buttonText: {
     ...Typography.bodyTextBold,

@@ -112,6 +112,7 @@ const SignUpScreen = (props) => {
         email: formData.email,
         password: formData.password,
       };
+      console.log("signup body", signupBody);
       const response = await api.post.signup(signupBody);
       if (!response.data.result) throw new Error("Please try again later");
 
