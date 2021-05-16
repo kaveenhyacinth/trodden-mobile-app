@@ -1,8 +1,9 @@
 {
   "expo": {
     "name": "Trodden",
-    "slug": "trodden",
+    "slug": "trodden-app",
     "version": "1.0.0",
+    "platforms": ["android"],
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -18,9 +19,21 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "com.ikonhype.trodden",
+      "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#F7FDF7"
+      },
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "CAMERA",
+        "WRITE_EXTERNAL_STORAGE"
+      ],
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyCOR9TirjkqbmxLSuwTtJrCIK1nAyR2IZQ"
+        }
       }
     },
     "web": {
