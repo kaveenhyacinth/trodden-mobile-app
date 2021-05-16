@@ -113,7 +113,7 @@ const OwnerProfileView = (props) => {
       await Delete("signToken");
       await Delete("nomadId");
       dispatch(resetNomadMomeries());
-      navigatorProps.dangerouslyGetParent().replace("auth");
+      navigatorProps.replace("auth");
     } catch (error) {
       ErrorAlertModal(error.message, error);
     }

@@ -79,6 +79,7 @@ const MainNavigator = (props) => {
   return isSignedIn ? (
     <Stack.Navigator headerMode="none">
       <Stack.Screen name="core" component={CoreNavigator} />
+      <Stack.Screen name="auth" component={AuthNavigator} />
     </Stack.Navigator>
   ) : (
     <Stack.Navigator headerMode="none">
