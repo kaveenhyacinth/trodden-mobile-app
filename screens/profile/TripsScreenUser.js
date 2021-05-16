@@ -30,9 +30,9 @@ const TripsScreenUser = ({
     return () => {
       isComponentMounted.current = false;
     };
-  }, []);
+  }, [isComponentMounted]);
 
-  const fetchTrips = useCallback(async (isComponentMounted) => {
+  const fetchTrips = useCallback(async () => {
     try {
       if (!isComponentMounted) return;
       setLoading(true);
@@ -45,10 +45,10 @@ const TripsScreenUser = ({
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [isComponentMounted]);
 
   useEffect(() => {
-    fetchTrips(isComponentMounted);
+    fetchTrips();
   }, [fetchTrips]);
 
   const renderTrips = ({ item }) => (

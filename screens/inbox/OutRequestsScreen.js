@@ -1,17 +1,72 @@
-import React from "react";
-import { StyleSheet, Text, View } from "react-native";
-import Colors from "../../theme/Colors";
+import React, { useState, useEffect, useCallback } from "react";
+import { SafeAreaView, FlatList, StyleSheet } from "react-native";
+import { Fetch } from "../../helpers/deviceStorageHandler";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchOutgoingReqs } from "../../redux";
 import EmptyScreen from "../info/EmptyScreen";
+import Colors from "../../theme/Colors";
+import NomadRequestTile from "../../components/modals/NomadRequestTileModal";
+import ErrorAlertModal from "../../components/modals/ErrorAlertModal";
 
-const OutRequestsScreen = (props) => {
+const OutgoingScreen = (props) => {
+  const [loading, setLoading] = useState(true);
+
+  const dispatch = useDispatch();
+
+  const requestsStore = useSelector((state) => state.requestsStore);
+
+  useEffect(() => {
+    fetchOutgoingBonds();
+  }, [fetchOutgoingBonds]);
+
+  const fetchOutgoingBonds = useCallback(async () => {
+    try {
+      setLoading(true);
+      const nomadId = await Fetch("nomadId");
+      await fetchOutgoingReqs(nomadId)(dispatch);
+    } catch (error) {
+      ErrorAlertModal(error.message, error);
+    } finally {
+      setLoading(false);
+    }
+  }, [dispatch]);
+
+  useEffect(() => {
+    const unsubscribe = props.navigation.addListener("focus", () => {
+      fetchOutgoingBonds();
+    });
+
+    return unsubscribe;
+  }, [props.navigation, fetchOutgoingBonds]);
+
+  const handleNavigation = () => {
+    props.navigation.navigate("Profile");
+  };
+
+  const renderNomads = ({ item }) => (
+    <NomadRequestTile
+      onNavigate={handleNavigation}
+      onRefresh={fetchOutgoingBonds}
+      type="confirm"
+      data={item}
+    />
+  );
+
   return (
-    <View style={styles.screen}>
-      <EmptyScreen />
-    </View>
+    <SafeAreaView style={styles.screen}>
+      <FlatList
+        data={requestsStore.outgoing.data}
+        renderItem={renderNomads}
+        keyExtractor={(item) => item._id}
+        ListEmptyComponent={() => <EmptyScreen />}
+        refreshing={loading}
+        onRefresh={() => fetchOutgoingBonds()}
+      />
+    </SafeAreaView>
   );
 };
 
-export default OutRequestsScreen;
+export default OutgoingScreen;
 
 const styles = StyleSheet.create({
   screen: {

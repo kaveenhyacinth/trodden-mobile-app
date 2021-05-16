@@ -27,16 +27,22 @@ const OwnerProfileView = (props) => {
     { key: "tab1", title: "Memories" },
     { key: "tab2", title: "Trips" },
   ]);
-
+  const isComponentMounted = useRef(true);
   const scrollY = useRef(new Animated.Value(0)).current;
-  const dispatch = useDispatch();
   const navigatorProps = useNavigation();
   const nomadStore = useSelector((state) => state.nomadStore);
   const memoriesStore = useSelector((state) => state.memoriesStore);
+  const dispatch = useDispatch();
 
   let listRefArr = useRef([]);
   let listOffset = useRef({});
   let isListGliding = useRef(false);
+
+  useEffect(() => {
+    return () => {
+      isComponentMounted.current = false;
+    };
+  }, [isComponentMounted]);
 
   useEffect(() => {
     repaintHeaderButtons();
@@ -184,13 +190,13 @@ const OwnerProfileView = (props) => {
     );
   };
 
-  const refreshMemories = async () => {
+  const refreshMemories = useCallback(async () => {
     try {
       await fetchNomadMemories(nomadStore.data._id)(dispatch);
     } catch (error) {
       ErrorAlertModal(error.message, error);
     }
-  };
+  }, [nomadStore, dispatch]);
 
   const renderScene = ({ route }) => {
     switch (route.key) {
@@ -202,6 +208,7 @@ const OwnerProfileView = (props) => {
             HeaderHeight={HEADER_HEIGHT}
             TabBarHeight={TAB_BAR_HEIGHT}
             scrollY={scrollY}
+            navigation={props.navigation}
             onMomentumScrollBegin={onMomentumScrollBegin}
             onScrollEndDrag={onScrollEndDrag}
             onMomentumScrollEnd={onMomentumScrollEnd}

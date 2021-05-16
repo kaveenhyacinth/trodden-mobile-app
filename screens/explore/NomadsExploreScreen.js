@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { SafeAreaView, FlatList } from "react-native";
 import { Fetch } from "../../helpers/deviceStorageHandler";
 import { useSelector, useDispatch } from "react-redux";
@@ -10,33 +10,40 @@ import ErrorAlertModal from "../../components/modals/ErrorAlertModal";
 
 const NomadsExploreScreen = (props) => {
   const [loading, setLoading] = useState(true);
-
+  const isComponentMounted = useRef(true);
   const dispatch = useDispatch();
-
   const suggestionsStore = useSelector((state) => state.suggestionsStore);
 
   useEffect(() => {
-    let isSubscribed = true;
-    fetchSuggestions(isSubscribed);
-    return () => (isSubscribed = false);
+    return () => {
+      isComponentMounted.current = false;
+    };
+  }, [isComponentMounted]);
+
+  useEffect(() => {
+    fetchSuggestions();
   }, [fetchSuggestions]);
 
-  const fetchSuggestions = useCallback(
-    async (isSubscribed) => {
-      try {
-        if (isSubscribed) {
-          setLoading(true);
-          const nomadId = await Fetch("nomadId");
-          await fetchNomadSuggestions(nomadId)(dispatch);
-        }
-      } catch (error) {
-        ErrorAlertModal(error.message, error);
-      } finally {
-        if (isSubscribed) setLoading(false);
+  const fetchSuggestions = useCallback(async () => {
+    try {
+      if (isComponentMounted) {
+        setLoading(true);
+        const nomadId = await Fetch("nomadId");
+        await fetchNomadSuggestions(nomadId)(dispatch);
       }
-    },
-    [dispatch]
-  );
+    } catch (error) {
+      ErrorAlertModal(error.message, error);
+    } finally {
+      if (isComponentMounted) setLoading(false);
+    }
+  }, [dispatch, isComponentMounted]);
+
+  useEffect(() => {
+    const unsubscribe = props.navigation.addListener("focus", () => {
+      fetchSuggestions();
+    });
+    return unsubscribe;
+  }, [props.navigation, fetchSuggestions]);
 
   const handleNavigation = (id) => {
     props.navigation.navigate("Profile", { id });

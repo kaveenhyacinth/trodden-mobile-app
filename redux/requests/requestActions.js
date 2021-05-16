@@ -46,7 +46,7 @@ export const fetchOutgoingReqs = (userId) => async (dispatch) => {
     const requests = response.data.result;
     dispatch(fetchOutgoingReqSuccess(requests));
   } catch (error) {
-    console.error("Error at fetchOutgoibgReqs", error);
+    console.error("Error at fetchOutgoingReqs", error);
     dispatch(fetchOutgoingReqFailure(error.message));
   }
 };

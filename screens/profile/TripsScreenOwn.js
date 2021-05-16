@@ -30,7 +30,15 @@ const TripsScreenOwn = ({
     return () => {
       isComponentMounted.current = false;
     };
-  }, []);
+  }, [isComponentMounted]);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", () => {
+      fetchTrips();
+    });
+
+    return unsubscribe;
+  }, [navigation, fetchTrips]);
 
   const fetchTrips = useCallback(async (isComponentMounted) => {
     try {

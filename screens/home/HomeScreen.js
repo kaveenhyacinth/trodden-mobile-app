@@ -26,7 +26,7 @@ const HomeScreen = (props) => {
     return () => {
       componentIsMounted.current = false;
     };
-  }, []);
+  }, [componentIsMounted]);
 
   useEffect(() => {
     (async () => {
@@ -103,8 +103,6 @@ const HomeScreen = (props) => {
     <CreateMemoryHeader onPress={() => props.navigation.navigate("newMemo")} />
   );
 
-  const renderListFooter = () => <FlatlistFooter />;
-
   const renderFeed = ({ item }) => <Memory type="feed" data={item} />;
 
   return (
@@ -113,7 +111,7 @@ const HomeScreen = (props) => {
       renderItem={renderFeed}
       ListHeaderComponent={renderListHeader}
       ListEmptyComponent={() => <EmptyScreen />}
-      ListFooterComponent={renderListFooter}
+      ListFooterComponent={() => <FlatlistFooter />}
       style={styles.screen}
       showsHorizontalScrollIndicator={false}
       showsVerticalScrollIndicator={false}

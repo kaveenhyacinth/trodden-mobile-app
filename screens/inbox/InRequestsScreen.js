@@ -8,7 +8,7 @@ import Colors from "../../theme/Colors";
 import NomadRequestTile from "../../components/modals/NomadRequestTileModal";
 import ErrorAlertModal from "../../components/modals/ErrorAlertModal";
 
-const InboxScreen = (props) => {
+const IncommingScreen = (props) => {
   const [loading, setLoading] = useState(true);
 
   const dispatch = useDispatch();
@@ -29,7 +29,15 @@ const InboxScreen = (props) => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [dispatch]);
+
+  useEffect(() => {
+    const unsubscribe = props.navigation.addListener("focus", () => {
+      fetchIncomingBonds();
+    });
+
+    return unsubscribe;
+  }, [props.navigation, fetchIncomingBonds]);
 
   const handleNavigation = () => {
     props.navigation.navigate("Profile");
@@ -50,7 +58,7 @@ const InboxScreen = (props) => {
         data={requestsStore.incoming.data}
         renderItem={renderNomads}
         keyExtractor={(item) => item._id}
-        ListEmptyComponent={<EmptyScreen />}
+        ListEmptyComponent={() => <EmptyScreen />}
         refreshing={loading}
         onRefresh={() => fetchIncomingBonds()}
       />
@@ -58,7 +66,7 @@ const InboxScreen = (props) => {
   );
 };
 
-export default InboxScreen;
+export default IncommingScreen;
 
 const styles = StyleSheet.create({
   screen: {

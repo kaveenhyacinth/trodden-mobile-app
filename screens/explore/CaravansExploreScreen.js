@@ -11,9 +11,7 @@ import ErrorAlertModal from "../../components/modals/ErrorAlertModal";
 const NomadsExploreScreen = (props) => {
   const [loading, setLoading] = useState(true);
   const isComponentMounted = useRef(true);
-
   const dispatch = useDispatch();
-
   const suggestionsStore = useSelector((state) => state.suggestionsStore);
 
   useEffect(() => {
@@ -23,25 +21,29 @@ const NomadsExploreScreen = (props) => {
   }, [isComponentMounted]);
 
   useEffect(() => {
-    fetchSuggestions(isComponentMounted);
+    fetchSuggestions();
   }, [fetchSuggestions]);
 
-  const fetchSuggestions = useCallback(
-    async (isSubscribed) => {
-      try {
-        if (isSubscribed) {
-          setLoading(true);
-          const nomadId = await Fetch("nomadId");
-          await fetchCaravanSuggestions(nomadId)(dispatch);
-        }
-      } catch (error) {
-        ErrorAlertModal(error.message, error);
-      } finally {
-        if (isSubscribed) setLoading(false);
+  const fetchSuggestions = useCallback(async () => {
+    try {
+      if (isComponentMounted) {
+        setLoading(true);
+        const nomadId = await Fetch("nomadId");
+        await fetchCaravanSuggestions(nomadId)(dispatch);
       }
-    },
-    [dispatch]
-  );
+    } catch (error) {
+      ErrorAlertModal(error.message, error);
+    } finally {
+      if (isComponentMounted) setLoading(false);
+    }
+  }, [dispatch, isComponentMounted]);
+
+  useEffect(() => {
+    const unsubscribe = props.navigation.addListener("focus", () => {
+      fetchSuggestions();
+    });
+    return unsubscribe;
+  }, [props.navigation, fetchSuggestions]);
 
   const renderCaravans = ({ item }) => (
     <CaravanListTile

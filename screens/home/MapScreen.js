@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { StyleSheet, Text, View, Dimensions } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
@@ -21,31 +21,35 @@ const MapScreen = () => {
     coods: {},
   });
 
-  useEffect(() => {
-    (async () => {
-      try {
-        setLoading(true);
-        let { status } = await Location.requestPermissionsAsync();
-        if (status !== "granted") {
-          ErrorAlertModal("Permission to access location was denied", error);
-          return;
-        }
+  const handleFetchUserLocation = useCallback(async () => {
+    try {
+      setLoading(true);
 
-        let location = await Location.getCurrentPositionAsync({});
-        console.log(location);
-        setLocation((prevState) => ({ ...prevState, ...location }));
-        setRegion((prevState) => ({
-          ...prevState,
-          latitude: location.coords.latitude,
-          longitude: location.coords.longitude,
-        }));
-      } catch (error) {
-        ErrorAlertModal(error.message, error);
-      } finally {
-        setLoading(false);
+      // Request permissions to fetch the location
+      let { status } = await Location.requestPermissionsAsync();
+      if (status !== "granted") {
+        ErrorAlertModal("Permission to access location was denied", error);
+        return;
       }
-    })();
+
+      // Fetch location only if has permissions
+      let location = await Location.getCurrentPositionAsync({});
+      setLocation((prevState) => ({ ...prevState, ...location }));
+      setRegion((prevState) => ({
+        ...prevState,
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      }));
+    } catch (error) {
+      ErrorAlertModal(error.message, error);
+    } finally {
+      setLoading(false);
+    }
   }, []);
+
+  useEffect(() => {
+    handleFetchUserLocation();
+  }, [handleFetchUserLocation]);
 
   if (loading) return <LoadingScreen />;
 

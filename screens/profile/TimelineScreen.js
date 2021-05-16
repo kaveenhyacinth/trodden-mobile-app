@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Dimensions, Animated } from "react-native";
 import EmptyScreen from "../info/EmptyScreen";
 import Memory from "../../components/modals/MemoryModal";
@@ -17,7 +17,15 @@ const TimelineScreen = ({
   onMomentumScrollBegin,
   refreshing,
   onRefresh,
+  navigation,
 }) => {
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", () => {
+      onRefresh();
+    });
+    return unsubscribe;
+  }, [navigation, onRefresh]);
+
   const renderProfileTimeline = ({ item }) =>
     authType === "self" ? (
       <Memory type="self" data={item} />

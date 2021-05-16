@@ -335,8 +335,6 @@ const NewPostScreen = (props) => {
         quality: 0.7,
       });
 
-      console.log("Selected Image:", result); // <-- clg
-
       if (!result.cancelled) {
         setImages((prevState) => [
           ...prevState,
@@ -371,8 +369,6 @@ const NewPostScreen = (props) => {
         aspect: [1, 1],
         quality: 0.5,
       });
-
-      console.log("Selected Image:", result); // <-- clg
 
       if (!result.cancelled) {
         setVideo((prevState) => [
@@ -410,8 +406,6 @@ const NewPostScreen = (props) => {
         quality: 0.7,
       });
 
-      console.log("Taken Photo:", result); // <-- clg
-
       if (!result.cancelled) {
         setImages((prevState) => [
           ...prevState,
@@ -444,22 +438,16 @@ const NewPostScreen = (props) => {
       types: data.types,
     }));
     setIsLocationModelOpen(false);
-    console.log(data);
   };
 
   const handleSubmit = async () => {
     try {
-      console.log("Inside handle submit");
       setLoading(true);
       const userId = await Fetch("nomadId");
       let mediaBody = new FormData();
       let mediaArray = [];
 
-      console.log("Still inside!", images);
-
       if ((images.length === 0 && video.length === 0) || !content) return;
-
-      console.log("Still inside!!");
 
       // Upload media only if media files exist
       if (images.length !== 0 || video.length !== 0) {
@@ -492,7 +480,6 @@ const NewPostScreen = (props) => {
           throw new Error("Couldn't upload images eh!");
 
         const resArray = mediaRes.data.result;
-        console.log("Media upload Array", resArray);
 
         resArray.map((resObj) => {
           const mediaObj = {
