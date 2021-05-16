@@ -29,6 +29,13 @@ const BlazesScreen = (props) => {
     fetchJoinedBlazes();
   }, [fetchJoinedBlazes]);
 
+  useEffect(() => {
+    const unsubscribe = props.navigation.addListener("focus", () => {
+      fetchJoinedBlazes();
+    });
+    return unsubscribe;
+  }, [props.navigation, fetchJoinedBlazes]);
+
   const renderItem = ({ item }) => (
     <View>
       <BlazeModal

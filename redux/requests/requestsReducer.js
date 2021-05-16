@@ -13,6 +13,7 @@ const initialState = {
 };
 
 const requestsReducer = (state = initialState, action) => {
+  console.log("requestStore Reducer", action.payload);
   switch (action.type) {
     case TYPE.FETCH_R_REQUEST:
       return {

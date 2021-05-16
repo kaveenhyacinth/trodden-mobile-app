@@ -30,6 +30,13 @@ const InboxScreen = (props) => {
     }
   }, []);
 
+  useEffect(() => {
+    const unsubscribe = props.navigation.addListener("focus", () => {
+      fetchBondList();
+    });
+    return unsubscribe;
+  }, [props.navigation, fetchBondList]);
+
   const renderNomads = ({ item }) => (
     <NomadRequestTile
       onNavigate={() => handleNavigation(item._id)}

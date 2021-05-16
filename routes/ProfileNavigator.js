@@ -9,6 +9,7 @@ import ProfileOwn from "../screens/profile/ProfileOwn";
 import CreateTripScreen from "../screens/create/CreateTripScreen";
 import CreateTripDayPlanScreen from "../screens/create/CreateTripDayPlan";
 import TripScreen from "../screens/profile/TripScreen";
+import HashTagScreen from "../screens/home/HashTagScreen";
 
 const Stack = createStackNavigator();
 
@@ -53,6 +54,13 @@ const ProfileStackNavigator = (props) => {
       <Stack.Screen
         name="Trip"
         component={TripScreen}
+        options={{
+          title: "...",
+        }}
+      />
+      <Stack.Screen
+        name="tagFeed"
+        component={HashTagScreen}
         options={{
           title: "...",
         }}

@@ -83,6 +83,13 @@ const CaravanScreen = (props) => {
   }, []);
 
   useEffect(() => {
+    const unsubscribe = props.navigation.addListener("focus", () => {
+      fetchCaravans();
+    });
+    return unsubscribe;
+  }, [props.navigation, fetchCaravans]);
+
+  useEffect(() => {
     if (componentIsMounted) {
       fetchCaravans();
     }

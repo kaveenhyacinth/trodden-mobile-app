@@ -55,6 +55,7 @@ const styles = StyleSheet.create({
     ...Typography.trodden,
     color: Colors.primary,
     textAlign: "center",
+    fontSize: 48
   },
   quote: {
     ...Typography.bodyTextBold,

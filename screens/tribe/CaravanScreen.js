@@ -85,16 +85,16 @@ const Caravan = (props) => {
     fetchCaravanAndBlazes();
   }, [fetchCaravanAndBlazes]);
 
+  useEffect(() => {
+    const unsubscribe = props.navigation.addListener("focus", () => {
+      fetchCaravanAndBlazes();
+    });
+    return unsubscribe;
+  }, [props.navigation, fetchCaravanAndBlazes]);
+
   const renderHeader = (caravanData) => (
     <View style={[styles.screen, { marginBottom: 20 }]}>
-      <View style={styles.styleSection}></View>
-      <View style={styles.infoSection}>
-        <View style={styles.imageWrapper}>
-          <Image
-            style={styles.image}
-            source={{ uri: downloadImage(caravanData.display_img) }}
-          />
-        </View>
+      <View style={styles.styleSection}>
         <View style={styles.infoTextWrapper}>
           <BodyText style={styles.infoText}>{`${
             caravanData.nomads.length ?? 0
@@ -102,6 +102,14 @@ const Caravan = (props) => {
           <BodyText style={styles.infoText}>{`${
             caravanData.blazes.length ?? 0
           } ${caravanData.blazes.length === 1 ? "Blaze" : "Blazes"}`}</BodyText>
+        </View>
+      </View>
+      <View style={styles.infoSection}>
+        <View style={styles.imageWrapper}>
+          <Image
+            style={styles.image}
+            source={{ uri: downloadImage(caravanData.display_img) }}
+          />
         </View>
       </View>
     </View>
@@ -131,8 +139,8 @@ const Caravan = (props) => {
         ListHeaderComponent={() => renderHeader(caravanData)}
         keyExtractor={(item, index) => index.toString()}
         ListEmptyComponent={() => <EmptyScreen />}
-        onRefresh={fetchCaravanAndBlazes}
         refreshing={loading}
+        onRefresh={fetchCaravanAndBlazes}
       />
       {caravanData.owner && caravanData.owner._id === nomadStore.data._id ? (
         <FloatingButton onPress={handleCreateBlazeNavigation} />
@@ -162,21 +170,23 @@ const styles = StyleSheet.create({
   imageWrapper: {
     height: 100,
     width: 100,
-    marginTop: -50,
-    borderWidth: 2,
-    borderColor: Colors.primary,
-    borderRadius: 50,
+    marginTop: -80,
+    borderRadius: 20,
     overflow: "hidden",
   },
   image: {
     flex: 1,
   },
   infoTextWrapper: {
-    flexDirection: "row",
+    flex: 1,
+    alignItems: "flex-end",
+    justifyContent: "center",
   },
   infoText: {
     marginRight: 20,
-    color: Colors.info,
+    color: Colors.accent,
+    fontSize: 16,
+    fontWeight: "bold",
   },
   blazesContainer: {
     alignItems: "center",

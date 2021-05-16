@@ -16,6 +16,10 @@ const OutgoingScreen = (props) => {
   const requestsStore = useSelector((state) => state.requestsStore);
 
   useEffect(() => {
+    console.log("requestStore in comp", requestsStore);
+  }, [requestsStore]);
+
+  useEffect(() => {
     fetchOutgoingBonds();
   }, [fetchOutgoingBonds]);
 
@@ -47,8 +51,8 @@ const OutgoingScreen = (props) => {
     <NomadRequestTile
       onNavigate={handleNavigation}
       onRefresh={fetchOutgoingBonds}
-      type="confirm"
-      data={item}
+      type="none"
+      data={{ requestee: item }}
     />
   );
 

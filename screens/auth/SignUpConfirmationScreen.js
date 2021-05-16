@@ -164,7 +164,7 @@ const ConfirmationScreen = (props) => {
             ref={E1}
             placeholder="X"
             message=""
-            autoFocus={true}
+            autoFocus
             value={otpInput.e1}
             maxLength={1}
             keyboardType="number-pad"

@@ -25,7 +25,7 @@ const MainNavigator = (props) => {
       setLoading(true);
       try {
         // Fetch token form localstorage
-        const refToken = await Fetch("refToken");
+        const refToken = await Fetch("reToken");
         console.log("ref", refToken);
         if (refToken) {
           // Request for new tokens
@@ -80,6 +80,7 @@ const MainNavigator = (props) => {
     <Stack.Navigator headerMode="none">
       <Stack.Screen name="core" component={CoreNavigator} />
       <Stack.Screen name="auth" component={AuthNavigator} />
+      <Stack.Screen name="postAuth" component={PostAuthNavigator} />
     </Stack.Navigator>
   ) : (
     <Stack.Navigator headerMode="none">

@@ -112,7 +112,6 @@ const SignUpScreen = (props) => {
         email: formData.email,
         password: formData.password,
       };
-      console.log("signup body", signupBody);
       const response = await api.post.signup(signupBody);
       if (!response.data.result) throw new Error("Please try again later");
 
@@ -125,7 +124,6 @@ const SignUpScreen = (props) => {
         },
       });
     } catch (error) {
-      console.log("Signup Errors:", error.response.data);
       if (!error.response)
         return ErrorAlertModal(
           "Sorry, it's our fault! Please try again later...",

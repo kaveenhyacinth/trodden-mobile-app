@@ -57,6 +57,11 @@ const MemoryModal = (props) => {
     })();
   }, [data.heats]);
 
+  const handleTagNavigator = (tag) => {
+    console.log("hashtag", tag);
+    props.navigation.navigate("tagFeed", { tag });
+  };
+
   const renderHashTags = (content) => {
     const regexp = new RegExp(/(^|\s)#[a-zA-Z0-9][\w-]*\b/g);
     const result = regexifyString({
@@ -64,9 +69,7 @@ const MemoryModal = (props) => {
       decorator: (match, index) => {
         return (
           <BodyText
-            onPress={() => {
-              alert(`This is ${match}`);
-            }}
+            onPress={() => handleTagNavigator(match)}
             key={index}
             style={{ color: Colors.primary }}
           >

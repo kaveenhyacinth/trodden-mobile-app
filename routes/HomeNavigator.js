@@ -9,6 +9,7 @@ import HomeScreen from "../screens/home/HomeScreen";
 import CreateMemoScreen from "../screens/create/CreateMemoScreen";
 import ProfileUser from "../screens/profile/ProfileUser";
 import MapScreen from "../screens/home/MapScreen";
+import HashTagScreen from "../screens/home/HashTagScreen";
 
 const Stack = createStackNavigator();
 
@@ -57,6 +58,13 @@ const HomeStackNavigator = (props) => {
         component={MapScreen}
         options={{
           title: "Nearby Map",
+        }}
+      />
+      <Stack.Screen
+        name="tagFeed"
+        component={HashTagScreen}
+        options={{
+          title: "...",
         }}
       />
     </Stack.Navigator>

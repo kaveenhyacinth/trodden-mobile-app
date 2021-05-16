@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, StyleSheet, Image, Pressable, Dimensions } from "react-native";
 import { downloadImage } from "../../helpers/mediaHandler";
 import { Fetch } from "../../helpers/deviceStorageHandler";
@@ -13,7 +13,14 @@ const { width: WINDOW_WIDTH } = Dimensions.get("window");
 const TILE_HEIGHT = 90;
 
 const NomadRequestTileModal = (props) => {
-  const [owner] = useState(props.data.owner ?? props.data);
+  const [owner, setOwner] = useState(
+    props.data.owner ?? props.data.requestee.requestee ?? props.data
+  );
+
+  useEffect(() => {
+    setOwner(props.data.owner ?? props.data.requestee.requestee ?? props.data);
+    console.log("owner", owner);
+  }, [props.data]);
 
   const renderButtons = (type = "regular") => {
     if (type === "suggestion")

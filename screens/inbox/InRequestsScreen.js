@@ -60,7 +60,7 @@ const IncommingScreen = (props) => {
         keyExtractor={(item) => item._id}
         ListEmptyComponent={() => <EmptyScreen />}
         refreshing={loading}
-        onRefresh={() => fetchIncomingBonds()}
+        onRefresh={fetchIncomingBonds}
       />
     </SafeAreaView>
   );

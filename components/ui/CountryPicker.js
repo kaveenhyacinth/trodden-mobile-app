@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet } from "react-native";
 import Picker from "react-native-country-picker-modal";
 import Button from "./BigButton";
@@ -6,7 +6,12 @@ import Colors from "../../theme/Colors";
 import Typography from "../../theme/Typography";
 
 const CountryPicker = (props) => {
-  const [value] = useState(props.value);
+  const [value, setValue] = useState(props.value);
+
+  useEffect(() => {
+    setValue(props.value);
+  }, [props.value]);
+
   return (
     <Picker
       withFilter

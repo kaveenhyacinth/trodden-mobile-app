@@ -103,7 +103,9 @@ const HomeScreen = (props) => {
     <CreateMemoryHeader onPress={() => props.navigation.navigate("newMemo")} />
   );
 
-  const renderFeed = ({ item }) => <Memory type="feed" data={item} />;
+  const renderFeed = ({ item }) => (
+    <Memory type="feed" data={item} navigation={props.navigation} />
+  );
 
   return (
     <FlatList

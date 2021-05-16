@@ -64,6 +64,7 @@ const api = {
     getBlazeById: (blazeId) => Http.get(`/api/blaze/i/${blazeId}`),
     getJoinedBlazes: (userId) => Http.get(`/api/blaze/j/${userId}`),
     getTripsByUserId: (userId) => Http.get(`/api/trip/n/${userId}`),
+    getMemoriesByHashtag: (tag) => Http.get(`/api/feed/tags/${tag}`),
     getCurrentUser: (userId) => Http.get(`/api/profile/my/${userId}`),
     getNomadById: (userId) => Http.get(`/api/profile/user/${userId}`),
     getOwnMemories: (userId) => Http.get(`/api/memories/my/${userId}`),

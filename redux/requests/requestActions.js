@@ -7,22 +7,22 @@ const fetchReqRequest = () => ({
 
 const fetchIncomingReqSuccess = (requests) => ({
   type: TYPE.FETCH_RI_SUCCESS,
-  paylaod: requests,
+  payload: requests,
 });
 
 const fetchIncomingReqFailure = (error) => ({
   type: TYPE.FETCH_RI_FAILURE,
-  paylaod: error,
+  payload: error,
 });
 
 const fetchOutgoingReqSuccess = (requests) => ({
   type: TYPE.FETCH_RO_SUCCESS,
-  paylaod: requests,
+  payload: requests,
 });
 
 const fetchOutgoingReqFailure = (error) => ({
   type: TYPE.FETCH_RO_FAILURE,
-  paylaod: error,
+  payload: error,
 });
 
 export const fetchIncomingReqs = (userId) => async (dispatch) => {
@@ -31,6 +31,7 @@ export const fetchIncomingReqs = (userId) => async (dispatch) => {
     const response = await api.get.getIncomingBonds(userId);
     if (!response.data.success) throw new Error(response.data.msg);
     const requests = response.data.result;
+    console.log("data bonds", response.data.result);
     dispatch(fetchIncomingReqSuccess(requests));
   } catch (error) {
     console.error("Error at fetchIncommingReqs", error);
