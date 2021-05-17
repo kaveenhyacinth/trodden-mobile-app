@@ -70,6 +70,7 @@ const MemoryModal = (props) => {
 
   const handleProfileNavigator = async (id) => {
     try {
+      if (props.type !== "feed") return;
       const nomadId = await Fetch("nomadId");
       if (data.owner._id === nomadId) {
         props.navigation.navigate("Profile");
