@@ -15,8 +15,6 @@ const fetchTribeNomadsFailure = (error) => ({
   payload: error,
 });
 
-// TODO: caravans and blazes
-
 export const fetchNomadsTribe = (userId) => async (dispatch) => {
   try {
     dispatch(fetchTribeRequest());

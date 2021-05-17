@@ -92,6 +92,8 @@ const api = {
   },
   delete: {
     rejectBond: (requestId) => Http.delete(`/api/profile/req/rm/${requestId}`),
+    removeBond: (body) =>
+      Http.delete(`/api/profile/bond/rm/${body.bond}/${body.user}`),
   },
 };
 

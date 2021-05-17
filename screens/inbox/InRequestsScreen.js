@@ -49,6 +49,7 @@ const IncommingScreen = (props) => {
       onRefresh={fetchIncomingBonds}
       type="confirm"
       data={item}
+      requestId={item._id}
     />
   );
 

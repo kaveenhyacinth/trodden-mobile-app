@@ -1,32 +1,40 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { SafeAreaView, FlatList } from "react-native";
 import { Fetch } from "../../helpers/deviceStorageHandler";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchNomadsTribe } from "../../redux";
 import EmptyScreen from "../info/EmptyScreen";
 import Colors from "../../theme/Colors";
 import NomadRequestTile from "../../components/modals/NomadRequestTileModal";
 import ErrorAlertModal from "../../components/modals/ErrorAlertModal";
+import api from "../../api";
 
 const InboxScreen = (props) => {
-  const dispatch = useDispatch();
-
-  const tribeStore = useSelector((state) => state.tribeStore);
+  const [loading, setLoading] = useState(false);
+  const [tribeData, setTribeData] = useState([]);
+  const isComponentMounted = useRef(true);
 
   useEffect(() => {
-    let isSubscribed = true;
-    fetchBondList(isSubscribed);
-    return () => (isSubscribed = false);
+    return () => {
+      isComponentMounted.current = false;
+    };
+  }, [isComponentMounted]);
+
+  useEffect(() => {
+    fetchBondList();
   }, [fetchBondList]);
 
-  const fetchBondList = useCallback(async (isSubscribed) => {
+  const fetchBondList = useCallback(async () => {
     try {
-      if (isSubscribed) {
+      if (isComponentMounted) {
+        setLoading(true);
         const nomadId = await Fetch("nomadId");
-        await fetchNomadsTribe(nomadId)(dispatch);
+        const { data } = await api.get.getBondsList(nomadId);
+        if (!data.success) throw new Error(data.msg);
+        setTribeData([...data.result.tribe]);
       }
     } catch (error) {
       ErrorAlertModal(error.message, error);
+    } finally {
+      if (isComponentMounted) setLoading(false);
     }
   }, []);
 
@@ -52,11 +60,11 @@ const InboxScreen = (props) => {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: Colors.accent }}>
       <FlatList
-        data={tribeStore.nomads.data.tribe}
+        data={tribeData}
         renderItem={renderNomads}
         keyExtractor={(item) => item._id}
         ListEmptyComponent={<EmptyScreen />}
-        refreshing={tribeStore.loading}
+        refreshing={loading}
         onRefresh={() => fetchBondList()}
       />
     </SafeAreaView>

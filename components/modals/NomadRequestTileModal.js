@@ -107,17 +107,32 @@ const NomadRequestTileModal = (props) => {
     }
   };
 
-  // TODO:
   const handleBondReject = async () => {
-    alert("Reject");
+    try {
+      const requestId = props.requestId;
+      console.log("Request ID", requestId);
+      const response = await api.delete.rejectBond(requestId);
+      if (!response.data.success) throw new Error(response.data.msg);
+      props.onRefresh();
+    } catch (error) {
+      ErrorAlertModal(error.message, error);
+    }
   };
 
-  //TODO:
   const handleBondBreak = async () => {
-    alert("Break");
+    try {
+      const userId = await Fetch("nomadId");
+      const response = await api.delete.removeBond({
+        user: userId,
+        bond: owner._id,
+      });
+      if (!response.data.success) throw new Error(response.data.msg);
+      props.onRefresh();
+    } catch (error) {
+      ErrorAlertModal(error.message, error);
+    }
   };
 
-  // TODO:
   const handleViewProfile = () => {
     props.onNavigate();
   };
