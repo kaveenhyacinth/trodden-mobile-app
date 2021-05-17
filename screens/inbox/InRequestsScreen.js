@@ -39,13 +39,13 @@ const IncommingScreen = (props) => {
     return unsubscribe;
   }, [props.navigation, fetchIncomingBonds]);
 
-  const handleNavigation = () => {
-    props.navigation.navigate("Profile");
+  const handleNavigation = (id) => {
+    props.navigation.navigate("Profile", { id });
   };
 
   const renderNomads = ({ item }) => (
     <NomadRequestTile
-      onNavigate={handleNavigation}
+      onNavigate={() => handleNavigation(item.owner._id)}
       onRefresh={fetchIncomingBonds}
       type="confirm"
       data={item}

@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, Image, Pressable, Dimensions } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Image,
+  Pressable,
+  Dimensions,
+  Alert,
+} from "react-native";
 import { downloadImage } from "../../helpers/mediaHandler";
 import { Fetch } from "../../helpers/deviceStorageHandler";
 import api from "../../api/index";
@@ -66,7 +73,7 @@ const NomadRequestTileModal = (props) => {
         <BigButton
           style={{ ...styles.button, ...styles.lite }}
           textStyle={{ color: Colors.info }}
-          onPress={handleBondBreak}
+          onPress={handleBondRemovePrompt}
         >
           Remove
         </BigButton>
@@ -116,6 +123,25 @@ const NomadRequestTileModal = (props) => {
     } catch (error) {
       ErrorAlertModal(error.message, error);
     }
+  };
+
+  const handleBondRemovePrompt = () => {
+    Alert.alert(
+      "Do you want to Remove the Bond?",
+      `${owner.first_name} is going to miss you!`,
+      [
+        {
+          text: "Yes",
+          style: "default",
+          onPress: () => handleBondBreak(),
+        },
+        {
+          text: "No",
+          style: "cancel",
+        },
+      ],
+      { cancelable: false }
+    );
   };
 
   const handleBondBreak = async () => {
