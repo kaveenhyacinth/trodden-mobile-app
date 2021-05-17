@@ -8,6 +8,7 @@ import Typography from "../theme/Typography";
 import HomeScreen from "../screens/home/HomeScreen";
 import CreateMemoScreen from "../screens/create/CreateMemoScreen";
 import ProfileUser from "../screens/profile/ProfileUser";
+import ProfileOwn from "../screens/profile/ProfileOwn";
 import MapScreen from "../screens/home/MapScreen";
 import HashTagScreen from "../screens/home/HashTagScreen";
 
@@ -49,6 +50,13 @@ const HomeStackNavigator = (props) => {
       <Stack.Screen
         name="profile"
         component={ProfileUser}
+        options={{
+          title: "...",
+        }}
+      />
+      <Stack.Screen
+        name="profileOwn"
+        component={ProfileOwn}
         options={{
           title: "...",
         }}

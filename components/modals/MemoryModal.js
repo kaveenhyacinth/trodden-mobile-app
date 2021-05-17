@@ -58,8 +58,20 @@ const MemoryModal = (props) => {
   }, [data.heats]);
 
   const handleTagNavigator = (tag) => {
-    console.log("hashtag", tag);
     props.navigation.navigate("tagFeed", { tag });
+  };
+
+  const handleProfileNavigator = async (id) => {
+    try {
+      const nomadId = await Fetch("nomadId");
+      if (data.owner._id === nomadId) {
+        props.navigation.navigate("Profile");
+      } else {
+        props.navigation.navigate("profile", { id });
+      }
+    } catch (error) {
+      ErrorAlertModal(error.message, error);
+    }
   };
 
   const renderHashTags = (content) => {
@@ -220,7 +232,7 @@ const MemoryModal = (props) => {
     <View style={styles.container}>
       <View style={styles.header}>
         <View style={styles.leftSection}>
-          <Pressable onPress={() => {}}>
+          <Pressable onPress={() => handleProfileNavigator(data.owner._id)}>
             <View style={styles.headerImageWrapper}>
               <Image
                 style={styles.headerImage}
@@ -232,6 +244,7 @@ const MemoryModal = (props) => {
         <View style={styles.midSection}>
           <BodyText
             style={styles.headerName}
+            onPress={() => handleProfileNavigator(data.owner._id)}
           >{`${data.owner.first_name} ${data.owner.last_name}`}</BodyText>
           <Pressable onPress={() => {}}>
             <BodyText style={styles.headerLocation}>
