@@ -108,6 +108,6 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     paddingTop: 3,
-    // backgroundColor: Colors.accent,
+    backgroundColor: Colors.accent,
   },
 });

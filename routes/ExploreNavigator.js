@@ -13,6 +13,7 @@ import SearchView from "../screens/explore/SearchView";
 import ProfileUser from "../screens/profile/ProfileUser";
 import CaravanNomadsScreen from "../screens/tribe/CaravanNomadsScreen";
 import TripScreen from "../screens/profile/TripScreen";
+import HashTagScreen from "../screens/home/HashTagScreen";
 
 const Stack = createStackNavigator();
 const Tab = createMaterialTopTabNavigator();
@@ -102,6 +103,13 @@ const ExploreStackNavigator = (props) => {
         component={CaravanNomadsScreen}
         options={{
           title: "Nomads",
+        }}
+      />
+      <Stack.Screen
+        name="tagFeed"
+        component={HashTagScreen}
+        options={{
+          title: "...",
         }}
       />
     </Stack.Navigator>

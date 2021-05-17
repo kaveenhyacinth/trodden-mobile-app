@@ -30,7 +30,7 @@ const TimelineScreen = ({
     authType === "self" ? (
       <Memory type="self" data={item} navigation={navigation} />
     ) : (
-      <Memory type="non-self" data={item} />
+      <Memory type="non-self" data={item} navigation={navigation} />
     );
 
   return (

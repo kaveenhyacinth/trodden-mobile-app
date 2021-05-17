@@ -84,11 +84,6 @@ const TripsScreenUser = ({
         showsVerticalScrollIndicator={false}
         keyExtractor={(item, index) => index.toString()}
       />
-      <FloatingButton
-        onPress={() => {
-          navigation.navigate("NewTrip");
-        }}
-      />
     </Animated.View>
   );
 };
@@ -99,6 +94,6 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     paddingTop: 3,
-    // backgroundColor: Colors.accent,
+    backgroundColor: Colors.accent,
   },
 });

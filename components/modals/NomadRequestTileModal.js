@@ -13,13 +13,10 @@ const { width: WINDOW_WIDTH } = Dimensions.get("window");
 const TILE_HEIGHT = 90;
 
 const NomadRequestTileModal = (props) => {
-  const [owner, setOwner] = useState(
-    props.data.owner ?? props.data.requestee.requestee ?? props.data
-  );
+  const [owner, setOwner] = useState(props.data.owner ?? props.data);
 
   useEffect(() => {
-    setOwner(props.data.owner ?? props.data.requestee.requestee ?? props.data);
-    console.log("owner", owner);
+    setOwner(props.data.owner ?? props.data);
   }, [props.data]);
 
   const renderButtons = (type = "regular") => {

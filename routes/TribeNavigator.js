@@ -14,6 +14,7 @@ import CaravanNomadsScreen from "../screens/tribe/CaravanNomadsScreen";
 import CreateBlazeScreen from "../screens/create/CreateBlazeScreen";
 import BlazeScreen from "../screens/tribe/BlazeScreen";
 import TripScreen from "../screens/profile/TripScreen";
+import HashTagScreen from "../screens/home/HashTagScreen";
 
 const Stack = createStackNavigator();
 const Tab = createMaterialTopTabNavigator();
@@ -124,6 +125,13 @@ const TribeStackNavigator = (props) => {
       <Stack.Screen
         name="Trip"
         component={TripScreen}
+        options={{
+          title: "...",
+        }}
+      />
+      <Stack.Screen
+        name="tagFeed"
+        component={HashTagScreen}
         options={{
           title: "...",
         }}
