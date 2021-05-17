@@ -73,7 +73,11 @@ const Caravan = (props) => {
                 IconComponent={Ionicons}
                 iconName="settings-outline"
                 color={Colors.primary}
-                onPress={() => {}}
+                onPress={() =>
+                  alert(
+                    "This screen is provisioned to make the changes that are related to the Caravan such as changing interests, kick Nomads, delete Blazes, etc. But due to the time limitation, Developer did not allocate much time for this advance feature. But this feature will be available from the version 2.0, the next social release of the application. Thank you and sorry for the inconvenience!"
+                  )
+                }
               />
             ) : null}
           </HeaderButtons>
