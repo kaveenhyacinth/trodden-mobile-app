@@ -15,7 +15,7 @@ import TripsScreenUser from "./TripsScreenUser";
 
 const { height: WINDOW_HEIGHT } = Dimensions.get("window");
 const TAB_BAR_HEIGHT = 50;
-const HEADER_HEIGHT = WINDOW_HEIGHT * 0.4;
+const HEADER_HEIGHT = WINDOW_HEIGHT * 0.45;
 
 const NomadProfileView = (props) => {
   const [loading, setLoading] = useState(true);
@@ -30,6 +30,7 @@ const NomadProfileView = (props) => {
   const scrollY = useRef(new Animated.Value(0)).current;
   const dispatch = useDispatch();
   const lookupNomadStore = useSelector((state) => state.lookupNomadStore);
+  const nomadStore = useSelector((state) => state.nomadStore);
 
   let listRefArr = useRef([]);
   let listOffset = useRef({});

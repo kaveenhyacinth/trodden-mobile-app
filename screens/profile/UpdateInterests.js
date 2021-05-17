@@ -51,7 +51,7 @@ const UpdateInterests = (props) => {
   const renderInterests = ({ item }) => {
     let isSelected = false;
     const index = nomadStore.data.interests.findIndex(
-      (interest) => interest === item._id
+      (interest) => interest._id === item._id
     );
 
     if (index !== -1) isSelected = true;
@@ -103,10 +103,9 @@ const UpdateInterests = (props) => {
   }, [props.navigation, handleSubmit, loading]);
 
   useEffect(() => {
-    setSelectedInterests((prevState) => [
-      ...prevState,
-      ...nomadStore.data.interests,
-    ]);
+    nomadStore.data.interests.map((interest) =>
+      setSelectedInterests((prevState) => [...prevState, interest._id])
+    );
   }, [nomadStore.data.interests]);
 
   useEffect(() => {

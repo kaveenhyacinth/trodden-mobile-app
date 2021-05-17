@@ -5,10 +5,41 @@ import { downloadImage } from "../../helpers/mediaHandler";
 import Colors from "../../theme/Colors";
 import Typography from "../../theme/Typography";
 import BodyText from "../ui/BodyText";
+import { useSelector } from "react-redux";
 
 const { width: WINDOW_WIDTH, height: WINDOW_HEIGHT } = Dimensions.get("window");
 
 const ProfileHeader = (props) => {
+  const nomadStore = useSelector((state) => state.nomadStore);
+
+  const renderInterests = () => {
+    return props.nomad.interests.map((interest, index) => {
+      console.log("Interest", interest);
+      const isCommon = nomadStore.data.interests.findIndex(
+        (item) => item._id === interest._id
+      );
+      return (
+        <BodyText
+          key={index.toString()}
+          style={{
+            marginHorizontal: 2,
+            marginVertical: 2,
+            backgroundColor:
+              isCommon !== -1 ? Colors.primary : Colors.background,
+            borderRadius: 10,
+            borderWidth: isCommon !== -1 ? 0 : 1,
+            borderColor: Colors.primary,
+            color: isCommon !== -1 ? Colors.accent : Colors.primary,
+            paddingVertical: 2,
+            paddingHorizontal: 8,
+          }}
+        >
+          {interest.title}
+        </BodyText>
+      );
+    });
+  };
+
   return (
     <View>
       <View style={styles.topSection}>
@@ -71,6 +102,7 @@ const ProfileHeader = (props) => {
         <View style={styles.bio}>
           <BodyText style={styles.bioText}>{props.nomad.prof_bio}</BodyText>
         </View>
+        <View style={styles.interests}>{renderInterests()}</View>
       </View>
     </View>
   );
@@ -153,6 +185,11 @@ const styles = StyleSheet.create({
   bioText: {
     color: Colors.info,
     textAlign: "center",
+  },
+  interests: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
   },
 });
 

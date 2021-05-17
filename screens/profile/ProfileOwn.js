@@ -19,7 +19,7 @@ import ErrorAlertModal from "../../components/modals/ErrorAlertModal";
 const { height: WINDOW_HEIGHT } = Dimensions.get("window");
 
 const TAB_BAR_HEIGHT = 50;
-const HEADER_HEIGHT = WINDOW_HEIGHT * 0.4;
+const HEADER_HEIGHT = WINDOW_HEIGHT * 0.45;
 
 const OwnerProfileView = (props) => {
   const [tabIndex, setIndex] = useState(0);
