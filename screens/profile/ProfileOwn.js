@@ -68,7 +68,7 @@ const OwnerProfileView = (props) => {
             IconComponent={Ionicons}
             iconName="settings-outline"
             color={Colors.primary}
-            onPress={() => {}}
+            onPress={() => props.navigation.navigate("settings")}
           />
           <Item
             title="Log Out"

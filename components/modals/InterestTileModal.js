@@ -10,7 +10,7 @@ import Constants from "expo-constants";
 import Colors from "../../theme/Colors";
 
 const InterestGridTile = (props) => {
-  const [isSelected, setIsSelected] = useState(false);
+  const [isSelected, setIsSelected] = useState(props.isSelected ?? false);
 
   const handleSelect = () => {
     props.onSelect();

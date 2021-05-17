@@ -10,6 +10,7 @@ import CreateTripScreen from "../screens/create/CreateTripScreen";
 import CreateTripDayPlanScreen from "../screens/create/CreateTripDayPlan";
 import TripScreen from "../screens/profile/TripScreen";
 import HashTagScreen from "../screens/home/HashTagScreen";
+import UpdateInterests from "../screens/profile/UpdateInterests";
 
 const Stack = createStackNavigator();
 
@@ -63,6 +64,13 @@ const ProfileStackNavigator = (props) => {
         component={HashTagScreen}
         options={{
           title: "...",
+        }}
+      />
+      <Stack.Screen
+        name="settings"
+        component={UpdateInterests}
+        options={{
+          title: "Update Interests",
         }}
       />
     </Stack.Navigator>

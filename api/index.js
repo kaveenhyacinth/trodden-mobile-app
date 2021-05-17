@@ -83,6 +83,7 @@ const api = {
     requestJoinCaravan: (body) => Http.put("/api/caravan/join", body),
     updateProfile: (body) => Http.put("/api/profile/setup", body),
     requestBond: (body) => Http.put("/api/profile/req/new", body),
+    updateUserInterests: (body) => Http.put("/api/profile/interests", body),
   },
   patch: {
     joinBlaze: (body) => Http.patch("/api/blaze/p", body),
