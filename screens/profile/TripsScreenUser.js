@@ -38,7 +38,6 @@ const TripsScreenUser = ({
       setLoading(true);
       const { data } = await api.get.getTripsByUserId(UserId);
       if (!data.success) throw new Error(data.msg);
-      console.log("Trips", data.result);
       setTripsArray([...data.result]);
     } catch (error) {
       ErrorAlertModal(error.response.data.msg || error.message, error);

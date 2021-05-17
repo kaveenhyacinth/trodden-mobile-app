@@ -130,7 +130,6 @@ const CreateCaravan = ({ navigation }) => {
         },
       };
       const response = await api.post.uploadImage(body)(config);
-      console.log("Image file path", response.data.result);
 
       // Check response success
       if (!response.data.result)

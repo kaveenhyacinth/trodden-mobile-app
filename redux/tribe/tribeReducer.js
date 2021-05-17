@@ -16,8 +16,6 @@ const initialState = {
   },
 };
 
-//TODO: Caravans and blazes
-
 const tribeReducer = (state = initialState, action) => {
   switch (action.type) {
     case TYPE.FETCH_T_REQUEST:

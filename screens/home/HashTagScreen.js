@@ -29,9 +29,7 @@ const HashTagScreen = ({ navigation, route }) => {
     try {
       setLoading(true);
       if (isComponentMounted) {
-        console.log("hashtag at hashtag screen", route.params.tag);
         const hashtag = route.params.tag.replace("#", "");
-        console.log("hashtag at hashtag screen", hashtag);
         const { data } = await api.get.getMemoriesByHashtag(hashtag);
         if (!data.success) throw new Error(data.msg);
         setMemories([...data.result]);

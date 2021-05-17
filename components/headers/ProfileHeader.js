@@ -14,7 +14,6 @@ const ProfileHeader = (props) => {
 
   const renderInterests = () => {
     return props.nomad.interests.map((interest, index) => {
-      console.log("Interest", interest);
       const isCommon = nomadStore.data.interests.findIndex(
         (item) => item._id === interest._id
       );

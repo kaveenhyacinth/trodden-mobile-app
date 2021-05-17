@@ -9,7 +9,6 @@ import TitleText from "../ui/TitleText";
 const { width: WINDOW_WIDTH } = Dimensions.get("window");
 
 const BlazeModal = ({ data, onNavigate }) => {
-  console.log("Blaze", data);
   return (
     <Pressable onPress={() => onNavigate()}>
       <View style={styles.container}>

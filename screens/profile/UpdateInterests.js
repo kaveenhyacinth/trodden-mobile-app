@@ -109,10 +109,6 @@ const UpdateInterests = (props) => {
   }, [nomadStore.data.interests]);
 
   useEffect(() => {
-    console.log("Interests selected", selectedInterests);
-  }, [selectedInterests]);
-
-  useEffect(() => {
     fetchInterestsFromApi();
   }, [fetchInterestsFromApi]);
 

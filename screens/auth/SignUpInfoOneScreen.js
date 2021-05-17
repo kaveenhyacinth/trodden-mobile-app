@@ -20,10 +20,6 @@ import ErrorAlertModal from "../../components/modals/ErrorAlertModal";
 const INFO_ONE_FORM_UPDATE = "INFO_ONE_FORM_UPDATE";
 
 const formReducer = (state, action) => {
-  console.log("inputies", {
-    value: action.payload.value,
-    key: action.payload.key,
-  });
   if (action.type === INFO_ONE_FORM_UPDATE) {
     const updatedValues = {
       ...state.inputValues,
@@ -108,7 +104,6 @@ const SignupInfoOneScreen = (props) => {
       });
 
       const key = Object.keys(result);
-      console.log("valid input", result[key]);
 
       dispatchFormState({
         type: INFO_ONE_FORM_UPDATE,
@@ -223,10 +218,6 @@ const SignupInfoOneScreen = (props) => {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    console.log("Country", formState.inputValues.country);
-  }, [formState.inputValues]);
 
   return (
     <ScreenView style={styles.screen}>

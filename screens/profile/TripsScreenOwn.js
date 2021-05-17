@@ -47,7 +47,6 @@ const TripsScreenOwn = ({
       const userId = await Fetch("nomadId");
       const { data } = await api.get.getTripsByUserId(userId);
       if (!data.success) throw new Error(data.msg);
-      console.log("Trips", data.result);
       setTripsArray([...data.result]);
     } catch (error) {
       ErrorAlertModal(error.response.data.msg || error.message, error);

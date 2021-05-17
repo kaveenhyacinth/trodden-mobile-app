@@ -3,7 +3,7 @@ import {
   FETCH_LN_SUCCESS,
   FETCH_LN_FAILURE,
   RESET_LN,
-} from "../lookupTypes";
+} from "./lookupTypes";
 
 const initialState = {
   loading: false,

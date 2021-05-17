@@ -128,7 +128,6 @@ const CreateBlazeScreen = ({ navigation, route }) => {
         },
       };
       const response = await api.post.uploadImage(body)(config);
-      console.log("Image file path", response.data.result);
 
       // Check response success
       if (!response.data.result)
@@ -179,8 +178,6 @@ const CreateBlazeScreen = ({ navigation, route }) => {
         },
         filename,
       };
-
-      console.log("Blaze body", body);
 
       const response = await api.post.createBlaze(body);
 

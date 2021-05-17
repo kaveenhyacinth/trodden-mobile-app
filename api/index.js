@@ -12,7 +12,6 @@ Http.interceptors.request.use(
   async (config) => {
     const signToken = await Fetch("signToken");
     if (signToken) {
-      console.log("SignToken at request interceptor:", signToken);
       config.headers["Authorization"] = `Bearer ${signToken}`;
     }
     return config;
@@ -24,10 +23,9 @@ Http.interceptors.request.use(
 Http.interceptors.response.use(
   (response) => response,
   async (error) => {
-    console.log("Error at response interceptor:", error);
     const originalReq = error.config;
     let refToken = await Fetch("refToken");
-    console.log("refToken at response interceptor:", refToken);
+    // console.log("refToken at response interceptor:", refToken);
 
     if (refToken && error.response.status === 401 && !originalReq._retry) {
       originalReq._retry = true;

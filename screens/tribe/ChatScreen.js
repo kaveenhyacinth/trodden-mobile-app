@@ -81,14 +81,9 @@ const ChatScreen = ({ navigation, route }) => {
 
   useEffect(() => {
     socket.on("message", (message) => {
-      console.log("in msg", message ?? "null");
       setMessages((prevState) => [...prevState, message]);
     });
   }, [setMessages]);
-
-  useEffect(() => {
-    console.log("Messages", messages);
-  }, [messages, updateChat]);
 
   const renderChatBubble = (item) => {
     const type =

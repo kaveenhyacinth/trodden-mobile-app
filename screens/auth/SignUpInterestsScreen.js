@@ -88,7 +88,6 @@ const SignUpInterestsScreen = (props) => {
         },
       };
       const response = await api.post.uploadImage(body)(config);
-      console.log("Image file path", response.data.result);
 
       // Check response success
       if (!response.data.result)
@@ -111,7 +110,6 @@ const SignUpInterestsScreen = (props) => {
           "Something went wrong while updating the information! Please try again later..."
         );
 
-      console.log("Saved Data", response.data.result);
       return response.data.success;
     } catch (error) {
       throw error;
@@ -126,7 +124,6 @@ const SignUpInterestsScreen = (props) => {
         throw new Error("Please select at least 3 interests to proceed...");
 
       const data = handlePrepareUserData(guestStore, selectedInterests);
-      console.log("Data to send to the server\n", data);
 
       // Upload image
       const ImageBody = new FormData();

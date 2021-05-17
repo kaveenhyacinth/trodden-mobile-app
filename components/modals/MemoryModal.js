@@ -192,8 +192,6 @@ const MemoryModal = (props) => {
       if (!response.data.success)
         throw new Error("Something went wrong! Please try again!");
 
-      console.log("new heat", response.data.result);
-
       const newHeats = response.data.result.heats;
       setIsHeated((prevState) => !prevState);
       setHeatCount(newHeats.length);

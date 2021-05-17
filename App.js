@@ -7,6 +7,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { Provider } from "react-redux";
 import MainNavigator from "./routes/MainNavigator";
 import store from "./redux/store";
+import ErrorAlertModal from "./components/modals/ErrorAlertModal";
 // import { useScreens } from "react-native-screens";
 
 // useScreens();
@@ -31,7 +32,12 @@ export default function App() {
       <AppLoading
         startAsync={fetchFonts}
         onFinish={() => setDataLoaded(true)}
-        onError={(err) => console.log(err)}
+        onError={(err) =>
+          ErrorAlertModal(
+            "Couldn't load the app. Please try again later...",
+            err
+          )
+        }
       />
     );
   }

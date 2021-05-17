@@ -31,7 +31,6 @@ const Caravan = (props) => {
       const { data } = await api.get.getcaravanById(params.id);
       setcaravanData((prevState) => ({ ...prevState, ...data.result }));
       const response = await api.get.getBlazesbyCaravan(data.result._id);
-      console.log("blazes", response.data.result);
       setBlazesData([...response.data.result]);
     } catch (error) {
       ErrorAlertModal(error.message, error);

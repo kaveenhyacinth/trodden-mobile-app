@@ -5,8 +5,10 @@ import Typography from "../../theme/Typography";
 
 const Name = (props) => {
   return (
-    <View><Text>Search Screen</Text></View>
-  )
+    <View>
+      <Text>Search Screen</Text>
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({});

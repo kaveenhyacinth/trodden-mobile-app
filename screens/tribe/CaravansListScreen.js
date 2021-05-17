@@ -45,7 +45,6 @@ const CaravanScreen = (props) => {
           data: memberCaravans,
         },
       ];
-      console.log("sections", sections);
       setcaravans((prevState) => sections);
     } catch (error) {
       ErrorAlertModal(error.message, error);

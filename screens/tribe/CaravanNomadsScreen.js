@@ -22,7 +22,6 @@ const CaravanNomadsScreen = ({ navigation, route }) => {
   };
 
   const handleOnRefresh = () => {
-    console.log("Refreshing...");
     setRefresh((prevState) => prevState + 1);
   };
 
@@ -61,7 +60,6 @@ const CaravanNomadsScreen = ({ navigation, route }) => {
 
     if (isBonded !== -1) tileType = "regular";
 
-    console.log("isBonded", isBonded);
     return (
       <NomadRequestTile
         onNavigate={() => handleRequestTileNavigation(item._id)}

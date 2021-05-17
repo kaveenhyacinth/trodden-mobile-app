@@ -10,10 +10,6 @@ import requestsStore from "./requests/requestsReducer";
 import tribeStore from "./tribe/tribeReducer";
 import lookupNomadStore from "./lookups/nomad/nomadReducer";
 import tripPlanStore from "./tripPlan/tripPlanReducer";
-// import lookupCaravanStore from "./lookups/caravan/caravanReducer";
-// import lookupBlazeStore from "./lookups/blaze/blazeReducer";
-// import lookupTagStore from "./lookups/tag/tagReducer";
-// import lookupDestinationStore from "./lookups/destination/destinationReducer";
 
 const rootReducer = combineReducers({
   interestsStore,
@@ -27,10 +23,6 @@ const rootReducer = combineReducers({
   tribeStore,
   lookupNomadStore,
   tripPlanStore,
-  // lookupCaravanStore,
-  // lookupBlazeStore,
-  // lookupTagStore,
-  // lookupDestinationStore
 });
 
 export default rootReducer;

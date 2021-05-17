@@ -104,7 +104,6 @@ const NewTripScreen = (props) => {
         return;
       }
 
-      console.log("Trip Save Final", saveObj);
       const { data } = await api.post.createTrip(saveObj);
       if (!data.success) throw new Error(data.msg);
       handleGoBack();

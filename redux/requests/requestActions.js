@@ -31,7 +31,6 @@ export const fetchIncomingReqs = (userId) => async (dispatch) => {
     const response = await api.get.getIncomingBonds(userId);
     if (!response.data.success) throw new Error(response.data.msg);
     const requests = response.data.result;
-    console.log("data bonds", response.data.result);
     dispatch(fetchIncomingReqSuccess(requests));
   } catch (error) {
     console.error("Error at fetchIncommingReqs", error);

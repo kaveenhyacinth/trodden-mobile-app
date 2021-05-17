@@ -120,7 +120,6 @@ const SignInScreen = (props) => {
           error
         );
       handleError(error);
-      console.log("Error Happens Here...", error);
     } finally {
       setLoading(false);
     }

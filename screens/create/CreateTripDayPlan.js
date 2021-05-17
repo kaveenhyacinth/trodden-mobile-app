@@ -63,7 +63,6 @@ const TripDayPlannerScreen = (props) => {
   }, [tripPlanStore, props]);
 
   const handleSave = (note, selectedLocations) => {
-    console.log("data to save", { note, selectedLocations });
 
     if (!note || !selectedLocations) {
       alert("Please add a note and mark destinations on the map...");

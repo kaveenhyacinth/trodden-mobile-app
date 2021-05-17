@@ -25,11 +25,6 @@ const CommentsView = (props) => {
     setComments([...props.comments]);
   }, [props.comments]);
 
-  useEffect(() => {
-    if (comments !== [])
-      console.log("Dates", (new Date() - new Date(2021, 2, 4, 5, 50, 34, 200))/1000/60/60/24/7);
-  });
-
   const renderCommentBubble = (comment) => {
     const commentor = comment.commentor;
     const content = comment.content;
@@ -66,7 +61,6 @@ const CommentsView = (props) => {
         </View>
       </View>
       <ScrollView style={styles.commentsContainer}>
-        {console.log("Insider comments at comment view", comments)}
         {comments === [] ? <EmptyScreen /> : renderComments(comments)}
       </ScrollView>
       <View style={styles.newCommentContainer}>

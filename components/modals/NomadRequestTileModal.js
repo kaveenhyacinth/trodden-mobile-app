@@ -110,7 +110,6 @@ const NomadRequestTileModal = (props) => {
   const handleBondReject = async () => {
     try {
       const requestId = props.requestId;
-      console.log("Request ID", requestId);
       const response = await api.delete.rejectBond(requestId);
       if (!response.data.success) throw new Error(response.data.msg);
       props.onRefresh();

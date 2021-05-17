@@ -26,10 +26,6 @@ const tripPlanReducer = (state = initialState, action) => {
         dayPlans: [...state.dayPlans, action.payload],
       };
     case UPDATE_DAY_DATA:
-      console.log("Array at reducer", {
-        index: action.payload.index,
-        data: action.payload.data,
-      });
       return {
         ...state,
         dayPlans: [
