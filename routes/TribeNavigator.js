@@ -15,6 +15,7 @@ import CreateBlazeScreen from "../screens/create/CreateBlazeScreen";
 import BlazeScreen from "../screens/tribe/BlazeScreen";
 import TripScreen from "../screens/profile/TripScreen";
 import HashTagScreen from "../screens/home/HashTagScreen";
+import LocationBlazeScreen from "../screens/home/LocationScreen";
 
 const Stack = createStackNavigator();
 const Tab = createMaterialTopTabNavigator();
@@ -132,6 +133,13 @@ const TribeStackNavigator = (props) => {
       <Stack.Screen
         name="tagFeed"
         component={HashTagScreen}
+        options={{
+          title: "...",
+        }}
+      />
+      <Stack.Screen
+        name="locationBlazes"
+        component={LocationBlazeScreen}
         options={{
           title: "...",
         }}

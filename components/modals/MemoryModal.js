@@ -61,6 +61,13 @@ const MemoryModal = (props) => {
     props.navigation.navigate("tagFeed", { tag });
   };
 
+  const handleLocationNavigator = (location) => {
+    props.navigation.navigate("locationBlazes", {
+      locationId: location._id,
+      locationName: location.des_name,
+    });
+  };
+
   const handleProfileNavigator = async (id) => {
     try {
       const nomadId = await Fetch("nomadId");
@@ -246,7 +253,7 @@ const MemoryModal = (props) => {
             style={styles.headerName}
             onPress={() => handleProfileNavigator(data.owner._id)}
           >{`${data.owner.first_name} ${data.owner.last_name}`}</BodyText>
-          <Pressable onPress={() => {}}>
+          <Pressable onPress={() => handleLocationNavigator(data.destination)}>
             <BodyText style={styles.headerLocation}>
               <Ionicons name="location" color={Colors.primary} />
               {data.destination

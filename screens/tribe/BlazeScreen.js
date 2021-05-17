@@ -95,17 +95,19 @@ const BlazeScreen = ({ navigation, route }) => {
           {blazeData.location && blazeData.location.des_name}
         </BodyText>
       </View>
-      <View style={styles.buttonWrapper}>
-        {isJoined ? (
-          <BigButton disabled={true} style={styles.button}>
-            Joined
-          </BigButton>
-        ) : (
-          <BigButtonLight style={styles.button} onPress={handleJoinBlaze}>
-            Join Blaze
-          </BigButtonLight>
-        )}
-      </View>
+      {new Date(blazeData.date) < new Date() ? null : (
+        <View style={styles.buttonWrapper}>
+          {isJoined ? (
+            <BigButton disabled={true} style={styles.button}>
+              Joined
+            </BigButton>
+          ) : (
+            <BigButtonLight style={styles.button} onPress={handleJoinBlaze}>
+              Join Blaze
+            </BigButtonLight>
+          )}
+        </View>
+      )}
       <View style={styles.infoWrapper}>
         <View style={styles.info}>
           <Ionicons name="people" size={20} color={Colors.info} />

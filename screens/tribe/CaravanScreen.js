@@ -10,7 +10,6 @@ import BodyText from "../../components/ui/BodyText";
 import { downloadImage } from "../../helpers/mediaHandler";
 import Colors from "../../theme/Colors";
 import EmptyScreen from "../info/EmptyScreen";
-import LoadingScreen from "../info/LoadingScreen";
 import CustomHeaderButton from "../../components/ui/CustomHeaderButton";
 import FloatingButton from "../../components/ui/FloatingButton";
 import BlazeModal from "../../components/modals/BlazeModal";
@@ -32,6 +31,7 @@ const Caravan = (props) => {
       const { data } = await api.get.getcaravanById(params.id);
       setcaravanData((prevState) => ({ ...prevState, ...data.result }));
       const response = await api.get.getBlazesbyCaravan(data.result._id);
+      console.log("blazes", response.data.result);
       setBlazesData([...response.data.result]);
     } catch (error) {
       ErrorAlertModal(error.message, error);
@@ -132,8 +132,6 @@ const Caravan = (props) => {
       />
     </View>
   );
-
-  // if (loading) return <LoadingScreen />;
 
   return (
     <SafeAreaView style={styles.screen}>

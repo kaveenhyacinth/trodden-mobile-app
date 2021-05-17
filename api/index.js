@@ -76,6 +76,7 @@ const api = {
     getBondsList: (userId) => Http.get(`/api/profile/tribe/bonds/${userId}`),
     getcaravanById: (caravanId) => Http.get(`/api/caravan/fetch/${caravanId}`),
     getBlazesbyCaravan: (caravanId) => Http.get(`/api/blaze/c/${caravanId}`),
+    getBlazesByLocation: (locationId) => Http.get(`/api/blaze/l/${locationId}`),
     getCaravanSuggestions: (userId) =>
       Http.get(`/api/sug/i/caravans/${userId}`),
   },

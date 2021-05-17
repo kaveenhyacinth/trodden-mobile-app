@@ -11,6 +11,8 @@ import CreateTripDayPlanScreen from "../screens/create/CreateTripDayPlan";
 import TripScreen from "../screens/profile/TripScreen";
 import HashTagScreen from "../screens/home/HashTagScreen";
 import UpdateInterests from "../screens/profile/UpdateInterests";
+import BlazeScreen from "../screens/tribe/BlazeScreen";
+import LocationBlazeScreen from "../screens/home/LocationScreen";
 
 const Stack = createStackNavigator();
 
@@ -71,6 +73,20 @@ const ProfileStackNavigator = (props) => {
         component={UpdateInterests}
         options={{
           title: "Update Interests",
+        }}
+      />
+      <Stack.Screen
+        name="locationBlazes"
+        component={LocationBlazeScreen}
+        options={{
+          title: "...",
+        }}
+      />
+      <Stack.Screen
+        name="Blaze"
+        component={BlazeScreen}
+        options={{
+          title: "...",
         }}
       />
     </Stack.Navigator>

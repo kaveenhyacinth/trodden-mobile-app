@@ -11,6 +11,8 @@ import ProfileUser from "../screens/profile/ProfileUser";
 import ProfileOwn from "../screens/profile/ProfileOwn";
 import MapScreen from "../screens/home/MapScreen";
 import HashTagScreen from "../screens/home/HashTagScreen";
+import LocationBlazeScreen from "../screens/home/LocationScreen";
+import BlazeScreen from "../screens/tribe/BlazeScreen";
 
 const Stack = createStackNavigator();
 
@@ -71,6 +73,20 @@ const HomeStackNavigator = (props) => {
       <Stack.Screen
         name="tagFeed"
         component={HashTagScreen}
+        options={{
+          title: "...",
+        }}
+      />
+      <Stack.Screen
+        name="locationBlazes"
+        component={LocationBlazeScreen}
+        options={{
+          title: "...",
+        }}
+      />
+      <Stack.Screen
+        name="Blaze"
+        component={BlazeScreen}
         options={{
           title: "...",
         }}
