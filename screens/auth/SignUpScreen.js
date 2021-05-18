@@ -115,6 +115,11 @@ const SignUpScreen = (props) => {
       const response = await api.post.signup(signupBody);
       if (!response.data.result) throw new Error("Please try again later");
 
+      console.log(
+        "OTP Code (Incase email service get stucked):",
+        response.data.result.otp
+      );
+
       // Navigate to confirmation
       props.navigation.replace("postAuth", {
         screen: "confirmOTP",
